@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { adminLogin, isAdminAuthenticated } from '@/lib/admin';
+import { adminLogin, isAdminAuthenticated, initializeAdmin } from '@/lib/admin';
 import logo from '@/assets/logo.png';
 
 const AdminLogin = () => {
@@ -18,6 +18,9 @@ const AdminLogin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Admin hesabını initialize et
+    initializeAdmin();
+    
     if (isAdminAuthenticated()) {
       navigate('/admin/dashboard');
     }
