@@ -180,7 +180,7 @@ const CoffeeFortune = () => {
                 Falcan ✨
               </h1>
               <p className="text-xl text-muted-foreground mb-12 italic">
-                Can cana değil, Falca'a
+                Can cana değil, Falcan'a ...
               </p>
 
               <div
