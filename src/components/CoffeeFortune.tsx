@@ -58,8 +58,21 @@ const CoffeeFortune = () => {
         throw new Error(`API Hatası: ${response.status}`);
       }
 
-      const data = await response.json();
-      
+      const responseText = await response.text();
+      console.log('API Response:', responseText);
+
+      if (!responseText || responseText.trim() === '') {
+        throw new Error('API boş yanıt döndü');
+      }
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('JSON Parse Hatası:', responseText);
+        throw new Error('Geçersiz API yanıtı');
+      }
+
       if (data.success && data.fortune) {
         return data.fortune;
       } else {
