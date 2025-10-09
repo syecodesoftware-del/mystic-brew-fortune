@@ -162,6 +162,12 @@ export const deleteFortune = (fortuneId: number) => {
   }
 };
 
+export const deleteUser = (userId: string) => {
+  let users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  users = users.filter(u => u.id !== userId);
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+};
+
 export const downloadFortune = (fortune: Fortune) => {
   const content = `
 ╔════════════════════════════════════╗
