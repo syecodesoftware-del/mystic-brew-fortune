@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Coffee, Eye, EyeOff, Mail, Lock, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { loginUser } from '@/lib/auth';
 import { useAuth } from '@/hooks/useAuth';
+import logo from '@/assets/logo.png';
 
 interface FormData {
   email: string;
@@ -117,7 +118,7 @@ const Login = () => {
         className="w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <Coffee className="w-16 h-16 mx-auto mb-4 text-accent animate-pulse-glow" />
+          <img src={logo} alt="Falcan Logo" className="w-16 h-16 mx-auto mb-4 animate-pulse-glow" />
           <h1 className="text-4xl font-bold text-foreground mb-2">Giriş Yap</h1>
           <p className="text-muted-foreground">Enerjine tekrar hoş geldin</p>
         </div>
