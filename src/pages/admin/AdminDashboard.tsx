@@ -21,8 +21,19 @@ const AdminDashboard = () => {
 
   const fetchData = () => {
     console.log('Fetching admin dashboard data...');
+    
+    // LocalStorage'daki tüm anahtarları kontrol et
+    console.log('All localStorage keys:', Object.keys(localStorage));
+    
     const users = localStorage.getItem('coffee_users');
     console.log('Users in localStorage:', users);
+    
+    const currentUser = localStorage.getItem('coffee_current_user');
+    console.log('Current user:', currentUser);
+    
+    if (!users || users === '[]') {
+      console.warn('No users found in localStorage!');
+    }
     
     const adminStats = getAdminStats();
     console.log('Admin stats:', adminStats);
