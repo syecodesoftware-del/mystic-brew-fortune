@@ -10,32 +10,41 @@ import { deleteUser as deleteUserFromAuth } from '@/lib/auth';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState<any[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
+  const [totalPagesState, setTotalPagesState] = useState(1);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const { toast } = useToast();
   const perPage = 20;
 
-  useEffect(() => {
-    loadUsers();
-  }, [searchTerm, page]);
-
   const loadUsers = () => {
+    console.log('Loading users...');
     let allUsers = JSON.parse(localStorage.getItem('coffee_users') || '[]');
+    console.log('All users from localStorage:', allUsers);
     
+    setFilteredUsers(allUsers);
+    
+    let displayUsers = allUsers;
     if (searchTerm) {
-      allUsers = allUsers.filter((u: any) =>
+      displayUsers = allUsers.filter((u: any) =>
         u.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.email.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     
+    setTotalPagesState(Math.ceil(displayUsers.length / perPage));
+    
     const start = (page - 1) * perPage;
     const end = start + perPage;
-    setUsers(allUsers.slice(start, end));
+    setUsers(displayUsers.slice(start, end));
   };
+
+  useEffect(() => {
+    loadUsers();
+  }, [searchTerm, page]);
 
   const handleDeleteUser = (userId: string) => {
     if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
@@ -61,8 +70,8 @@ const AdminUsers = () => {
     setShowDetailModal(true);
   };
 
-  const totalUsers = JSON.parse(localStorage.getItem('coffee_users') || '[]').length;
-  const totalPages = Math.ceil(totalUsers / perPage);
+  const totalUsers = filteredUsers.length;
+  const totalPages = totalPagesState;
 
   return (
     <AdminLayout>
@@ -72,10 +81,15 @@ const AdminUsers = () => {
             <h1 className="text-3xl font-bold text-gray-900">Kullanıcılar</h1>
             <p className="text-gray-600">Toplam {totalUsers} kullanıcı</p>
           </div>
-          <Button onClick={exportUsersToCSV} className="bg-green-600 hover:bg-green-700">
-            <Download className="w-4 h-4 mr-2" />
-            Excel İndir
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={loadUsers} variant="outline">
+              Yenile
+            </Button>
+            <Button onClick={exportUsersToCSV} className="bg-green-600 hover:bg-green-700">
+              <Download className="w-4 h-4 mr-2" />
+              Excel İndir
+            </Button>
+          </div>
         </div>
 
         {/* Search */}

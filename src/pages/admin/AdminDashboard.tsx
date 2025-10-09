@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Users, Sparkles, Star, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import AdminLayout from '@/components/AdminLayout';
+import { Button } from '@/components/ui/button';
 import { getAdminStats, getDailyFortuneStats, getAllFortunes } from '@/lib/admin';
 import { motion } from 'framer-motion';
 
@@ -16,19 +17,28 @@ const AdminDashboard = () => {
   });
   const [chartData, setChartData] = useState<any[]>([]);
   const [recentFortunes, setRecentFortunes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = () => {
+    console.log('Fetching admin dashboard data...');
+    const users = localStorage.getItem('coffee_users');
+    console.log('Users in localStorage:', users);
+    
+    const adminStats = getAdminStats();
+    console.log('Admin stats:', adminStats);
+    setStats(adminStats);
+    
+    const dailyStats = getDailyFortuneStats(30);
+    setChartData(dailyStats);
+    
+    const { fortunes } = getAllFortunes(1, 5);
+    console.log('Recent fortunes:', fortunes);
+    setRecentFortunes(fortunes);
+    
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchData = () => {
-      const adminStats = getAdminStats();
-      setStats(adminStats);
-      
-      const dailyStats = getDailyFortuneStats(30);
-      setChartData(dailyStats);
-      
-      const { fortunes } = getAllFortunes(1, 5);
-      setRecentFortunes(fortunes);
-    };
-    
     fetchData();
   }, []);
 
@@ -66,13 +76,25 @@ const AdminDashboard = () => {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Hoş geldiniz! İşte genel bakış:</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-600">Hoş geldiniz! İşte genel bakış:</p>
+          </div>
+          <Button onClick={fetchData} variant="outline">
+            <TrendingUp className="w-4 h-4 mr-2" />
+            Yenile
+          </Button>
         </div>
 
-        {/* Stat Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        ) : (
+          <>
+            {/* Stat Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statCards.map((card, index) => (
             <motion.div
               key={card.title}
@@ -158,6 +180,8 @@ const AdminDashboard = () => {
             </table>
           </div>
         </motion.div>
+          </>
+        )}
       </div>
     </AdminLayout>
   );
