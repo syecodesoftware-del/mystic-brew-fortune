@@ -177,7 +177,7 @@ const CoffeeFortune = () => {
               </motion.div>
 
               <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
-                Dijital Kahve Falın ✨
+                Falcan ✨
               </h1>
               <p className="text-xl text-muted-foreground mb-12 italic">
                 Telvenin içindeki semboller bana senin enerjini fısıldıyor...
