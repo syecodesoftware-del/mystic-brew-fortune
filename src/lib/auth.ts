@@ -89,3 +89,99 @@ export const saveFortune = (fortune: string, imageUrl?: string) => {
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
   }
 };
+
+export const updateUserProfile = (updatedData: {
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  birthTime: string;
+  currentPassword?: string;
+  newPassword?: string;
+  newPasswordConfirm?: string;
+}) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) throw new Error('Kullanıcı bulunamadı');
+
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  
+  if (updatedData.newPassword) {
+    if (currentUser.password !== updatedData.currentPassword) {
+      throw new Error('Mevcut şifre hatalı');
+    }
+    if (updatedData.newPassword !== updatedData.newPasswordConfirm) {
+      throw new Error('Yeni şifreler eşleşmiyor');
+    }
+    if (updatedData.newPassword.length < 6) {
+      throw new Error('Yeni şifre en az 6 karakter olmalı');
+    }
+  }
+  
+  const userIndex = users.findIndex(u => u.id === currentUser.id);
+  if (userIndex !== -1) {
+    users[userIndex] = {
+      ...users[userIndex],
+      firstName: updatedData.firstName,
+      lastName: updatedData.lastName,
+      birthDate: updatedData.birthDate,
+      birthTime: updatedData.birthTime,
+      ...(updatedData.newPassword && { password: updatedData.newPassword }),
+    };
+    
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
+    
+    return users[userIndex];
+  }
+  
+  throw new Error('Kullanıcı güncellenemedi');
+};
+
+export const getUserFortunes = (): Fortune[] => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return [];
+  
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  const user = users.find(u => u.id === currentUser.id);
+  
+  return user?.fortunes || [];
+};
+
+export const deleteFortune = (fortuneId: number) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+  
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  const userIndex = users.findIndex(u => u.id === currentUser.id);
+  
+  if (userIndex !== -1) {
+    users[userIndex].fortunes = users[userIndex].fortunes.filter(
+      f => f.id !== fortuneId
+    );
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
+  }
+};
+
+export const downloadFortune = (fortune: Fortune) => {
+  const content = `
+╔════════════════════════════════════╗
+║     ✨ Dijital Kahve Falın ✨      ║
+╚════════════════════════════════════╝
+
+Tarih: ${new Date(fortune.timestamp).toLocaleString('tr-TR')}
+
+${fortune.fortune}
+
+────────────────────────────────────
+🌙 Telvenin içindeki semboller
+   senin enerjini fısıldıyor...
+  `;
+  
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `kahve-fali-${fortune.id}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+};

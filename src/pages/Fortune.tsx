@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, Sparkles, Coffee, Moon, Star, Heart, RefreshCw, LogOut } from 'lucide-react';
+import { Upload, Sparkles, Coffee, Moon, Star, Heart, RefreshCw, LogOut, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -174,7 +174,7 @@ const Fortune = () => {
   return (
     <div className="min-h-screen bg-gradient-mystic flex flex-col">
       {/* Header */}
-      <div className="p-4 md:p-6">
+      <div className="p-4 md:p-6 border-b border-accent/20">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Coffee className="w-8 h-8 text-accent" />
@@ -185,14 +185,24 @@ const Fortune = () => {
               <p className="text-muted-foreground text-sm">Enerjin güçlü görünüyor</p>
             </div>
           </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="border-accent/50 text-foreground hover:bg-accent/10 hover:border-accent"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Çıkış Yap
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => navigate('/profile')}
+              variant="outline"
+              className="border-accent/50 text-foreground hover:bg-accent/10 hover:border-accent"
+            >
+              <User className="w-4 h-4 mr-2" />
+              Profilim
+            </Button>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="border-accent/50 text-foreground hover:bg-accent/10 hover:border-accent"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Çıkış
+            </Button>
+          </div>
         </div>
       </div>
 
