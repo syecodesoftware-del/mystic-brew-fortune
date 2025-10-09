@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Coffee, Sparkles, Moon, Star } from 'lucide-react';
+import { Sparkles, Moon, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import logo from '@/assets/logo.png';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Landing = () => {
             transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
             className="mb-8"
           >
-            <Coffee className="w-32 h-32 mx-auto text-accent animate-pulse-glow" />
+            <img src={logo} alt="Falcan Logo" className="w-32 h-32 mx-auto animate-pulse-glow" />
           </motion.div>
 
           <h1 className="text-6xl md:text-7xl font-bold text-foreground mb-4">

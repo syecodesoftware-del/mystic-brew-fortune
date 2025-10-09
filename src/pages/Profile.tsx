@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Edit, Save, X, Download, Trash2, 
-  Calendar, Clock, Eye, EyeOff, Sparkles, Coffee, ArrowLeft
+  Calendar, Clock, Eye, EyeOff, Sparkles, ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { updateUserProfile, getUserFortunes, deleteFortune, downloadFortune, type Fortune } from '@/lib/auth';
+import logo from '@/assets/logo.png';
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
@@ -143,7 +144,7 @@ const Profile = () => {
             Geri
           </Button>
           <div className="flex items-center gap-2">
-            <Coffee className="w-6 h-6 text-accent" />
+            <img src={logo} alt="Falcan Logo" className="w-8 h-8" />
             <span className="text-foreground font-semibold">Dijital Kahve Falın</span>
           </div>
         </div>

@@ -1,11 +1,12 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, Sparkles, Coffee, Moon, Star, Heart, RefreshCw, LogOut, User } from 'lucide-react';
+import { Upload, Sparkles, Moon, Star, Heart, RefreshCw, LogOut, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { saveFortune } from '@/lib/auth';
+import logo from '@/assets/logo.png';
 
 const WEBHOOK_URL = 'https://asil58.app.n8n.cloud/webhook/kahve-fali';
 
@@ -177,7 +178,7 @@ const Fortune = () => {
       <div className="p-4 md:p-6 border-b border-accent/20">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Coffee className="w-8 h-8 text-accent" />
+            <img src={logo} alt="Falcan Logo" className="w-8 h-8" />
             <div>
               <h2 className="text-foreground font-semibold">
                 Merhaba, {user?.firstName} 👋
@@ -223,7 +224,7 @@ const Fortune = () => {
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
                   className="mb-8"
                 >
-                  <Coffee className="w-24 h-24 mx-auto text-accent animate-pulse-glow" />
+                  <img src={logo} alt="Falcan Logo" className="w-24 h-24 mx-auto animate-pulse-glow" />
                 </motion.div>
 
                 <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
@@ -274,9 +275,9 @@ const Fortune = () => {
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0"
+                    className="absolute inset-0 flex items-center justify-center"
                   >
-                    <Coffee className="w-full h-full text-accent" />
+                    <img src={logo} alt="Falcan Logo" className="w-full h-full object-contain" />
                   </motion.div>
                   <Sparkles className="absolute top-0 right-0 w-8 h-8 text-accent animate-pulse" />
                   <Moon className="absolute bottom-0 left-0 w-8 h-8 text-secondary animate-pulse" />
