@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Users, Sparkles, Star, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import AdminLayout from '@/components/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { getAdminStats, getDailyFortuneStats, getAllFortunes } from '@/lib/admin';
 import { motion } from 'framer-motion';
@@ -85,8 +84,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <AdminLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
@@ -193,8 +191,7 @@ const AdminDashboard = () => {
         </motion.div>
           </>
         )}
-      </div>
-    </AdminLayout>
+    </div>
   );
 };
 

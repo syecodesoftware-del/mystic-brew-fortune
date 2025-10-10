@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import AdminLayout from "./components/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
@@ -27,6 +28,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* User Routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
@@ -47,48 +49,22 @@ const App = () => (
             } 
           />
           
-          {/* Admin Routes */}
+          {/* Admin Routes with Sidebar Layout */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route 
-            path="/admin/dashboard" 
+            path="/admin" 
             element={
               <AdminProtectedRoute>
-                <AdminDashboard />
+                <AdminLayout />
               </AdminProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin/users" 
-            element={
-              <AdminProtectedRoute>
-                <AdminUsers />
-              </AdminProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin/fortunes" 
-            element={
-              <AdminProtectedRoute>
-                <AdminFortunes />
-              </AdminProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin/statistics" 
-            element={
-              <AdminProtectedRoute>
-                <AdminStatistics />
-              </AdminProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin/settings" 
-            element={
-              <AdminProtectedRoute>
-                <AdminSettings />
-              </AdminProtectedRoute>
-            } 
-          />
+            }
+          >
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="fortunes" element={<AdminFortunes />} />
+            <Route path="statistics" element={<AdminStatistics />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
