@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { loginUser } from '@/lib/auth';
 import { useAuth } from '@/hooks/useAuth';
+import MysticalBackground from '@/components/MysticalBackground';
 import logo from '@/assets/logo.png';
 
 interface FormData {
@@ -111,11 +112,14 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-mystic flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-mystic flex items-center justify-center p-4 relative">
+      {/* Mistik Arkaplan */}
+      <MysticalBackground />
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-8">
           <img src={logo} alt="Falcan Logo" className="w-16 h-16 mx-auto mb-4 animate-pulse-glow" />
