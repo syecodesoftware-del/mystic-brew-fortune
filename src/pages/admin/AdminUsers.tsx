@@ -23,6 +23,18 @@ const AdminUsers = () => {
     console.log('Loading users...');
     let allUsers = JSON.parse(localStorage.getItem('coffee_users') || '[]');
     console.log('All users from localStorage:', allUsers);
+
+    // Defensive sync: include current user if missing
+    try {
+      const current = JSON.parse(localStorage.getItem('coffee_current_user') || 'null');
+      if (current && !allUsers.some((u: any) => u.id === current.id || u.email === current.email)) {
+        allUsers.push(current);
+        localStorage.setItem('coffee_users', JSON.stringify(allUsers));
+        console.log('Synced current user into coffee_users');
+      }
+    } catch (e) {
+      console.warn('Sync failed:', e);
+    }
     
     setFilteredUsers(allUsers);
     
