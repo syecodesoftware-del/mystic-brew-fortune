@@ -1,3 +1,5 @@
+import type { Notification, NotificationSettings } from '@/types/notifications';
+
 export interface User {
   id: string;
   firstName: string;
@@ -14,6 +16,8 @@ export interface User {
   totalCoinsEarned: number;
   totalCoinsSpent: number;
   fortunes: Fortune[];
+  notifications: Notification[];
+  notificationSettings: NotificationSettings;
 }
 
 export interface Fortune {
@@ -26,7 +30,7 @@ export interface Fortune {
 const USERS_KEY = 'coffee_users';
 const CURRENT_USER_KEY = 'coffee_current_user';
 
-export const registerUser = (userData: Omit<User, 'id' | 'createdAt' | 'fortunes' | 'coins' | 'lastDailyBonus' | 'totalCoinsEarned' | 'totalCoinsSpent'>) => {
+export const registerUser = (userData: Omit<User, 'id' | 'createdAt' | 'fortunes' | 'coins' | 'lastDailyBonus' | 'totalCoinsEarned' | 'totalCoinsSpent' | 'notifications' | 'notificationSettings'>) => {
   const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
   
   if (users.find(u => u.email === userData.email)) {
@@ -48,7 +52,13 @@ export const registerUser = (userData: Omit<User, 'id' | 'createdAt' | 'fortunes
     lastDailyBonus: new Date().toISOString().split('T')[0],
     totalCoinsEarned: 50,
     totalCoinsSpent: 0,
-    fortunes: []
+    fortunes: [],
+    notifications: [],
+    notificationSettings: {
+      fortuneReady: true,
+      dailyBonus: true,
+      adminMessages: true
+    }
   };
   
   users.push(newUser);
@@ -79,9 +89,9 @@ export const logoutUser = () => {
   localStorage.removeItem(CURRENT_USER_KEY);
 };
 
-export const saveFortune = (fortune: string, imageUrl?: string) => {
+export const saveFortune = (fortune: string, imageUrl?: string): string => {
   const currentUser = getCurrentUser();
-  if (!currentUser) return;
+  if (!currentUser) return '';
   
   const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
   const userIndex = users.findIndex(u => u.id === currentUser.id);
@@ -99,7 +109,11 @@ export const saveFortune = (fortune: string, imageUrl?: string) => {
     
     const updatedUser = users[userIndex];
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
+    
+    return String(newFortune.id);
   }
+  
+  return '';
 };
 
 export const updateUserProfile = (updatedData: {

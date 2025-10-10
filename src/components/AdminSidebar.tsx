@@ -7,7 +7,8 @@ import {
   Settings, 
   LogOut,
   Menu,
-  X 
+  X,
+  Send
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAdmin } from '@/hooks/useAdmin';
@@ -22,6 +23,7 @@ const AdminSidebar = () => {
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/users', icon: Users, label: 'Kullanıcılar' },
     { path: '/admin/fortunes', icon: Sparkles, label: 'Fallar' },
+    { path: '/admin/notifications', icon: Send, label: 'Bildirimler' },
     { path: '/admin/statistics', icon: BarChart3, label: 'İstatistikler' },
     { path: '/admin/settings', icon: Settings, label: 'Ayarlar' }
   ];

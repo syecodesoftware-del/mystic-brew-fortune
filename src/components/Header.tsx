@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, User, LogOut, Sparkles, ChevronDown } from 'lucide-react';
 import { getCurrentUser } from '@/lib/auth';
+import NotificationBell from './NotificationBell';
 
 interface HeaderProps {
   showBackButton?: boolean;
@@ -56,8 +57,11 @@ const MobileHeader = ({ showBackButton, title }: HeaderProps) => {
           {title || '🔮 Kahve Falın'}
         </h1>
         
-        {/* Sağ - Altın ve Profil */}
+        {/* Sağ - Bildirim, Altın ve Profil */}
         <div className="flex items-center gap-2">
+          {/* Bildirim */}
+          <NotificationBell />
+          
           {/* Altın badge */}
           <div className="flex items-center gap-1 bg-yellow-500 px-2 py-1 rounded-full text-xs font-bold shadow-md">
             💰 {coins}
@@ -169,6 +173,9 @@ const DesktopHeader = () => {
       </h1>
       
       <div className="flex items-center gap-6">
+        {/* Bildirim */}
+        <NotificationBell />
+        
         {/* Altın */}
         <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-600 px-4 py-2 rounded-full font-bold shadow-lg">
           <span className="text-2xl">💰</span>

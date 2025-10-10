@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { saveFortune, checkCoinsAndDeduct, refundCoins } from '@/lib/auth';
+import { sendFortuneReadyNotification } from '@/utils/notifications';
 import Header from '@/components/Header';
 import MysticalBackground from '@/components/MysticalBackground';
 import logo from '@/assets/logo.png';
@@ -125,7 +126,12 @@ const Fortune = () => {
       const fortuneResult = await analyzeFortune(file);
       setFortune(fortuneResult);
       
-      saveFortune(fortuneResult, imageUrl);
+      const fortuneId = saveFortune(fortuneResult, imageUrl);
+      
+      // Send notification
+      if (user && fortuneId) {
+        sendFortuneReadyNotification(user.id, fortuneId);
+      }
       
       toast({
         title: "Falın hazır! ✨",

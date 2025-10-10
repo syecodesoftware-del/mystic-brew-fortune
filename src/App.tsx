@@ -19,15 +19,25 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminFortunes from "./pages/admin/AdminFortunes";
 import AdminStatistics from "./pages/admin/AdminStatistics";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <ContentProtection />
-      <Toaster />
-      <Sonner />
+const App = () => {
+  // Request notification permission
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <ContentProtection />
+        <Toaster />
+        <Sonner />
       <BrowserRouter>
         <Routes>
           {/* User Routes */}
@@ -66,6 +76,7 @@ const App = () => (
             <Route path="fortunes" element={<AdminFortunes />} />
             <Route path="statistics" element={<AdminStatistics />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="notifications" element={<AdminNotifications />} />
           </Route>
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
@@ -74,6 +85,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
