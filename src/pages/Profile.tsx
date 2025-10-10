@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Edit, Save, X, Download, Trash2, 
-  Calendar, Clock, Eye, EyeOff, Sparkles, ArrowLeft, MapPin, Coins, Gift
+  Calendar, Clock, Eye, EyeOff, Sparkles, MapPin, Coins, Gift
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { updateUserProfile, getUserFortunes, deleteFortune, downloadFortune, checkAndGiveDailyBonus, type Fortune } from '@/lib/auth';
+import Header from '@/components/Header';
 import logo from '@/assets/logo.png';
 
 const TURKISH_CITIES = [
@@ -206,22 +207,7 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-mystic">
       {/* Header */}
-      <div className="p-4 md:p-6 border-b border-accent/20">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Button
-            onClick={() => navigate('/fortune')}
-            variant="outline"
-            className="border-accent/50 text-foreground hover:bg-accent/10"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Geri
-          </Button>
-          <div className="flex items-center gap-2">
-            <img src={logo} alt="Falcan Logo" className="w-8 h-8" />
-            <span className="text-foreground font-semibold">Dijital Kahve Falın</span>
-          </div>
-        </div>
-      </div>
+      <Header showBackButton title="Profilim" />
 
       {/* Profile Content */}
       <div className="max-w-4xl mx-auto p-4 md:p-6">

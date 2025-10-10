@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, Sparkles, Moon, Star, Heart, RefreshCw, LogOut, User, Coins } from 'lucide-react';
+import { Upload, Sparkles, Moon, Star, Heart, RefreshCw, Coins } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { saveFortune, checkCoinsAndDeduct, refundCoins } from '@/lib/auth';
-import CoinDisplay from '@/components/CoinDisplay';
+import Header from '@/components/Header';
 import logo from '@/assets/logo.png';
 
 const WEBHOOK_URL = 'https://asil58.app.n8n.cloud/webhook/kahve-fali';
@@ -193,38 +193,7 @@ const Fortune = () => {
   return (
     <div className="min-h-screen bg-gradient-mystic flex flex-col">
       {/* Header */}
-      <div className="p-4 md:p-6 border-b border-accent/20">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={logo} alt="Falcan Logo" className="w-8 h-8" />
-            <div>
-              <h2 className="text-foreground font-semibold">
-                Merhaba, {user?.firstName} 👋
-              </h2>
-              <p className="text-muted-foreground text-sm">Enerjin güçlü görünüyor</p>
-            </div>
-          </div>
-          <div className="flex gap-2 items-center">
-            <CoinDisplay />
-            <Button
-              onClick={() => navigate('/profile')}
-              variant="outline"
-              className="border-accent/50 text-foreground hover:bg-accent/10 hover:border-accent"
-            >
-              <User className="w-4 h-4 mr-2" />
-              Profilim
-            </Button>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="border-accent/50 text-foreground hover:bg-accent/10 hover:border-accent"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Çıkış
-            </Button>
-          </div>
-        </div>
-      </div>
+      <Header />
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center p-4">
