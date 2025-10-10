@@ -1,11 +1,24 @@
 import { useState, useEffect } from 'react';
-import { Search, Download, Eye, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Download, Eye, Trash2, ChevronLeft, ChevronRight, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { exportUsersToCSV } from '@/lib/admin';
-import { deleteUser as deleteUserFromAuth } from '@/lib/auth';
+import { deleteUser as deleteUserFromAuth, adminUpdateUser } from '@/lib/auth';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const editUserSchema = z.object({
+  firstName: z.string().min(2, 'Ad en az 2 karakter olmalı'),
+  lastName: z.string().min(2, 'Soyad en az 2 karakter olmalı'),
+  email: z.string().email('Geçerli bir e-posta adresi girin'),
+  birthDate: z.string().min(1, 'Doğum tarihi gerekli'),
+  birthTime: z.string().min(1, 'Doğum saati gerekli'),
+  password: z.string().optional(),
+});
 
 const AdminUsers = () => {
   const [users, setUsers] = useState<any[]>([]);
@@ -15,8 +28,13 @@ const AdminUsers = () => {
   const [totalPagesState, setTotalPagesState] = useState(1);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const { toast } = useToast();
   const perPage = 20;
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    resolver: zodResolver(editUserSchema),
+  });
 
   const loadUsers = () => {
     console.log('Loading users...');
@@ -79,6 +97,47 @@ const AdminUsers = () => {
   const handleViewUser = (user: any) => {
     setSelectedUser(user);
     setShowDetailModal(true);
+  };
+
+  const handleEditUser = (user: any) => {
+    setSelectedUser(user);
+    reset({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      birthDate: user.birthDate,
+      birthTime: user.birthTime,
+      password: '',
+    });
+    setShowEditModal(true);
+  };
+
+  const onSubmitEdit = (data: any) => {
+    try {
+      const updateData = {
+        ...data,
+        ...(data.password && data.password.trim() !== '' ? { password: data.password } : {}),
+      };
+      
+      // Eğer şifre boşsa, şifre alanını siliyoruz
+      if (!data.password || data.password.trim() === '') {
+        delete updateData.password;
+      }
+
+      adminUpdateUser(selectedUser.id, updateData);
+      loadUsers();
+      setShowEditModal(false);
+      toast({
+        title: 'Başarılı',
+        description: 'Kullanıcı bilgileri güncellendi',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Hata',
+        description: error.message || 'Kullanıcı güncellenemedi',
+        variant: 'destructive',
+      });
+    }
   };
 
   const totalUsers = filteredUsers.length;
@@ -163,6 +222,14 @@ const AdminUsers = () => {
                         onClick={() => handleViewUser(user)}
                       >
                         <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-blue-600 hover:text-blue-700"
+                        onClick={() => handleEditUser(user)}
+                      >
+                        <Edit className="w-4 h-4" />
                       </Button>
                       <Button
                         size="sm"
@@ -265,6 +332,107 @@ const AdminUsers = () => {
                 </div>
               )}
             </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit User Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Kullanıcıyı Düzenle</DialogTitle>
+          </DialogHeader>
+          {selectedUser && (
+            <form onSubmit={handleSubmit(onSubmitEdit)} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="firstName">Ad</Label>
+                  <Input
+                    id="firstName"
+                    {...register('firstName')}
+                    placeholder="Ad"
+                  />
+                  {errors.firstName && (
+                    <p className="text-sm text-red-500 mt-1">{errors.firstName.message as string}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="lastName">Soyad</Label>
+                  <Input
+                    id="lastName"
+                    {...register('lastName')}
+                    placeholder="Soyad"
+                  />
+                  {errors.lastName && (
+                    <p className="text-sm text-red-500 mt-1">{errors.lastName.message as string}</p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="email">E-posta</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  {...register('email')}
+                  placeholder="E-posta"
+                />
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1">{errors.email.message as string}</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="birthDate">Doğum Tarihi</Label>
+                  <Input
+                    id="birthDate"
+                    type="date"
+                    {...register('birthDate')}
+                  />
+                  {errors.birthDate && (
+                    <p className="text-sm text-red-500 mt-1">{errors.birthDate.message as string}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="birthTime">Doğum Saati</Label>
+                  <Input
+                    id="birthTime"
+                    type="time"
+                    {...register('birthTime')}
+                  />
+                  {errors.birthTime && (
+                    <p className="text-sm text-red-500 mt-1">{errors.birthTime.message as string}</p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="password">Yeni Şifre (Boş bırakın değiştirmek istemiyorsanız)</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  {...register('password')}
+                  placeholder="Yeni şifre"
+                />
+                {errors.password && (
+                  <p className="text-sm text-red-500 mt-1">{errors.password.message as string}</p>
+                )}
+              </div>
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowEditModal(false)}
+                >
+                  İptal
+                </Button>
+                <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
+                  Kaydet
+                </Button>
+              </DialogFooter>
+            </form>
           )}
         </DialogContent>
       </Dialog>

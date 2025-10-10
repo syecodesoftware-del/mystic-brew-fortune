@@ -168,6 +168,50 @@ export const deleteUser = (userId: string) => {
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
 };
 
+export const adminUpdateUser = (userId: string, updatedData: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  birthDate: string;
+  birthTime: string;
+  password?: string;
+}) => {
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  const userIndex = users.findIndex(u => u.id === userId);
+  
+  if (userIndex === -1) {
+    throw new Error('Kullanıcı bulunamadı');
+  }
+  
+  // Email değişikliği kontrolü
+  if (updatedData.email !== users[userIndex].email) {
+    const emailExists = users.some(u => u.email === updatedData.email && u.id !== userId);
+    if (emailExists) {
+      throw new Error('Bu e-posta adresi başka bir kullanıcı tarafından kullanılıyor');
+    }
+  }
+  
+  users[userIndex] = {
+    ...users[userIndex],
+    firstName: updatedData.firstName,
+    lastName: updatedData.lastName,
+    email: updatedData.email,
+    birthDate: updatedData.birthDate,
+    birthTime: updatedData.birthTime,
+    ...(updatedData.password && { password: updatedData.password }),
+  };
+  
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  
+  // Eğer güncellenene kullanıcı şu anki kullanıcıysa, current_user'ı da güncelle
+  const currentUser = getCurrentUser();
+  if (currentUser && currentUser.id === userId) {
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
+  }
+  
+  return users[userIndex];
+};
+
 export const downloadFortune = (fortune: Fortune) => {
   const content = `
 ╔════════════════════════════════════╗
