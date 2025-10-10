@@ -21,29 +21,51 @@ const USERS_KEY = 'coffee_users';
 const CURRENT_USER_KEY = 'coffee_current_user';
 
 export const registerUser = (userData: Omit<User, 'id' | 'createdAt' | 'fortunes'>) => {
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  
-  if (users.find(u => u.email === userData.email)) {
-    throw new Error('Bu e-posta adresi zaten kayıtlı');
+  try {
+    console.log('[registerUser] starting...');
+    console.log('[registerUser] localStorage keys before:', Object.keys(localStorage));
+
+    const raw = localStorage.getItem(USERS_KEY);
+    console.log('[registerUser] raw coffee_users before:', raw);
+    const users = JSON.parse(raw || '[]') as User[];
+    console.log('[registerUser] users length before:', users.length);
+    
+    if (users.find(u => u.email === userData.email)) {
+      console.warn('[registerUser] duplicate email detected:', userData.email);
+      throw new Error('Bu e-posta adresi zaten kayıtlı');
+    }
+    
+    const newUser: User = {
+      id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      password: userData.password,
+      birthDate: userData.birthDate,
+      birthTime: userData.birthTime,
+      createdAt: new Date().toISOString(),
+      fortunes: []
+    };
+    
+    users.push(newUser);
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    const afterRaw = localStorage.getItem(USERS_KEY);
+    console.log('[registerUser] raw coffee_users after:', afterRaw);
+    try {
+      const afterUsers = JSON.parse(afterRaw || '[]');
+      console.log('[registerUser] users length after:', Array.isArray(afterUsers) ? afterUsers.length : 'not-array');
+    } catch (e) {
+      console.warn('[registerUser] parse after failed', e);
+    }
+
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
+    console.log('[registerUser] current user set:', newUser.email);
+    
+    return newUser;
+  } catch (e) {
+    console.error('[registerUser] failed:', e);
+    throw e;
   }
-  
-  const newUser: User = {
-    id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-    firstName: userData.firstName,
-    lastName: userData.lastName,
-    email: userData.email,
-    password: userData.password,
-    birthDate: userData.birthDate,
-    birthTime: userData.birthTime,
-    createdAt: new Date().toISOString(),
-    fortunes: []
-  };
-  
-  users.push(newUser);
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
-  
-  return newUser;
 };
 
 export const loginUser = (email: string, password: string) => {
