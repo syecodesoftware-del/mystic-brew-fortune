@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Users, Sparkles, Star, TrendingUp } from 'lucide-react';
+import { Users, Sparkles, Star, TrendingUp, Coins } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { getAdminStats, getDailyFortuneStats, getAllFortunes } from '@/lib/admin';
@@ -12,7 +12,8 @@ const AdminDashboard = () => {
     todayFortunes: 0,
     activeUsers: 0,
     userGrowth: 0,
-    fortuneGrowth: 0
+    fortuneGrowth: 0,
+    totalCoins: 0
   });
   const [chartData, setChartData] = useState<any[]>([]);
   const [recentFortunes, setRecentFortunes] = useState<any[]>([]);
@@ -36,7 +37,15 @@ const AdminDashboard = () => {
     
     const adminStats = getAdminStats();
     console.log('Admin stats:', adminStats);
-    setStats(adminStats);
+    
+    // Calculate total coins
+    const usersData = JSON.parse(users || '[]');
+    const totalCoins = usersData.reduce((sum: number, u: any) => sum + (u.coins || 0), 0);
+    
+    setStats({
+      ...adminStats,
+      totalCoins
+    });
     
     const dailyStats = getDailyFortuneStats(30);
     setChartData(dailyStats);
@@ -80,6 +89,13 @@ const AdminDashboard = () => {
       icon: TrendingUp,
       color: 'from-green-500 to-emerald-500',
       change: 'Son 7 gün'
+    },
+    {
+      title: 'Toplam Altın',
+      value: stats.totalCoins,
+      icon: Coins,
+      color: 'from-yellow-500 to-yellow-600',
+      change: 'Dolaşımda'
     }
   ];
 
@@ -103,7 +119,7 @@ const AdminDashboard = () => {
         ) : (
           <>
             {/* Stat Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {statCards.map((card, index) => (
             <motion.div
               key={card.title}

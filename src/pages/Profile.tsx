@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Edit, Save, X, Download, Trash2, 
-  Calendar, Clock, Eye, EyeOff, Sparkles, ArrowLeft, MapPin
+  Calendar, Clock, Eye, EyeOff, Sparkles, ArrowLeft, MapPin, Coins, Gift
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { updateUserProfile, getUserFortunes, deleteFortune, downloadFortune, type Fortune } from '@/lib/auth';
+import { updateUserProfile, getUserFortunes, deleteFortune, downloadFortune, checkAndGiveDailyBonus, type Fortune } from '@/lib/auth';
 import logo from '@/assets/logo.png';
 
 const TURKISH_CITIES = [
@@ -41,6 +41,8 @@ const Profile = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedFortune, setSelectedFortune] = useState<Fortune | null>(null);
   const [fortuneToDelete, setFortuneToDelete] = useState<number | null>(null);
+  const [canClaimBonus, setCanClaimBonus] = useState(false);
+  const [timeUntilNextBonus, setTimeUntilNextBonus] = useState('');
   
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
@@ -57,6 +59,57 @@ const Profile = () => {
   const fortunes = getUserFortunes().sort((a, b) => 
     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
+  
+  // Check bonus availability
+  const checkBonusAvailability = () => {
+    if (!user) return;
+    
+    const today = new Date().toISOString().split('T')[0];
+    const lastBonus = user.lastDailyBonus;
+    
+    const canClaim = lastBonus !== today;
+    setCanClaimBonus(canClaim);
+    
+    if (!canClaim) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      
+      const diff = tomorrow.getTime() - new Date().getTime();
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      setTimeUntilNextBonus(`${hours}s ${minutes}d`);
+    }
+  };
+  
+  // Check on mount and every minute
+  useState(() => {
+    checkBonusAvailability();
+    const interval = setInterval(checkBonusAvailability, 60000);
+    return () => clearInterval(interval);
+  });
+  
+  const handleClaimBonus = () => {
+    const bonus = checkAndGiveDailyBonus();
+    if (bonus) {
+      setCanClaimBonus(false);
+      toast({
+        title: bonus.message,
+        description: `Yeni bakiyen: ${bonus.newBalance} 💰`,
+      });
+      
+      // Reload user data
+      const updatedUsers = JSON.parse(localStorage.getItem('coffee_users') || '[]');
+      const updatedUser = updatedUsers.find((u: any) => u.id === user?.id);
+      if (updatedUser) {
+        updateUser(updatedUser);
+      }
+      
+      window.dispatchEvent(new Event('coinsUpdated'));
+      checkBonusAvailability();
+    }
+  };
 
   const getInitials = (firstName?: string, lastName?: string) => {
     return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
@@ -213,23 +266,89 @@ const Profile = () => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-gradient-card rounded-2xl p-6 shadow-mystic"
+                className="space-y-6"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                    <User className="w-6 h-6" />
-                    Kişisel Bilgiler
+                {/* Coin Stats */}
+                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border-2 border-yellow-400">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <Coins className="w-6 h-6 text-yellow-600" />
+                    💰 Altın Durumu
                   </h2>
-                  {!isEditing && (
-                    <Button onClick={handleEdit} variant="outline" className="border-accent/50">
-                      <Edit className="w-4 h-4 mr-2" />
-                      Düzenle
-                    </Button>
-                  )}
+                  
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="bg-white/70 rounded-lg p-4">
+                      <p className="text-sm text-gray-600 mb-1">Mevcut Bakiye</p>
+                      <p className="text-2xl font-bold text-yellow-600 flex items-center gap-1">
+                        <Coins className="w-5 h-5" />
+                        {user.coins || 0}
+                      </p>
+                    </div>
+                    <div className="bg-white/70 rounded-lg p-4">
+                      <p className="text-sm text-gray-600 mb-1">Toplam Kazanılan</p>
+                      <p className="text-2xl font-bold text-green-600 flex items-center gap-1">
+                        <Coins className="w-5 h-5" />
+                        {user.totalCoinsEarned || 0}
+                      </p>
+                    </div>
+                    <div className="bg-white/70 rounded-lg p-4">
+                      <p className="text-sm text-gray-600 mb-1">Toplam Harcanan</p>
+                      <p className="text-2xl font-bold text-red-600 flex items-center gap-1">
+                        <Coins className="w-5 h-5" />
+                        {user.totalCoinsSpent || 0}
+                      </p>
+                    </div>
+                    <div className="bg-white/70 rounded-lg p-4">
+                      <p className="text-sm text-gray-600 mb-1">Son Günlük Bonus</p>
+                      <p className="text-sm font-medium text-gray-800">
+                        {user.lastDailyBonus ? new Date(user.lastDailyBonus).toLocaleDateString('tr-TR') : 'Henüz alınmadı'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Daily Bonus Button */}
+                  <div className="bg-gradient-to-r from-yellow-100 to-orange-100 rounded-lg p-4 border border-yellow-300">
+                    <h3 className="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
+                      <Gift className="w-5 h-5" />
+                      🎁 Günlük Bonus
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">Her gün 20 altın kazan!</p>
+                    
+                    {canClaimBonus ? (
+                      <Button
+                        onClick={handleClaimBonus}
+                        className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white font-bold py-3 px-6 rounded-lg transition-transform hover:scale-105 shadow-lg"
+                      >
+                        <Coins className="w-5 h-5 mr-2" />
+                        💰 20 Altın Al
+                      </Button>
+                    ) : (
+                      <Button
+                        disabled
+                        className="w-full bg-gray-300 text-gray-500 font-bold py-3 px-6 rounded-lg cursor-not-allowed"
+                      >
+                        ✅ Bugünkü bonus alındı
+                        {timeUntilNextBonus && <span className="block text-xs mt-1">Sonraki: {timeUntilNextBonus}</span>}
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Personal Info */}
+                <div className="bg-gradient-card rounded-2xl p-6 shadow-mystic">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
+                      <User className="w-6 h-6" />
+                      Kişisel Bilgiler
+                    </h2>
+                    {!isEditing && (
+                      <Button onClick={handleEdit} variant="outline" className="border-accent/50">
+                        <Edit className="w-4 h-4 mr-2" />
+                        Düzenle
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="space-y-4">
                     <div>
                       <Label>Ad</Label>
                       {isEditing ? (

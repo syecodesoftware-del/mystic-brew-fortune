@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Download, Eye, Trash2, ChevronLeft, ChevronRight, Edit, MapPin } from 'lucide-react';
+import { Search, Download, Eye, Trash2, ChevronLeft, ChevronRight, Edit, MapPin, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { exportUsersToCSV } from '@/lib/admin';
-import { deleteUser as deleteUserFromAuth, adminUpdateUser } from '@/lib/auth';
+import { deleteUser as deleteUserFromAuth, adminUpdateUser, adminGiveCoins } from '@/lib/auth';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -45,6 +45,8 @@ const AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showGiveCoinsModal, setShowGiveCoinsModal] = useState(false);
+  const [coinAmount, setCoinAmount] = useState('');
   const { toast } = useToast();
   const perPage = 20;
 
@@ -157,6 +159,35 @@ const AdminUsers = () => {
       });
     }
   };
+  
+  const handleGiveCoins = (user: any) => {
+    setSelectedUser(user);
+    setCoinAmount('');
+    setShowGiveCoinsModal(true);
+  };
+  
+  const submitGiveCoins = () => {
+    try {
+      const amount = parseInt(coinAmount);
+      if (isNaN(amount) || amount <= 0) {
+        throw new Error('Geçerli bir miktar girin');
+      }
+      
+      adminGiveCoins(selectedUser.id, amount);
+      loadUsers();
+      setShowGiveCoinsModal(false);
+      toast({
+        title: 'Başarılı',
+        description: `${amount} altın başarıyla verildi!`,
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Hata',
+        description: error.message || 'Altın verilemedi',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const totalUsers = filteredUsers.length;
   const totalPages = totalPagesState;
@@ -202,6 +233,7 @@ const AdminUsers = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ad Soyad</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">E-posta</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Altın</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kayıt</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fal #</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">İşlemler</th>
@@ -226,6 +258,12 @@ const AdminUsers = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {user.email}
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-1 text-sm font-semibold text-yellow-600">
+                      <Coins className="w-4 h-4" />
+                      {user.coins || 0}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(user.createdAt).toLocaleDateString('tr-TR')}
                   </td>
@@ -248,6 +286,14 @@ const AdminUsers = () => {
                         onClick={() => handleEditUser(user)}
                       >
                         <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-yellow-600 hover:text-yellow-700"
+                        onClick={() => handleGiveCoins(user)}
+                      >
+                        <Coins className="w-4 h-4" />
                       </Button>
                       <Button
                         size="sm"
@@ -509,6 +555,58 @@ const AdminUsers = () => {
               </DialogFooter>
             </form>
           )}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Give Coins Modal */}
+      <Dialog open={showGiveCoinsModal} onOpenChange={setShowGiveCoinsModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Coins className="w-6 h-6 text-yellow-600" />
+              💰 Altın Ver
+            </DialogTitle>
+          </DialogHeader>
+          {selectedUser && (
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-600 mb-2">
+                  <span className="font-semibold">{selectedUser.firstName} {selectedUser.lastName}</span> adlı kullanıcıya altın vermek üzeresiniz.
+                </p>
+                <p className="text-sm text-gray-600">
+                  Mevcut bakiye: <span className="font-semibold text-yellow-600">{selectedUser.coins || 0} 💰</span>
+                </p>
+              </div>
+              
+              <div>
+                <Label htmlFor="coinAmount">Verilecek Miktar</Label>
+                <Input
+                  id="coinAmount"
+                  type="number"
+                  min="1"
+                  value={coinAmount}
+                  onChange={(e) => setCoinAmount(e.target.value)}
+                  placeholder="Örn: 100"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowGiveCoinsModal(false)}
+            >
+              İptal
+            </Button>
+            <Button
+              onClick={submitGiveCoins}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white"
+            >
+              <Coins className="w-4 h-4 mr-2" />
+              Altın Ver
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
-import { getCurrentUser, logoutUser, type User } from '@/lib/auth';
+import { getCurrentUser, logoutUser, type User, checkAndGiveDailyBonus, migrateUsersToCoins } from '@/lib/auth';
+import { useToast } from '@/hooks/use-toast';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
+    // Migrate existing users to coins
+    migrateUsersToCoins();
+    
     const currentUser = getCurrentUser();
     setUser(currentUser);
 
@@ -23,6 +28,20 @@ export const useAuth = () => {
       }
     } catch (e) {
       console.warn('User sync check failed', e);
+    }
+
+    // Check daily bonus
+    if (currentUser) {
+      const bonus = checkAndGiveDailyBonus();
+      if (bonus) {
+        toast({
+          title: bonus.message,
+          description: `Yeni bakiyen: ${bonus.newBalance} 💰`,
+          duration: 5000
+        });
+        setUser(getCurrentUser());
+        window.dispatchEvent(new Event('coinsUpdated'));
+      }
     }
 
     setLoading(false);

@@ -9,6 +9,10 @@ export interface User {
   city: string;
   gender: string;
   createdAt: string;
+  coins: number;
+  lastDailyBonus: string;
+  totalCoinsEarned: number;
+  totalCoinsSpent: number;
   fortunes: Fortune[];
 }
 
@@ -40,6 +44,10 @@ export const registerUser = (userData: Omit<User, 'id' | 'createdAt' | 'fortunes
     city: userData.city,
     gender: userData.gender,
     createdAt: new Date().toISOString(),
+    coins: 50,
+    lastDailyBonus: new Date().toISOString().split('T')[0],
+    totalCoinsEarned: 50,
+    totalCoinsSpent: 0,
     fortunes: []
   };
   
@@ -246,4 +254,122 @@ ${fortune.fortune}
   a.download = `kahve-fali-${fortune.id}.txt`;
   a.click();
   URL.revokeObjectURL(url);
+};
+
+export const checkAndGiveDailyBonus = () => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return null;
+  
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  const userIndex = users.findIndex(u => u.id === currentUser.id);
+  
+  if (userIndex === -1) return null;
+  
+  const today = new Date().toISOString().split('T')[0];
+  const lastBonus = users[userIndex].lastDailyBonus;
+  
+  if (lastBonus !== today) {
+    users[userIndex].coins += 20;
+    users[userIndex].lastDailyBonus = today;
+    users[userIndex].totalCoinsEarned += 20;
+    
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
+    
+    return {
+      bonus: 20,
+      newBalance: users[userIndex].coins,
+      message: '🎉 Günlük 20 altın kazandın!'
+    };
+  }
+  
+  return null;
+};
+
+export const checkCoinsAndDeduct = (cost: number = 10): boolean => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return false;
+  
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  const userIndex = users.findIndex(u => u.id === currentUser.id);
+  
+  if (userIndex === -1) return false;
+  
+  if (users[userIndex].coins < cost) {
+    return false;
+  }
+  
+  users[userIndex].coins -= cost;
+  users[userIndex].totalCoinsSpent += cost;
+  
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
+  
+  return true;
+};
+
+export const refundCoins = (amount: number) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+  
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  const userIndex = users.findIndex(u => u.id === currentUser.id);
+  
+  if (userIndex !== -1) {
+    users[userIndex].coins += amount;
+    users[userIndex].totalCoinsSpent -= amount;
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
+  }
+};
+
+export const adminGiveCoins = (userId: string, amount: number) => {
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  const userIndex = users.findIndex(u => u.id === userId);
+  
+  if (userIndex === -1) {
+    throw new Error('Kullanıcı bulunamadı');
+  }
+  
+  users[userIndex].coins += amount;
+  users[userIndex].totalCoinsEarned += amount;
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  
+  const currentUser = getCurrentUser();
+  if (currentUser && currentUser.id === userId) {
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
+  }
+  
+  return users[userIndex];
+};
+
+export const migrateUsersToCoins = () => {
+  let users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
+  let updated = false;
+  
+  users = users.map(user => {
+    if (user.coins === undefined) {
+      updated = true;
+      return {
+        ...user,
+        coins: 50,
+        lastDailyBonus: new Date().toISOString().split('T')[0],
+        totalCoinsEarned: 50,
+        totalCoinsSpent: 0
+      };
+    }
+    return user;
+  });
+  
+  if (updated) {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    
+    const currentUser = getCurrentUser();
+    if (currentUser && currentUser.coins === undefined) {
+      const updatedUser = users.find(u => u.id === currentUser.id);
+      if (updatedUser) {
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
+      }
+    }
+  }
 };

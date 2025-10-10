@@ -176,7 +176,7 @@ const Register = () => {
 
       toast({
         title: "Hoş geldin! ✨",
-        description: `${user.firstName}, hesabın başarıyla oluşturuldu`,
+        description: `${user.firstName}, hesabın başarıyla oluşturuldu. 50 altın hediye! 💰`,
       });
 
       navigate('/fortune');

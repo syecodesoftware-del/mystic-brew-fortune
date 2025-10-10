@@ -1,11 +1,12 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, Sparkles, Moon, Star, Heart, RefreshCw, LogOut, User } from 'lucide-react';
+import { Upload, Sparkles, Moon, Star, Heart, RefreshCw, LogOut, User, Coins } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { saveFortune } from '@/lib/auth';
+import { saveFortune, checkCoinsAndDeduct, refundCoins } from '@/lib/auth';
+import CoinDisplay from '@/components/CoinDisplay';
 import logo from '@/assets/logo.png';
 
 const WEBHOOK_URL = 'https://asil58.app.n8n.cloud/webhook/kahve-fali';
@@ -103,6 +104,17 @@ const Fortune = () => {
       return;
     }
 
+    // Check coins before deducting
+    const FORTUNE_COST = 10;
+    if (!checkCoinsAndDeduct(FORTUNE_COST)) {
+      toast({
+        title: "Yetersiz altın! 💰",
+        description: `Fal baktırmak için ${FORTUNE_COST} altına ihtiyacın var.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     const imageUrl = URL.createObjectURL(file);
     setImage(imageUrl);
     setFortune('');
@@ -116,8 +128,10 @@ const Fortune = () => {
       
       toast({
         title: "Falın hazır! ✨",
-        description: "Telve okundu, falın aşağıda...",
+        description: `Telve okundu! ${FORTUNE_COST} altın harcandı.`,
       });
+      
+      window.dispatchEvent(new Event('coinsUpdated'));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Telve bulanık görünüyor, tekrar dene 🌙';
       toast({
@@ -126,6 +140,10 @@ const Fortune = () => {
         variant: "destructive"
       });
       setImage(null);
+      
+      // Refund coins on error
+      refundCoins(FORTUNE_COST);
+      window.dispatchEvent(new Event('coinsUpdated'));
     } finally {
       setLoading(false);
     }
@@ -186,7 +204,8 @@ const Fortune = () => {
               <p className="text-muted-foreground text-sm">Enerjin güçlü görünüyor</p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            <CoinDisplay />
             <Button
               onClick={() => navigate('/profile')}
               variant="outline"
@@ -252,15 +271,19 @@ const Fortune = () => {
                     className="hidden"
                     id="file-upload"
                   />
-                  <label htmlFor="file-upload" className="cursor-pointer block">
-                    <Upload className="w-16 h-16 mx-auto mb-4 text-accent" />
-                    <p className="text-lg text-foreground mb-2">
-                      Kahve fincanı fotoğrafını yükle
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      veya sürükle bırak
-                    </p>
-                  </label>
+                <label htmlFor="file-upload" className="cursor-pointer block">
+                  <Upload className="w-16 h-16 mx-auto mb-4 text-accent" />
+                  <p className="text-lg text-foreground mb-2">
+                    Kahve fincanı fotoğrafını yükle
+                  </p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    veya sürükle bırak
+                  </p>
+                  <div className="flex items-center justify-center gap-2 mt-4 text-yellow-500">
+                    <Coins className="w-5 h-5" />
+                    <span className="font-semibold">Fal maliyeti: 10 altın</span>
+                  </div>
+                </label>
                 </div>
               </motion.div>
             ) : loading ? (
