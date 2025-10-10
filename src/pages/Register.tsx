@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, User, Mail, Lock, Calendar, Clock, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Lock, Calendar, Clock, Sparkles, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { registerUser } from '@/lib/auth';
 import { useAuth } from '@/hooks/useAuth';
@@ -18,6 +19,8 @@ interface FormData {
   confirmPassword: string;
   birthDate: string;
   birthTime: string;
+  city: string;
+  gender: string;
 }
 
 interface FormErrors {
@@ -28,6 +31,8 @@ interface FormErrors {
   confirmPassword?: string;
   birthDate?: string;
   birthTime?: string;
+  city?: string;
+  gender?: string;
 }
 
 const Register = () => {
@@ -45,7 +50,9 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     birthDate: '',
-    birthTime: ''
+    birthTime: '',
+    city: '',
+    gender: ''
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -83,6 +90,13 @@ const Register = () => {
         if (!value) return 'Doğum saati gerekli';
         if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(value)) return 'Geçerli bir saat girin (SS:DD)';
         break;
+      case 'city':
+        if (!value.trim()) return 'Şehir gerekli';
+        if (value.trim().length < 2) return 'Şehir adı en az 2 karakter olmalı';
+        break;
+      case 'gender':
+        if (!value) return 'Cinsiyet seçimi gerekli';
+        break;
     }
     return undefined;
   };
@@ -95,6 +109,13 @@ const Register = () => {
       const error = validateField(name as keyof FormData, value);
       setErrors(prev => ({ ...prev, [name]: error }));
     }
+  };
+
+  const handleGenderChange = (value: string) => {
+    setFormData(prev => ({ ...prev, gender: value }));
+    setTouched(prev => ({ ...prev, gender: true }));
+    const error = validateField('gender', value);
+    setErrors(prev => ({ ...prev, gender: error }));
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -133,7 +154,9 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
         birthDate: formData.birthDate,
-        birthTime: formData.birthTime
+        birthTime: formData.birthTime,
+        city: formData.city,
+        gender: formData.gender
       });
 
       updateUser(user);
@@ -331,6 +354,50 @@ const Register = () => {
             />
             {touched.birthTime && errors.birthTime && (
               <p className="text-destructive text-sm mt-1">{errors.birthTime}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="city" className="text-foreground flex items-center gap-2 mb-2">
+              <MapPin className="w-4 h-4" />
+              Şehir
+            </Label>
+            <Input
+              id="city"
+              name="city"
+              type="text"
+              placeholder="Şehriniz"
+              value={formData.city}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={getInputClassName('city')}
+            />
+            {touched.city && errors.city && (
+              <p className="text-destructive text-sm mt-1">{errors.city}</p>
+            )}
+          </div>
+
+          <div>
+            <Label className="text-foreground flex items-center gap-2 mb-3">
+              <User className="w-4 h-4" />
+              Cinsiyet
+            </Label>
+            <RadioGroup value={formData.gender} onValueChange={handleGenderChange}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Erkek" id="male" />
+                <Label htmlFor="male" className="cursor-pointer font-normal">Erkek</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Kadın" id="female" />
+                <Label htmlFor="female" className="cursor-pointer font-normal">Kadın</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Belirtmek İstemiyorum" id="other" />
+                <Label htmlFor="other" className="cursor-pointer font-normal">Belirtmek İstemiyorum</Label>
+              </div>
+            </RadioGroup>
+            {touched.gender && errors.gender && (
+              <p className="text-destructive text-sm mt-1">{errors.gender}</p>
             )}
           </div>
 

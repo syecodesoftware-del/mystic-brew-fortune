@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Search, Download, Eye, Trash2, ChevronLeft, ChevronRight, Edit } from 'lucide-react';
+import { Search, Download, Eye, Trash2, ChevronLeft, ChevronRight, Edit, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { exportUsersToCSV } from '@/lib/admin';
 import { deleteUser as deleteUserFromAuth, adminUpdateUser } from '@/lib/auth';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
@@ -17,6 +18,8 @@ const editUserSchema = z.object({
   email: z.string().email('Geçerli bir e-posta adresi girin'),
   birthDate: z.string().min(1, 'Doğum tarihi gerekli'),
   birthTime: z.string().min(1, 'Doğum saati gerekli'),
+  city: z.string().min(2, 'Şehir adı en az 2 karakter olmalı'),
+  gender: z.string().min(1, 'Cinsiyet seçimi gerekli'),
   password: z.string().optional(),
 });
 
@@ -32,7 +35,7 @@ const AdminUsers = () => {
   const { toast } = useToast();
   const perPage = 20;
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm({
     resolver: zodResolver(editUserSchema),
   });
 
@@ -107,6 +110,8 @@ const AdminUsers = () => {
       email: user.email,
       birthDate: user.birthDate,
       birthTime: user.birthTime,
+      city: user.city || '',
+      gender: user.gender || '',
       password: '',
     });
     setShowEditModal(true);
@@ -303,6 +308,14 @@ const AdminUsers = () => {
                   <p className="font-medium">{selectedUser.birthTime}</p>
                 </div>
                 <div>
+                  <p className="text-sm text-gray-500">Şehir</p>
+                  <p className="font-medium">{selectedUser.city || 'Belirtilmemiş'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Cinsiyet</p>
+                  <p className="font-medium">{selectedUser.gender || 'Belirtilmemiş'}</p>
+                </div>
+                <div>
                   <p className="text-sm text-gray-500">Kayıt Tarihi</p>
                   <p className="font-medium">
                     {new Date(selectedUser.createdAt).toLocaleDateString('tr-TR')}
@@ -403,6 +416,46 @@ const AdminUsers = () => {
                   />
                   {errors.birthTime && (
                     <p className="text-sm text-red-500 mt-1">{errors.birthTime.message as string}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="city">Şehir</Label>
+                  <Input
+                    id="city"
+                    {...register('city')}
+                    placeholder="Şehir"
+                  />
+                  {errors.city && (
+                    <p className="text-sm text-red-500 mt-1">{errors.city.message as string}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="gender">Cinsiyet</Label>
+                  <Controller
+                    name="gender"
+                    control={control}
+                    render={({ field }) => (
+                      <RadioGroup value={field.value} onValueChange={field.onChange}>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Erkek" id="male-edit" />
+                          <Label htmlFor="male-edit" className="cursor-pointer font-normal">Erkek</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Kadın" id="female-edit" />
+                          <Label htmlFor="female-edit" className="cursor-pointer font-normal">Kadın</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Belirtmek İstemiyorum" id="other-edit" />
+                          <Label htmlFor="other-edit" className="cursor-pointer font-normal">Belirtmek İstemiyorum</Label>
+                        </div>
+                      </RadioGroup>
+                    )}
+                  />
+                  {errors.gender && (
+                    <p className="text-sm text-red-500 mt-1">{errors.gender.message as string}</p>
                   )}
                 </div>
               </div>

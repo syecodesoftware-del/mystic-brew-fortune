@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Edit, Save, X, Download, Trash2, 
-  Calendar, Clock, Eye, EyeOff, Sparkles, ArrowLeft
+  Calendar, Clock, Eye, EyeOff, Sparkles, ArrowLeft, MapPin
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -33,6 +34,8 @@ const Profile = () => {
     lastName: user?.lastName || '',
     birthDate: user?.birthDate || '',
     birthTime: user?.birthTime || '',
+    city: user?.city || '',
+    gender: user?.gender || '',
     currentPassword: '',
     newPassword: '',
     newPasswordConfirm: ''
@@ -65,6 +68,8 @@ const Profile = () => {
       lastName: user?.lastName || '',
       birthDate: user?.birthDate || '',
       birthTime: user?.birthTime || '',
+      city: user?.city || '',
+      gender: user?.gender || '',
       currentPassword: '',
       newPassword: '',
       newPasswordConfirm: ''
@@ -79,6 +84,8 @@ const Profile = () => {
       lastName: user?.lastName || '',
       birthDate: user?.birthDate || '',
       birthTime: user?.birthTime || '',
+      city: user?.city || '',
+      gender: user?.gender || '',
       currentPassword: '',
       newPassword: '',
       newPasswordConfirm: ''
@@ -273,6 +280,48 @@ const Profile = () => {
                         <div className="bg-card/50 p-3 rounded-lg text-foreground flex items-center gap-2">
                           <Clock className="w-4 h-4" />
                           {user.birthTime}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Şehir</Label>
+                      {isEditing ? (
+                        <Input
+                          value={formData.city}
+                          onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                          placeholder="Şehriniz"
+                        />
+                      ) : (
+                        <div className="bg-card/50 p-3 rounded-lg text-foreground flex items-center gap-2">
+                          <MapPin className="w-4 h-4" />
+                          {user.city || 'Belirtilmemiş'}
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label>Cinsiyet</Label>
+                      {isEditing ? (
+                        <RadioGroup value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })}>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="Erkek" id="male-profile" />
+                            <Label htmlFor="male-profile" className="cursor-pointer font-normal">Erkek</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="Kadın" id="female-profile" />
+                            <Label htmlFor="female-profile" className="cursor-pointer font-normal">Kadın</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="Belirtmek İstemiyorum" id="other-profile" />
+                            <Label htmlFor="other-profile" className="cursor-pointer font-normal">Belirtmek İstemiyorum</Label>
+                          </div>
+                        </RadioGroup>
+                      ) : (
+                        <div className="bg-card/50 p-3 rounded-lg text-foreground">
+                          {user.gender || 'Belirtilmemiş'}
                         </div>
                       )}
                     </div>

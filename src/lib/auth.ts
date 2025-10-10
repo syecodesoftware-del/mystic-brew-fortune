@@ -6,6 +6,8 @@ export interface User {
   password: string;
   birthDate: string;
   birthTime: string;
+  city: string;
+  gender: string;
   createdAt: string;
   fortunes: Fortune[];
 }
@@ -35,6 +37,8 @@ export const registerUser = (userData: Omit<User, 'id' | 'createdAt' | 'fortunes
     password: userData.password,
     birthDate: userData.birthDate,
     birthTime: userData.birthTime,
+    city: userData.city,
+    gender: userData.gender,
     createdAt: new Date().toISOString(),
     fortunes: []
   };
@@ -95,6 +99,8 @@ export const updateUserProfile = (updatedData: {
   lastName: string;
   birthDate: string;
   birthTime: string;
+  city: string;
+  gender: string;
   currentPassword?: string;
   newPassword?: string;
   newPasswordConfirm?: string;
@@ -124,6 +130,8 @@ export const updateUserProfile = (updatedData: {
       lastName: updatedData.lastName,
       birthDate: updatedData.birthDate,
       birthTime: updatedData.birthTime,
+      city: updatedData.city,
+      gender: updatedData.gender,
       ...(updatedData.newPassword && { password: updatedData.newPassword }),
     };
     
@@ -174,6 +182,8 @@ export const adminUpdateUser = (userId: string, updatedData: {
   email: string;
   birthDate: string;
   birthTime: string;
+  city: string;
+  gender: string;
   password?: string;
 }) => {
   const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
@@ -198,6 +208,8 @@ export const adminUpdateUser = (userId: string, updatedData: {
     email: updatedData.email,
     birthDate: updatedData.birthDate,
     birthTime: updatedData.birthTime,
+    city: updatedData.city,
+    gender: updatedData.gender,
     ...(updatedData.password && { password: updatedData.password }),
   };
   
