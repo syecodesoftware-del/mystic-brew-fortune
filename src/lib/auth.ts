@@ -26,7 +26,7 @@ export interface Fortune {
 const USERS_KEY = 'coffee_users';
 const CURRENT_USER_KEY = 'coffee_current_user';
 
-export const registerUser = (userData: Omit<User, 'id' | 'createdAt' | 'fortunes'>) => {
+export const registerUser = (userData: Omit<User, 'id' | 'createdAt' | 'fortunes' | 'coins' | 'lastDailyBonus' | 'totalCoinsEarned' | 'totalCoinsSpent'>) => {
   const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
   
   if (users.find(u => u.email === userData.email)) {

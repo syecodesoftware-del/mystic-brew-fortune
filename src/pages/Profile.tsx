@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -84,11 +84,11 @@ const Profile = () => {
   };
   
   // Check on mount and every minute
-  useState(() => {
+  useEffect(() => {
     checkBonusAvailability();
     const interval = setInterval(checkBonusAvailability, 60000);
     return () => clearInterval(interval);
-  });
+  }, []);
   
   const handleClaimBonus = () => {
     const bonus = checkAndGiveDailyBonus();
