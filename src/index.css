@@ -121,3 +121,86 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* ============================================ */
+/* İÇERİK KORUMA - KOPYALAMA ENGELLENMESİ */
+/* ============================================ */
+
+/* Tüm uygulamada metin seçimini engelle */
+* {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE/Edge */
+  user-select: none; /* Standard */
+}
+
+/* Input ve textarea alanları için izin ver (kullanıcı yazabilmeli) */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Sağ tık menüsünü engelle (iOS Safari) */
+body {
+  -webkit-touch-callout: none;
+}
+
+/* Görselleri sürüklenemez yap */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Logo ve önemli görseller için ekstra koruma */
+.protected-image {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+/* Yazdırma engelleme */
+@media print {
+  body {
+    filter: blur(10px);
+    -webkit-filter: blur(10px);
+  }
+  
+  body::before {
+    content: "⚠️ Bu içerik yazdırılamaz!";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    color: red;
+    z-index: 9999;
+    text-align: center;
+    font-weight: bold;
+  }
+}
+
+/* Tailwind select utilities override */
+.select-text {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+.select-none {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
