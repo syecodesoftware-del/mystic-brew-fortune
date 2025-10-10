@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { saveFortune, checkCoinsAndDeduct, refundCoins } from '@/lib/auth';
 import Header from '@/components/Header';
+import MysticalBackground from '@/components/MysticalBackground';
 import logo from '@/assets/logo.png';
 
 const WEBHOOK_URL = 'https://asil58.app.n8n.cloud/webhook/kahve-fali';
@@ -191,12 +192,17 @@ const Fortune = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-mystic flex flex-col">
+    <div className="min-h-screen bg-gradient-mystic flex flex-col relative">
+      {/* Mistik Arkaplan */}
+      <MysticalBackground />
+      
       {/* Header */}
-      <Header />
+      <div className="relative z-10">
+        <Header />
+      </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-4">
+      <div className="flex-1 flex items-center justify-center p-4 relative z-10">
         <div className="w-full max-w-2xl">
           <AnimatePresence mode="wait">
             {!image && !fortune ? (

@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { updateUserProfile, getUserFortunes, deleteFortune, downloadFortune, checkAndGiveDailyBonus, type Fortune } from '@/lib/auth';
 import Header from '@/components/Header';
+import MysticalBackground from '@/components/MysticalBackground';
 import logo from '@/assets/logo.png';
 
 const TURKISH_CITIES = [
@@ -205,12 +206,17 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-mystic">
+    <div className="min-h-screen bg-gradient-mystic relative">
+      {/* Mistik Arkaplan */}
+      <MysticalBackground />
+      
       {/* Header */}
-      <Header showBackButton title="Profilim" />
+      <div className="relative z-10">
+        <Header showBackButton title="Profilim" />
+      </div>
 
       {/* Profile Content */}
-      <div className="max-w-4xl mx-auto p-4 md:p-6">
+      <div className="max-w-4xl mx-auto p-4 md:p-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
