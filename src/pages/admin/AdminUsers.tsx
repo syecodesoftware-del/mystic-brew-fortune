@@ -4,13 +4,26 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { exportUsersToCSV } from '@/lib/admin';
 import { deleteUser as deleteUserFromAuth, adminUpdateUser } from '@/lib/auth';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+
+const TURKISH_CITIES = [
+  'Adana', 'Adıyaman', 'Afyonkarahisar', 'Ağrı', 'Aksaray', 'Amasya', 'Ankara', 'Antalya',
+  'Ardahan', 'Artvin', 'Aydın', 'Balıkesir', 'Bartın', 'Batman', 'Bayburt', 'Bilecik',
+  'Bingöl', 'Bitlis', 'Bolu', 'Burdur', 'Bursa', 'Çanakkale', 'Çankırı', 'Çorum',
+  'Denizli', 'Diyarbakır', 'Düzce', 'Edirne', 'Elazığ', 'Erzincan', 'Erzurum', 'Eskişehir',
+  'Gaziantep', 'Giresun', 'Gümüşhane', 'Hakkari', 'Hatay', 'Iğdır', 'Isparta', 'İstanbul',
+  'İzmir', 'Kahramanmaraş', 'Karabük', 'Karaman', 'Kars', 'Kastamonu', 'Kayseri', 'Kilis',
+  'Kırıkkale', 'Kırklareli', 'Kırşehir', 'Kocaeli', 'Konya', 'Kütahya', 'Malatya', 'Manisa',
+  'Mardin', 'Mersin', 'Muğla', 'Muş', 'Nevşehir', 'Niğde', 'Ordu', 'Osmaniye',
+  'Rize', 'Sakarya', 'Samsun', 'Şanlıurfa', 'Siirt', 'Sinop', 'Şırnak', 'Sivas',
+  'Tekirdağ', 'Tokat', 'Trabzon', 'Tunceli', 'Uşak', 'Van', 'Yalova', 'Yozgat', 'Zonguldak'
+];
 
 const editUserSchema = z.object({
   firstName: z.string().min(2, 'Ad en az 2 karakter olmalı'),
@@ -423,10 +436,23 @@ const AdminUsers = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="city">Şehir</Label>
-                  <Input
-                    id="city"
-                    {...register('city')}
-                    placeholder="Şehir"
+                  <Controller
+                    name="city"
+                    control={control}
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Şehir seçin" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white z-50 max-h-[300px]">
+                          {TURKISH_CITIES.map((city) => (
+                            <SelectItem key={city} value={city}>
+                              {city}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   />
                   {errors.city && (
                     <p className="text-sm text-red-500 mt-1">{errors.city.message as string}</p>
@@ -438,20 +464,16 @@ const AdminUsers = () => {
                     name="gender"
                     control={control}
                     render={({ field }) => (
-                      <RadioGroup value={field.value} onValueChange={field.onChange}>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Erkek" id="male-edit" />
-                          <Label htmlFor="male-edit" className="cursor-pointer font-normal">Erkek</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Kadın" id="female-edit" />
-                          <Label htmlFor="female-edit" className="cursor-pointer font-normal">Kadın</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Belirtmek İstemiyorum" id="other-edit" />
-                          <Label htmlFor="other-edit" className="cursor-pointer font-normal">Belirtmek İstemiyorum</Label>
-                        </div>
-                      </RadioGroup>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Cinsiyet seçin" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white z-50">
+                          <SelectItem value="Kadın">Kadın</SelectItem>
+                          <SelectItem value="Erkek">Erkek</SelectItem>
+                          <SelectItem value="Belirtmek İstemiyorum">Belirtmek İstemiyorum</SelectItem>
+                        </SelectContent>
+                      </Select>
                     )}
                   />
                   {errors.gender && (

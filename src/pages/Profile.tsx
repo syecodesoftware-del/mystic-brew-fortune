@@ -8,7 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -16,6 +16,19 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { updateUserProfile, getUserFortunes, deleteFortune, downloadFortune, type Fortune } from '@/lib/auth';
 import logo from '@/assets/logo.png';
+
+const TURKISH_CITIES = [
+  'Adana', 'Adıyaman', 'Afyonkarahisar', 'Ağrı', 'Aksaray', 'Amasya', 'Ankara', 'Antalya',
+  'Ardahan', 'Artvin', 'Aydın', 'Balıkesir', 'Bartın', 'Batman', 'Bayburt', 'Bilecik',
+  'Bingöl', 'Bitlis', 'Bolu', 'Burdur', 'Bursa', 'Çanakkale', 'Çankırı', 'Çorum',
+  'Denizli', 'Diyarbakır', 'Düzce', 'Edirne', 'Elazığ', 'Erzincan', 'Erzurum', 'Eskişehir',
+  'Gaziantep', 'Giresun', 'Gümüşhane', 'Hakkari', 'Hatay', 'Iğdır', 'Isparta', 'İstanbul',
+  'İzmir', 'Kahramanmaraş', 'Karabük', 'Karaman', 'Kars', 'Kastamonu', 'Kayseri', 'Kilis',
+  'Kırıkkale', 'Kırklareli', 'Kırşehir', 'Kocaeli', 'Konya', 'Kütahya', 'Malatya', 'Manisa',
+  'Mardin', 'Mersin', 'Muğla', 'Muş', 'Nevşehir', 'Niğde', 'Ordu', 'Osmaniye',
+  'Rize', 'Sakarya', 'Samsun', 'Şanlıurfa', 'Siirt', 'Sinop', 'Şırnak', 'Sivas',
+  'Tekirdağ', 'Tokat', 'Trabzon', 'Tunceli', 'Uşak', 'Van', 'Yalova', 'Yozgat', 'Zonguldak'
+];
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
@@ -289,11 +302,18 @@ const Profile = () => {
                     <div>
                       <Label>Şehir</Label>
                       {isEditing ? (
-                        <Input
-                          value={formData.city}
-                          onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                          placeholder="Şehriniz"
-                        />
+                        <Select value={formData.city} onValueChange={(value) => setFormData({ ...formData, city: value })}>
+                          <SelectTrigger className="bg-card/50">
+                            <SelectValue placeholder="Şehir seçin" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-50 max-h-[300px]">
+                            {TURKISH_CITIES.map((city) => (
+                              <SelectItem key={city} value={city}>
+                                {city}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       ) : (
                         <div className="bg-card/50 p-3 rounded-lg text-foreground flex items-center gap-2">
                           <MapPin className="w-4 h-4" />
@@ -305,20 +325,16 @@ const Profile = () => {
                     <div>
                       <Label>Cinsiyet</Label>
                       {isEditing ? (
-                        <RadioGroup value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })}>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="Erkek" id="male-profile" />
-                            <Label htmlFor="male-profile" className="cursor-pointer font-normal">Erkek</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="Kadın" id="female-profile" />
-                            <Label htmlFor="female-profile" className="cursor-pointer font-normal">Kadın</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="Belirtmek İstemiyorum" id="other-profile" />
-                            <Label htmlFor="other-profile" className="cursor-pointer font-normal">Belirtmek İstemiyorum</Label>
-                          </div>
-                        </RadioGroup>
+                        <Select value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })}>
+                          <SelectTrigger className="bg-card/50">
+                            <SelectValue placeholder="Cinsiyet seçin" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card z-50">
+                            <SelectItem value="Kadın">Kadın</SelectItem>
+                            <SelectItem value="Erkek">Erkek</SelectItem>
+                            <SelectItem value="Belirtmek İstemiyorum">Belirtmek İstemiyorum</SelectItem>
+                          </SelectContent>
+                        </Select>
                       ) : (
                         <div className="bg-card/50 p-3 rounded-lg text-foreground">
                           {user.gender || 'Belirtilmemiş'}
