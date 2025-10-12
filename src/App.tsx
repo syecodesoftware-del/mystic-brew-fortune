@@ -7,7 +7,10 @@ import ContentProtection from "./components/ContentProtection";
 import Landing from "./pages/Landing";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Fortune from "./pages/Fortune";
+import Index from "./pages/Index";
+import KahveFali from "./pages/fortune/KahveFali";
+import FotoYukle from "./pages/fortune/FotoYukle";
+import ComingSoon from "./components/ComingSoon";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -44,14 +47,74 @@ const App = () => {
           <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          
+          {/* Fortune Routes */}
           <Route 
             path="/fortune" 
             element={
               <ProtectedRoute>
-                <Fortune />
+                <Index />
               </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/fortune/kahve" 
+            element={
+              <ProtectedRoute>
+                <KahveFali />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/kahve/upload/:tellerId" 
+            element={
+              <ProtectedRoute>
+                <FotoYukle />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/tarot" 
+            element={
+              <ProtectedRoute>
+                <ComingSoon type="Tarot Falı" emoji="🎴" />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/el" 
+            element={
+              <ProtectedRoute>
+                <ComingSoon type="El Falı" emoji="🤚" />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/katina" 
+            element={
+              <ProtectedRoute>
+                <ComingSoon type="Katina Falı" emoji="🕯️" />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/yuz" 
+            element={
+              <ProtectedRoute>
+                <ComingSoon type="Yüz Falı" emoji="👤" />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/melek" 
+            element={
+              <ProtectedRoute>
+                <ComingSoon type="Melek Kartları" emoji="😇" />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Profile */}
           <Route 
             path="/profile" 
             element={
