@@ -22,12 +22,20 @@ const ContentProtection = () => {
 
     // Kopyalama engelleme
     const preventCopy = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return true;
+      }
       e.preventDefault();
       return false;
     };
 
     // Kesme engelleme
     const preventCut = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return true;
+      }
       e.preventDefault();
       return false;
     };
