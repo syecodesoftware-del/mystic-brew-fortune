@@ -156,9 +156,13 @@ form select,
   -webkit-touch-callout: default !important;
 }
 
-/* Sağ tık menüsünü engelle (iOS Safari) */
+/* Sağ tık menüsünü engelle (iOS Safari) - form alanlarında izin ver */
 body {
   -webkit-touch-callout: none;
+}
+
+input, textarea, select, [contenteditable="true"] {
+  -webkit-touch-callout: default !important;
 }
 
 /* Görselleri sürüklenemez yap */

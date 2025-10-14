@@ -16,6 +16,10 @@ const ContentProtection = () => {
 
     // Sağ tık engelleme
     const preventContextMenu = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.isContentEditable) {
+        return true;
+      }
       e.preventDefault();
       return false;
     };
@@ -117,10 +121,16 @@ const ContentProtection = () => {
     // Seçim engelleme (mobile ve desktop)
     const preventSelection = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        return false;
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable
+      ) {
+        return true;
       }
+      e.preventDefault();
+      return false;
     };
 
     // Mobile touch engelleme
@@ -133,6 +143,16 @@ const ContentProtection = () => {
 
     // Seçim değişikliği engelleme (Android için)
     const clearSelection = () => {
+      const active = document.activeElement as HTMLElement | null;
+      if (active && (
+        active.tagName === 'INPUT' ||
+        active.tagName === 'TEXTAREA' ||
+        active.tagName === 'SELECT' ||
+        active.isContentEditable
+      )) {
+        return; // Form alanlarında seçim serbest
+      }
+
       const selection = window.getSelection();
       if (selection && selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
@@ -141,7 +161,12 @@ const ContentProtection = () => {
           ? (container as HTMLElement) 
           : (container.parentElement as HTMLElement);
         
-        if (element && element.tagName !== 'INPUT' && element.tagName !== 'TEXTAREA') {
+        if (element && 
+          element.tagName !== 'INPUT' && 
+          element.tagName !== 'TEXTAREA' &&
+          element.tagName !== 'SELECT' &&
+          !element.isContentEditable
+        ) {
           selection.removeAllRanges();
         }
       }

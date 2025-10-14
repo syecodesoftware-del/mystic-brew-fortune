@@ -239,7 +239,8 @@ const Register = () => {
               value={formData.firstName}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={getInputClassName('firstName')}
+              autoComplete="given-name"
+              className={getInputClassName('firstName') + ' select-text'}
             />
             {touched.firstName && errors.firstName && (
               <p className="text-destructive text-sm mt-1">{errors.firstName}</p>
@@ -259,7 +260,8 @@ const Register = () => {
               value={formData.lastName}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={getInputClassName('lastName')}
+              autoComplete="family-name"
+              className={getInputClassName('lastName') + ' select-text'}
             />
             {touched.lastName && errors.lastName && (
               <p className="text-destructive text-sm mt-1">{errors.lastName}</p>
@@ -279,7 +281,8 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={getInputClassName('email')}
+              autoComplete="email"
+              className={getInputClassName('email') + ' select-text'}
             />
             {touched.email && errors.email && (
               <p className="text-destructive text-sm mt-1">{errors.email}</p>
@@ -300,7 +303,8 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={getInputClassName('password')}
+                autoComplete="new-password"
+                className={getInputClassName('password') + ' select-text pr-12'}
               />
               <button
                 type="button"
@@ -329,7 +333,8 @@ const Register = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={getInputClassName('confirmPassword')}
+                autoComplete="new-password"
+                className={getInputClassName('confirmPassword') + ' select-text pr-12'}
               />
               <button
                 type="button"
@@ -357,7 +362,7 @@ const Register = () => {
               value={formData.birthDate}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={getInputClassName('birthDate')}
+              className={getInputClassName('birthDate') + ' select-text'}
             />
             {touched.birthDate && errors.birthDate && (
               <p className="text-destructive text-sm mt-1">{errors.birthDate}</p>
@@ -377,7 +382,7 @@ const Register = () => {
               value={formData.birthTime}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={getInputClassName('birthTime')}
+              className={getInputClassName('birthTime') + ' select-text'}
             />
             {touched.birthTime && errors.birthTime && (
               <p className="text-destructive text-sm mt-1">{errors.birthTime}</p>
