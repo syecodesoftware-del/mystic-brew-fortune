@@ -97,7 +97,13 @@ const Register = () => {
         if (!value) return 'Doğum tarihi gerekli';
         const selectedDate = new Date(value);
         const today = new Date();
+        const age = today.getFullYear() - selectedDate.getFullYear();
+        const monthDiff = today.getMonth() - selectedDate.getMonth();
+        const isBeforeBirthday = monthDiff < 0 || (monthDiff === 0 && today.getDate() < selectedDate.getDate());
+        const actualAge = isBeforeBirthday ? age - 1 : age;
+        
         if (selectedDate >= today) return 'Geçerli bir tarih girin';
+        if (actualAge < 13) return '13 yaşından küçükler kaydolamaz';
         break;
       case 'birthTime':
         if (!value) return 'Doğum saati gerekli';
@@ -162,16 +168,19 @@ const Register = () => {
 
     try {
       const user = registerUser({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.toLowerCase().trim(),
         password: formData.password,
         birthDate: formData.birthDate,
         birthTime: formData.birthTime,
-        city: formData.city,
+        city: formData.city.trim(),
         gender: formData.gender
       });
 
+      // Otomatik giriş yap
+      localStorage.setItem('coffee_current_user', JSON.stringify(user));
+      
       updateUser(user);
 
       toast({
@@ -179,7 +188,12 @@ const Register = () => {
         description: `${user.firstName}, hesabın başarıyla oluşturuldu. 50 altın hediye! 💰`,
       });
 
-      navigate('/fortune');
+      // Bildirim event'i tetikle
+      window.dispatchEvent(new Event('coinsUpdated'));
+
+      setTimeout(() => {
+        navigate('/fortune');
+      }, 500);
     } catch (error) {
       toast({
         title: "Hata",
