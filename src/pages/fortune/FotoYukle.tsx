@@ -327,11 +327,11 @@ const FotoYukle = () => {
                   </div>
 
                   {image && (
-                    <div className="mb-6 rounded-xl overflow-hidden">
+                    <div className="mb-6 rounded-2xl overflow-hidden bg-white/50 backdrop-blur-sm border border-[hsl(258,90%,76%)]/20 shadow-lg">
                       <img
                         src={image}
                         alt="Kahve fincanı"
-                        className="w-full h-48 object-cover"
+                        className="w-full h-64 sm:h-80 md:h-96 object-cover"
                       />
                     </div>
                   )}
