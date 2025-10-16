@@ -299,34 +299,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Social Proof / Trust Signals */}
-        <section className="container mx-auto px-4 pb-16">
-          <div className="max-w-5xl mx-auto">
-            <div className="rounded-3xl p-8 lg:p-12 bg-white/70 backdrop-blur-xl border border-primary/20 shadow-[0_8px_32px_rgba(167,139,250,0.15)]">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {stats.map((stat, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + i * 0.1 }}
-                    className="text-center space-y-3"
-                  >
-                    <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${stat.gradient} shadow-lg`}>
-                      <span className="text-3xl">{stat.icon}</span>
-                    </div>
-                    <div className={`text-4xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
-                      {stat.value}
-                    </div>
-                    <div className="text-sm font-medium text-muted-foreground">
-                      {stat.label}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   );
