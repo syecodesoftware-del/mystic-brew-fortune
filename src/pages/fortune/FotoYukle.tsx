@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, Sparkles, Moon, Star, Heart, RefreshCw, Coins, Check, X, Camera } from 'lucide-react';
+import { ArrowLeft, Upload, Sparkles, Moon, Star, Heart, RefreshCw, Coins, Check, X, Camera, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -527,105 +527,169 @@ interface CompactPhotoCardProps {
 
 const CompactPhotoCard = ({ field, preview, uploaded, onUpload, onRemove }: CompactPhotoCardProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [showSheet, setShowSheet] = useState(false);
+  
+  const handleFileSelect = (file: File | null) => {
+    if (file) {
+      onUpload(file);
+      setShowSheet(false);
+    }
+  };
   
   return (
-    <div 
-      className={`
-        relative rounded-xl overflow-hidden
-        transition-all duration-300
-        ${uploaded 
-          ? 'ring-2 ring-[hsl(258,90%,76%)]/40 shadow-lg' 
-          : 'border-2 border-dashed border-[hsl(258,90%,76%)]/20'
-        }
-      `}
-    >
-      {/* Upload Area */}
-      {preview ? (
-        // Preview Mode
-        <div className="relative group aspect-square">
-          <img 
-            src={preview} 
-            alt={field.title}
-            className="w-full h-full object-cover"
-          />
-          
-          {/* Overlay on Hover */}
-          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="p-2 rounded-lg bg-white/90 hover:bg-white transition-colors"
-            >
-              <Upload size={20} className="text-[hsl(220,13%,18%)]" />
-            </button>
-            <button
-              onClick={onRemove}
-              className="p-2 rounded-lg bg-red-500 hover:bg-red-600 transition-colors"
-            >
-              <X size={20} className="text-white" />
-            </button>
-          </div>
-          
-          {/* Status Badge */}
-          <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/90 backdrop-blur-sm">
-            <Check size={12} className="text-white" />
-          </div>
-          
-          {/* Label */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-            <p className="text-xs font-medium text-white text-center">
-              {field.title}
-            </p>
-          </div>
-          
-          {/* Hidden input for changing photo */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={(e) => e.target.files && onUpload(e.target.files[0])}
-            className="hidden"
-          />
-        </div>
-      ) : (
-        // Upload Button Mode
-        <label className="
-          flex flex-col items-center justify-center
-          aspect-square cursor-pointer
-          bg-white/40 backdrop-blur-sm
-          hover:bg-white/60
+    <>
+      <div 
+        className={`
+          relative rounded-xl overflow-hidden
           transition-all duration-300
-          group
-        ">
-          <div className="text-center">
+          ${uploaded 
+            ? 'ring-2 ring-[hsl(258,90%,76%)]/40 shadow-lg' 
+            : 'border-2 border-dashed border-[hsl(258,90%,76%)]/20'
+          }
+        `}
+      >
+        {preview ? (
+          // Preview Mode
+          <div className="relative group aspect-square">
+            <img 
+              src={preview} 
+              alt={field.title}
+              className="w-full h-full object-cover"
+            />
+            
+            {/* Overlay on Hover */}
+            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+              <button
+                onClick={() => setShowSheet(true)}
+                className="px-4 py-2 rounded-lg bg-white/90 hover:bg-white transition-colors text-sm font-medium text-[hsl(220,13%,18%)]"
+              >
+                Değiştir
+              </button>
+              <button
+                onClick={onRemove}
+                className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium text-white"
+              >
+                Sil
+              </button>
+            </div>
+            
+            {/* Status Badge */}
+            <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/90 backdrop-blur-sm">
+              <Check size={12} className="text-white" />
+            </div>
+            
+            {/* Label */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+              <p className="text-xs font-medium text-white text-center">
+                {field.title}
+              </p>
+            </div>
+          </div>
+        ) : (
+          // Upload Button
+          <button
+            onClick={() => setShowSheet(true)}
+            className="w-full aspect-square flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm hover:bg-white/60 transition-all group"
+          >
             <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
               {field.icon}
             </div>
             <p className="text-sm font-semibold text-[hsl(220,13%,18%)] mb-1">
               {field.title}
             </p>
-            <p className="text-xs text-[hsl(220,9%,46%)] px-2">
-              {field.required ? 'Zorunlu' : 'Opsiyonel'}
+            <p className="text-xs text-[hsl(258,90%,76%)] font-medium">
+              + Ekle
             </p>
+          </button>
+        )}
+        
+        {/* Hidden File Inputs */}
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={(e) => handleFileSelect(e.target.files?.[0] || null)}
+          className="hidden"
+        />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={(e) => handleFileSelect(e.target.files?.[0] || null)}
+          className="hidden"
+        />
+        
+        {/* Required Indicator */}
+        {field.required && !uploaded && (
+          <div className="absolute top-2 right-2">
+            <div className="w-2 h-2 bg-[hsl(330,81%,70%)] rounded-full animate-pulse" />
           </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={(e) => e.target.files && onUpload(e.target.files[0])}
-            className="hidden"
-          />
-        </label>
-      )}
+        )}
+      </div>
       
-      {/* Required Badge */}
-      {field.required && !uploaded && (
-        <div className="absolute top-2 right-2">
-          <div className="w-2 h-2 bg-[hsl(330,81%,70%)] rounded-full animate-pulse" />
+      {/* Bottom Sheet Overlay */}
+      {showSheet && (
+        <div 
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm animate-fade-in"
+          onClick={() => setShowSheet(false)}
+        >
+          {/* Bottom Sheet Content */}
+          <div 
+            className="w-full max-w-lg bg-white rounded-t-3xl p-6 shadow-2xl animate-in slide-in-from-bottom duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Drag Handle */}
+            <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
+            
+            {/* Title */}
+            <h3 className="text-lg font-bold text-[hsl(220,13%,18%)] text-center mb-6">
+              {field.title} - Fotoğraf Ekle
+            </h3>
+            
+            {/* Options */}
+            <div className="space-y-3 mb-4">
+              {/* Camera Option */}
+              <button
+                onClick={() => cameraInputRef.current?.click()}
+                className="w-full flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] text-white hover:shadow-lg transition-all group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Camera size={24} />
+                </div>
+                <div className="text-left flex-1">
+                  <p className="font-semibold">Fotoğraf Çek</p>
+                  <p className="text-xs text-white/80">Kameranı aç ve çek</p>
+                </div>
+              </button>
+              
+              {/* Gallery Option */}
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-[hsl(258,90%,76%)]/20 hover:bg-[hsl(258,90%,76%)]/5 transition-all group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-[hsl(258,90%,76%)]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <ImageIcon size={24} className="text-[hsl(258,90%,76%)]" />
+                </div>
+                <div className="text-left flex-1">
+                  <p className="font-semibold text-[hsl(220,13%,18%)]">Galeriden Seç</p>
+                  <p className="text-xs text-[hsl(220,9%,46%)]">Mevcut fotoğraflardan seç</p>
+                </div>
+              </button>
+            </div>
+            
+            {/* Cancel Button */}
+            <button
+              onClick={() => setShowSheet(false)}
+              className="w-full py-3 rounded-xl text-[hsl(220,9%,46%)] font-medium hover:bg-gray-100 transition-colors"
+            >
+              İptal
+            </button>
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
