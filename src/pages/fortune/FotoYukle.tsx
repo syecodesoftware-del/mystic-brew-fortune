@@ -275,29 +275,25 @@ const FotoYukle = () => {
     {
       key: 'front' as const,
       icon: '📷',
-      title: 'Fincan - Ön Görünüm',
-      description: 'Fincanın ön tarafını net bir şekilde çekin',
+      title: 'Ön',
       required: true
     },
     {
       key: 'side' as const,
       icon: '📷',
-      title: 'Fincan - Yan Görünüm',
-      description: 'Fincanın yan tarafını net bir şekilde çekin',
+      title: 'Yan',
       required: true
     },
     {
       key: 'top' as const,
       icon: '📷',
-      title: 'Fincan - İç Kısım',
-      description: 'Fincanın içini üstten net bir şekilde çekin',
+      title: 'İç',
       required: true
     },
     {
       key: 'plate' as const,
       icon: '🍽️',
-      title: 'Tabak - Üst Görünüm',
-      description: 'Tabağı üstten net bir şekilde çekin (opsiyonel)',
+      title: 'Tabak',
       required: false
     }
   ];
@@ -322,26 +318,42 @@ const FotoYukle = () => {
               onClick={() => navigate('/fortune/kahve')}
               className="flex items-center gap-2 text-[hsl(220,13%,18%)] mb-6 hover:underline font-medium"
             >
-              <ArrowLeft size={20} />
-              Falcı Seç
+              <ArrowLeft size={18} />
+              <span className="text-sm">Geri</span>
             </motion.button>
           )}
           
-          {/* Seçili Falcı Bilgisi */}
+          {/* Seçili Falcı Bilgisi - Kompakt */}
           {!fortune && !loading && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-8"
             >
-              <div className="text-6xl mb-4">{selectedTeller.emoji}</div>
-              <h2 className="text-2xl font-bold text-[hsl(220,13%,18%)] mb-2 font-display">{selectedTeller.name}</h2>
-              <p className="text-[hsl(220,9%,46%)] mb-4">Kahve fincanı fotoğrafını yükle</p>
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[hsl(43,96%,56%)] to-[hsl(24,95%,61%)] text-white px-4 py-2 rounded-full font-bold shadow-lg">
-                <Coins size={20} />
-                {selectedTeller.cost} altın
+              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/70 backdrop-blur-xl border border-[hsl(258,90%,76%)]/20">
+                <span className="text-3xl">{selectedTeller.emoji}</span>
+                <div className="text-left">
+                  <h2 className="text-lg font-bold text-[hsl(220,13%,18%)]">
+                    {selectedTeller.name}
+                  </h2>
+                  <div className="flex items-center gap-1 text-sm">
+                    <Coins size={14} />
+                    <span className="font-semibold text-[hsl(43,96%,56%)]">{selectedTeller.cost} altın</span>
+                  </div>
+                </div>
               </div>
             </motion.div>
+          )}
+          
+          {/* Açıklama - Kompakt */}
+          {!fortune && !loading && (
+            <div className="max-w-4xl mx-auto mb-6">
+              <div className="rounded-xl p-4 bg-white/60 backdrop-blur-md border border-[hsl(258,90%,76%)]/15">
+                <p className="text-sm text-[hsl(220,9%,46%)] text-center">
+                  📸 Fincanını <span className="font-semibold text-[hsl(220,13%,18%)]">4 farklı açıdan</span> çek • En az <span className="font-semibold text-[hsl(258,90%,76%)]">3 fotoğraf</span> gerekli
+                </p>
+              </div>
+            </div>
           )}
           
           {/* Ana İçerik */}
@@ -354,10 +366,10 @@ const FotoYukle = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                 >
-                  {/* Fotoğraf Yükleme Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                  {/* Fotoğraf Yükleme Grid - KOMPAKT */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     {photoFields.map((field) => (
-                      <PhotoUploadCard
+                      <CompactPhotoCard
                         key={field.key}
                         field={field}
                         preview={previews[field.key]}
@@ -368,30 +380,24 @@ const FotoYukle = () => {
                     ))}
                   </div>
                   
-                  {/* Progress Bar */}
-                  <div className="mb-8">
-                    <div className="rounded-2xl p-6 bg-white/70 backdrop-blur-xl border border-[hsl(258,90%,76%)]/20">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-sm font-medium text-[hsl(220,9%,46%)]">
-                          Yükleme İlerlemesi
-                        </span>
-                        <span className="text-sm font-bold text-[hsl(258,90%,76%)]">
-                          {Object.values(uploadStatus).filter(Boolean).length} / 4
+                  {/* Progress Bar - Kompakt */}
+                  <div className="mb-6">
+                    <div className="rounded-xl p-4 bg-white/60 backdrop-blur-md border border-[hsl(258,90%,76%)]/15">
+                      <div className="flex items-center gap-4">
+                        <div className="flex-1">
+                          <div className="h-2 bg-white/50 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] transition-all duration-500"
+                              style={{ 
+                                width: `${(Object.values(uploadStatus).filter(Boolean).length / 4) * 100}%` 
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <span className="text-sm font-bold text-[hsl(258,90%,76%)] whitespace-nowrap">
+                          {Object.values(uploadStatus).filter(Boolean).length}/4
                         </span>
                       </div>
-                      <div className="h-3 bg-white/50 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] transition-all duration-500 rounded-full"
-                          style={{ 
-                            width: `${(Object.values(uploadStatus).filter(Boolean).length / 4) * 100}%` 
-                          }}
-                        />
-                      </div>
-                      {Object.values(uploadStatus).filter(Boolean).length < 3 && (
-                        <p className="text-xs text-[hsl(220,9%,46%)] mt-2 text-center">
-                          En az 3 fotoğraf yüklemelisiniz
-                        </p>
-                      )}
                     </div>
                   </div>
                   
@@ -400,22 +406,24 @@ const FotoYukle = () => {
                     onClick={handleSubmit}
                     disabled={Object.values(uploadStatus).filter(Boolean).length < 3}
                     className="
-                      w-full px-8 py-5 rounded-2xl
+                      w-full px-8 py-4 rounded-xl
                       bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)]
-                      text-white font-bold text-lg
-                      shadow-[0_4px_24px_rgba(167,139,250,0.35)]
-                      hover:shadow-[0_8px_32px_rgba(167,139,250,0.5)]
+                      text-white font-bold text-base
+                      shadow-lg hover:shadow-xl
                       disabled:opacity-50 disabled:cursor-not-allowed
                       transition-all duration-300
-                      hover:-translate-y-1
+                      hover:-translate-y-0.5
                       disabled:hover:translate-y-0
                     "
                   >
-                    <span className="flex items-center justify-center gap-2">
-                      <span>🔮</span>
-                      Falımı Yorumla
-                      <span>✨</span>
-                    </span>
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Yorumlanıyor...
+                      </span>
+                    ) : (
+                      '🔮 Falımı Yorumla'
+                    )}
                   </button>
                 </motion.div>
               ) : loading ? (
@@ -503,13 +511,12 @@ const FotoYukle = () => {
   );
 };
 
-// Photo Upload Card Component
-interface PhotoUploadCardProps {
+// Kompakt Photo Card Component
+interface CompactPhotoCardProps {
   field: {
     key: 'front' | 'side' | 'top' | 'plate';
     icon: string;
     title: string;
-    description: string;
     required: boolean;
   };
   preview: string | null;
@@ -518,116 +525,106 @@ interface PhotoUploadCardProps {
   onRemove: () => void;
 }
 
-const PhotoUploadCard = ({ field, preview, uploaded, onUpload, onRemove }: PhotoUploadCardProps) => {
+const CompactPhotoCard = ({ field, preview, uploaded, onUpload, onRemove }: CompactPhotoCardProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   return (
     <div 
       className={`
-        relative rounded-2xl p-6
-        bg-white/70 backdrop-blur-xl
-        border-2 transition-all duration-300
+        relative rounded-xl overflow-hidden
+        transition-all duration-300
         ${uploaded 
-          ? 'border-[hsl(258,90%,76%)]/40 shadow-[0_8px_24px_rgba(167,139,250,0.2)]' 
-          : 'border-[hsl(258,90%,76%)]/20 hover:border-[hsl(258,90%,76%)]/30'
+          ? 'ring-2 ring-[hsl(258,90%,76%)]/40 shadow-lg' 
+          : 'border-2 border-dashed border-[hsl(258,90%,76%)]/20'
         }
       `}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] flex items-center justify-center shadow-lg">
-            <span className="text-2xl">{field.icon}</span>
-          </div>
-          <div>
-            <h3 className="font-semibold text-[hsl(220,13%,18%)] flex items-center gap-2">
-              {field.title}
-              {field.required && (
-                <span className="text-xs text-[hsl(330,81%,70%)]">*</span>
-              )}
-            </h3>
-            <p className="text-xs text-[hsl(220,9%,46%)]">
-              {field.description}
-            </p>
-          </div>
-        </div>
-        
-        {/* Status Badge */}
-        {uploaded && (
-          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700">
-            <Check size={14} />
-            <span className="text-xs font-medium">Yüklendi</span>
-          </div>
-        )}
-      </div>
-      
       {/* Upload Area */}
-      <div className="relative">
-        {preview ? (
-          // Preview
-          <div className="relative group">
-            <img 
-              src={preview} 
-              alt={field.title}
-              className="w-full h-48 object-cover rounded-xl"
-            />
-            
-            {/* Remove Button */}
-            <button
-              onClick={onRemove}
-              className="
-                absolute top-2 right-2
-                p-2 rounded-lg
-                bg-red-500 text-white
-                opacity-0 group-hover:opacity-100
-                transition-opacity duration-200
-              "
-            >
-              <X size={16} />
-            </button>
-            
-            {/* Change Photo */}
+      {preview ? (
+        // Preview Mode
+        <div className="relative group aspect-square">
+          <img 
+            src={preview} 
+            alt={field.title}
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Overlay on Hover */}
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="
-                absolute bottom-2 left-1/2 -translate-x-1/2
-                px-4 py-2 rounded-lg
-                bg-white/90 backdrop-blur-sm text-[hsl(220,13%,18%)] text-sm font-medium
-                opacity-0 group-hover:opacity-100
-                transition-opacity duration-200
-              "
+              className="p-2 rounded-lg bg-white/90 hover:bg-white transition-colors"
             >
-              Değiştir
+              <Upload size={20} className="text-[hsl(220,13%,18%)]" />
+            </button>
+            <button
+              onClick={onRemove}
+              className="p-2 rounded-lg bg-red-500 hover:bg-red-600 transition-colors"
+            >
+              <X size={20} className="text-white" />
             </button>
           </div>
-        ) : (
-          // Upload Button
-          <label className="
-            flex flex-col items-center justify-center
-            h-48 rounded-xl
-            border-2 border-dashed border-[hsl(258,90%,76%)]/30
-            bg-[hsl(258,90%,76%)]/5
-            hover:bg-[hsl(258,90%,76%)]/10 hover:border-[hsl(258,90%,76%)]/50
-            cursor-pointer transition-all duration-300
-            group
-          ">
-            <Upload className="text-[hsl(258,90%,76%)] mb-3 group-hover:scale-110 transition-transform" size={32} />
-            <span className="text-sm font-medium text-[hsl(220,13%,18%)] mb-1">
-              Fotoğraf Yükle
-            </span>
-            <span className="text-xs text-[hsl(220,9%,46%)]">
-              veya sürükle bırak
-            </span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={(e) => e.target.files && onUpload(e.target.files[0])}
-              className="hidden"
-            />
-          </label>
-        )}
-      </div>
+          
+          {/* Status Badge */}
+          <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/90 backdrop-blur-sm">
+            <Check size={12} className="text-white" />
+          </div>
+          
+          {/* Label */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+            <p className="text-xs font-medium text-white text-center">
+              {field.title}
+            </p>
+          </div>
+          
+          {/* Hidden input for changing photo */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={(e) => e.target.files && onUpload(e.target.files[0])}
+            className="hidden"
+          />
+        </div>
+      ) : (
+        // Upload Button Mode
+        <label className="
+          flex flex-col items-center justify-center
+          aspect-square cursor-pointer
+          bg-white/40 backdrop-blur-sm
+          hover:bg-white/60
+          transition-all duration-300
+          group
+        ">
+          <div className="text-center">
+            <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+              {field.icon}
+            </div>
+            <p className="text-sm font-semibold text-[hsl(220,13%,18%)] mb-1">
+              {field.title}
+            </p>
+            <p className="text-xs text-[hsl(220,9%,46%)] px-2">
+              {field.required ? 'Zorunlu' : 'Opsiyonel'}
+            </p>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={(e) => e.target.files && onUpload(e.target.files[0])}
+            className="hidden"
+          />
+        </label>
+      )}
+      
+      {/* Required Badge */}
+      {field.required && !uploaded && (
+        <div className="absolute top-2 right-2">
+          <div className="w-2 h-2 bg-[hsl(330,81%,70%)] rounded-full animate-pulse" />
+        </div>
+      )}
     </div>
   );
 };
