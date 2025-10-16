@@ -213,21 +213,26 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-mystic flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-8">
           <img src={logo} alt="Falcan Logo" className="w-16 h-16 mx-auto mb-4 animate-pulse-glow" />
-          <h1 className="text-4xl font-bold text-foreground mb-2">Üye Ol</h1>
-          <p className="text-muted-foreground">Enerjini keşfet, falını öğren</p>
+          <h1 className="text-4xl font-bold text-[hsl(220,13%,18%)] mb-2 font-mystic">Üye Ol</h1>
+          <p className="text-[hsl(220,9%,46%)]">Enerjini keşfet, falını öğren</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-gradient-card rounded-3xl p-8 shadow-mystic space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)] space-y-5">
           <div>
-            <Label htmlFor="firstName" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="firstName" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <User className="w-4 h-4" />
               Ad
             </Label>
@@ -248,7 +253,7 @@ const Register = () => {
           </div>
 
           <div>
-            <Label htmlFor="lastName" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="lastName" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <User className="w-4 h-4" />
               Soyad
             </Label>
@@ -269,7 +274,7 @@ const Register = () => {
           </div>
 
           <div>
-            <Label htmlFor="email" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="email" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <Mail className="w-4 h-4" />
               E-posta
             </Label>
@@ -290,7 +295,7 @@ const Register = () => {
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="password" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4" />
               Şifre
             </Label>
@@ -320,7 +325,7 @@ const Register = () => {
           </div>
 
           <div>
-            <Label htmlFor="confirmPassword" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="confirmPassword" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4" />
               Şifre Tekrar
             </Label>
@@ -350,7 +355,7 @@ const Register = () => {
           </div>
 
           <div>
-            <Label htmlFor="birthDate" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="birthDate" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <Calendar className="w-4 h-4" />
               Doğum Tarihiniz
             </Label>
@@ -370,7 +375,7 @@ const Register = () => {
           </div>
 
           <div>
-            <Label htmlFor="birthTime" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="birthTime" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <Clock className="w-4 h-4" />
               Doğum Saatiniz
             </Label>
@@ -390,7 +395,7 @@ const Register = () => {
           </div>
 
           <div>
-            <Label htmlFor="city" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="city" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <MapPin className="w-4 h-4" />
               Şehir
             </Label>
@@ -412,7 +417,7 @@ const Register = () => {
           </div>
 
           <div>
-            <Label htmlFor="gender" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="gender" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <User className="w-4 h-4" />
               Cinsiyet
             </Label>

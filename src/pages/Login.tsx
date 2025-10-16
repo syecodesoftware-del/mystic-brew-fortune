@@ -112,9 +112,12 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-mystic flex items-center justify-center p-4 relative">
-      {/* Mistik Arkaplan */}
-      <MysticalBackground />
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -123,13 +126,13 @@ const Login = () => {
       >
         <div className="text-center mb-8">
           <img src={logo} alt="Falcan Logo" className="w-16 h-16 mx-auto mb-4 animate-pulse-glow" />
-          <h1 className="text-4xl font-bold text-foreground mb-2">Giriş Yap</h1>
-          <p className="text-muted-foreground">Enerjine tekrar hoş geldin</p>
+          <h1 className="text-4xl font-bold text-[hsl(220,13%,18%)] mb-2 font-mystic">Giriş Yap</h1>
+          <p className="text-[hsl(220,9%,46%)]">Enerjine tekrar hoş geldin</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-gradient-card rounded-3xl p-8 shadow-mystic space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)] space-y-6">
           <div>
-            <Label htmlFor="email" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="email" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <Mail className="w-4 h-4" />
               E-posta
             </Label>
@@ -149,7 +152,7 @@ const Login = () => {
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-foreground flex items-center gap-2 mb-2">
+            <Label htmlFor="password" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4" />
               Şifre
             </Label>

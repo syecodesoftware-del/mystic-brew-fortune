@@ -14,8 +14,12 @@ const ComingSoon = ({ type, emoji = "🔮" }: ComingSoonProps) => {
   const navigate = useNavigate();
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-700 to-pink-600 relative">
-      <MysticalBackground />
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
       
       <div className="relative z-10">
         <Header />
@@ -41,21 +45,21 @@ const ComingSoon = ({ type, emoji = "🔮" }: ComingSoonProps) => {
               {emoji}
             </motion.div>
             
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+            <h1 className="text-4xl lg:text-5xl font-bold text-[hsl(220,13%,18%)] mb-4 font-display">
               {type}
             </h1>
             
-            <p className="text-xl text-purple-100 mb-8">
+            <p className="text-xl text-[hsl(220,9%,46%)] mb-8">
               Çok yakında seninle! ✨
             </p>
             
-            <p className="text-purple-200 mb-12 max-w-md mx-auto">
+            <p className="text-[hsl(220,9%,46%)] mb-12 max-w-md mx-auto">
               Bu özellik üzerinde çalışıyoruz. Şimdilik diğer fal türlerini deneyebilirsin.
             </p>
             
             <Button
               onClick={() => navigate('/fortune')}
-              className="bg-white text-purple-900 hover:bg-purple-50 font-bold px-8 py-6 rounded-full text-lg transition-all hover:scale-105"
+              className="bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] text-white hover:shadow-[0_8px_32px_rgba(167,139,250,0.5)] font-bold px-8 py-6 rounded-2xl text-lg transition-all hover:scale-105 hover:-translate-y-0.5"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
               Fal Türlerine Dön

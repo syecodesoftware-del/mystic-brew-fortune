@@ -7,7 +7,6 @@ import { useToast } from '@/hooks/use-toast';
 import { getCurrentUser, saveFortune, checkCoinsAndDeduct, refundCoins } from '@/lib/auth';
 import { sendFortuneReadyNotification } from '@/utils/notifications';
 import Header from '@/components/Header';
-import MysticalBackground from '@/components/MysticalBackground';
 import logo from '@/assets/logo.png';
 
 const WEBHOOK_URL = 'https://asil58.app.n8n.cloud/webhook/kahve-fali';
@@ -204,8 +203,12 @@ const FotoYukle = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-700 to-pink-600 relative">
-      <MysticalBackground />
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] relative overflow-hidden">
+      {/* Animated background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
       
       <div className="relative z-10">
         <Header />
@@ -217,7 +220,7 @@ const FotoYukle = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate('/fortune/kahve')}
-              className="flex items-center gap-2 text-white mb-6 hover:underline"
+              className="flex items-center gap-2 text-[hsl(220,13%,18%)] mb-6 hover:underline font-medium"
             >
               <ArrowLeft size={20} />
               Falcı Seç
@@ -232,9 +235,9 @@ const FotoYukle = () => {
               className="text-center mb-8"
             >
               <div className="text-6xl mb-4">{selectedTeller.emoji}</div>
-              <h2 className="text-2xl font-bold text-white mb-2">{selectedTeller.name}</h2>
-              <p className="text-purple-100 mb-4">Kahve fincanı fotoğrafını yükle</p>
-              <div className="inline-flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-full font-bold">
+              <h2 className="text-2xl font-bold text-[hsl(220,13%,18%)] mb-2 font-display">{selectedTeller.name}</h2>
+              <p className="text-[hsl(220,9%,46%)] mb-4">Kahve fincanı fotoğrafını yükle</p>
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[hsl(43,96%,56%)] to-[hsl(24,95%,61%)] text-white px-4 py-2 rounded-full font-bold shadow-lg">
                 <Coins size={20} />
                 {selectedTeller.cost} altın
               </div>
@@ -254,10 +257,10 @@ const FotoYukle = () => {
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
-                  className={`relative border-2 border-dashed rounded-2xl p-12 transition-all duration-300 bg-white/10 backdrop-blur-md ${
+                  className={`relative border-2 border-dashed rounded-2xl p-12 transition-all duration-300 ${
                     dragActive
-                      ? 'border-yellow-400 bg-white/20 shadow-glow scale-105'
-                      : 'border-white/50 hover:border-white/80'
+                      ? 'border-[hsl(258,90%,76%)] bg-white/20 shadow-[0_8px_32px_rgba(167,139,250,0.25)] scale-105'
+                      : 'border-[hsl(258,90%,76%)]/30 bg-white/70 hover:border-[hsl(258,90%,76%)]/50'
                   }`}
                 >
                   <input
@@ -268,11 +271,11 @@ const FotoYukle = () => {
                     id="file-upload"
                   />
                   <label htmlFor="file-upload" className="cursor-pointer block">
-                    <Upload className="w-16 h-16 mx-auto mb-4 text-white" />
-                    <p className="text-lg text-white mb-2 font-medium">
+                    <Upload className="w-16 h-16 mx-auto mb-4 text-[hsl(258,90%,76%)]" />
+                    <p className="text-lg text-[hsl(220,13%,18%)] mb-2 font-medium">
                       Kahve fincanı fotoğrafını yükle
                     </p>
-                    <p className="text-sm text-purple-200">
+                    <p className="text-sm text-[hsl(220,9%,46%)]">
                       veya sürükle bırak
                     </p>
                   </label>
@@ -283,7 +286,7 @@ const FotoYukle = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="text-center bg-white/10 backdrop-blur-md rounded-3xl p-12 shadow-xl"
+                  className="text-center bg-white/70 backdrop-blur-xl rounded-3xl p-12 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
                 >
                   <div className="relative w-32 h-32 mx-auto mb-8">
                     <motion.div
@@ -293,14 +296,14 @@ const FotoYukle = () => {
                     >
                       <img src={logo} alt="Falcan Logo" className="w-full h-full object-contain" />
                     </motion.div>
-                    <Sparkles className="absolute top-0 right-0 w-8 h-8 text-yellow-400 animate-pulse" />
-                    <Moon className="absolute bottom-0 left-0 w-8 h-8 text-purple-300 animate-pulse" />
+                    <Sparkles className="absolute top-0 right-0 w-8 h-8 text-[hsl(258,90%,76%)] animate-pulse" />
+                    <Moon className="absolute bottom-0 left-0 w-8 h-8 text-[hsl(243,75%,59%)] animate-pulse" />
                   </div>
                   
-                  <h2 className="text-3xl font-bold text-white mb-4">
+                  <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] mb-4">
                     {selectedTeller.name} telve okuyor... ☕✨
                   </h2>
-                  <p className="text-purple-200">
+                  <p className="text-[hsl(220,9%,46%)]">
                     Semboller analiz ediliyor, sabırlı ol...
                   </p>
                 </motion.div>
@@ -310,17 +313,17 @@ const FotoYukle = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-xl"
+                  className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
                 >
                   <div className="flex items-center justify-center gap-2 mb-6">
-                    <Star className="w-6 h-6 text-yellow-400" />
-                    <h2 className="text-3xl font-bold text-white">Falın Yorumu</h2>
-                    <Moon className="w-6 h-6 text-purple-300" />
+                    <Star className="w-6 h-6 text-[hsl(43,96%,56%)]" />
+                    <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] font-display">Falın Yorumu</h2>
+                    <Moon className="w-6 h-6 text-[hsl(258,90%,76%)]" />
                   </div>
                   
                   <div className="text-center mb-4">
                     <span className="text-4xl">{selectedTeller.emoji}</span>
-                    <p className="text-purple-200 mt-2">{selectedTeller.name}</p>
+                    <p className="text-[hsl(220,9%,46%)] mt-2">{selectedTeller.name}</p>
                   </div>
 
                   {image && (
@@ -333,21 +336,21 @@ const FotoYukle = () => {
                     </div>
                   )}
 
-                  <div className="bg-white/20 rounded-xl p-6 mb-6">
-                    <p className="text-white leading-relaxed whitespace-pre-wrap">
+                  <div className="bg-white/50 rounded-xl p-6 mb-6">
+                    <p className="text-[hsl(220,13%,18%)] leading-relaxed whitespace-pre-wrap">
                       {fortune}
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-center gap-2 text-purple-200 text-sm mb-6">
-                    <Heart className="w-4 h-4 text-pink-400" />
+                  <div className="flex items-center justify-center gap-2 text-[hsl(220,9%,46%)] text-sm mb-6">
+                    <Heart className="w-4 h-4 text-[hsl(330,81%,70%)]" />
                     <span>Enerjin okundu</span>
-                    <Sparkles className="w-4 h-4 text-yellow-400" />
+                    <Sparkles className="w-4 h-4 text-[hsl(258,90%,76%)]" />
                   </div>
 
                   <Button
                     onClick={resetFortune}
-                    className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white text-lg py-6 rounded-xl font-bold"
+                    className="w-full text-lg py-6 rounded-xl font-bold"
                   >
                     <RefreshCw className="w-5 h-5 mr-2" />
                     Yeni Fal Bak
