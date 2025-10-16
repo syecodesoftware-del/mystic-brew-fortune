@@ -54,11 +54,16 @@ export const sendNotification = (
     
     // Browser notification (izin varsa)
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(newNotification.title, {
-        body: newNotification.message,
-        icon: '/logo.png',
-        badge: '/logo.png'
-      });
+      try {
+        new Notification(newNotification.title, {
+          body: newNotification.message,
+          icon: '/logo.png',
+          badge: '/logo.png'
+        });
+      } catch (error) {
+        console.error('Notification error:', error);
+        // Mobil tarayıcılarda constructor hatası alınabilir, sessizce devam et
+      }
     }
     
     // Event dispatch for real-time updates
