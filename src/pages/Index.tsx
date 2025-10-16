@@ -219,7 +219,7 @@ const Index = () => {
           <div className="max-w-6xl mx-auto">
             {/* Section header */}
             <div className="text-center mb-10">
-              <h3 className="text-3xl font-display font-bold text-foreground mb-2">
+              <h3 className="text-3xl font-mystic font-bold text-foreground mb-2">
                 Fal Türlerini Keşfet
               </h3>
               <p className="text-muted-foreground">
@@ -277,7 +277,7 @@ const Index = () => {
                   </div>
                   
                   {/* Title */}
-                  <h3 className="text-base sm:text-lg lg:text-xl font-display font-bold text-foreground mb-2 sm:mb-3">
+                  <h3 className="text-base sm:text-lg lg:text-xl font-mystic font-bold text-foreground mb-2 sm:mb-3">
                     {fortune.title}
                   </h3>
                   
