@@ -238,7 +238,7 @@ const Index = () => {
                   onClick={() => fortune.isActive && handleFortuneTypeClick(fortune.type)}
                   className={`
                     group relative overflow-hidden
-                    rounded-3xl p-8 cursor-pointer
+                    rounded-3xl p-4 sm:p-6 lg:p-8 cursor-pointer
                     transition-all duration-500
                     ${fortune.isActive 
                       ? `
@@ -256,14 +256,14 @@ const Index = () => {
                 >
                   {/* Badge */}
                   {fortune.badge && (
-                    <div className="absolute -top-3 -right-3 px-4 py-1.5 rounded-full bg-gradient-to-r from-[hsl(43,96%,56%)] to-[hsl(24,95%,61%)] text-xs font-bold text-white shadow-lg animate-bounce">
+                    <div className="absolute top-2 right-2 px-3 py-1 rounded-full bg-gradient-to-r from-[hsl(43,96%,56%)] to-[hsl(24,95%,61%)] text-[10px] sm:text-xs font-bold text-white shadow-lg">
                       {fortune.badge}
                     </div>
                   )}
                   
                   {/* Icon */}
-                  <div className="relative mb-6">
-                    <div className="text-7xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                  <div className="relative mb-3 sm:mb-4 lg:mb-6">
+                    <div className="text-4xl sm:text-5xl lg:text-7xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                       {fortune.emoji}
                     </div>
                     {fortune.isActive && (
@@ -277,7 +277,7 @@ const Index = () => {
                   </div>
                   
                   {/* Title */}
-                  <h3 className="text-xl font-display font-bold text-foreground mb-3">
+                  <h3 className="text-base sm:text-lg lg:text-xl font-display font-bold text-foreground mb-2 sm:mb-3">
                     {fortune.title}
                   </h3>
                   
