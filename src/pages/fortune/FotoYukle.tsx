@@ -100,28 +100,43 @@ const FotoYukle = () => {
       return;
     }
     
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviews(prev => ({
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviews(prev => ({
+          ...prev,
+          [type]: reader.result as string
+        }));
+      };
+      reader.onerror = () => {
+        toast({
+          title: "Hata",
+          description: "Fotoğraf yüklenemedi, lütfen tekrar deneyin",
+          variant: "destructive"
+        });
+      };
+      reader.readAsDataURL(file);
+      
+      setPhotos(prev => ({
         ...prev,
-        [type]: reader.result as string
+        [type]: file
       }));
-    };
-    reader.readAsDataURL(file);
-    
-    setPhotos(prev => ({
-      ...prev,
-      [type]: file
-    }));
-    
-    setUploadStatus(prev => ({
-      ...prev,
-      [type]: true
-    }));
-    
-    toast({
-      title: "Fotoğraf yüklendi ✓",
-    });
+      
+      setUploadStatus(prev => ({
+        ...prev,
+        [type]: true
+      }));
+      
+      toast({
+        title: "Fotoğraf yüklendi ✓",
+      });
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: "Fotoğraf işlenemedi",
+        variant: "destructive"
+      });
+    }
   };
   
   const handlePhotoRemove = (type: 'front' | 'side' | 'top' | 'plate') => {

@@ -90,26 +90,34 @@ const Profile = () => {
     checkBonusAvailability();
     const interval = setInterval(checkBonusAvailability, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [user]);
   
   const handleClaimBonus = () => {
-    const bonus = checkAndGiveDailyBonus();
-    if (bonus) {
-      setCanClaimBonus(false);
-      toast({
-        title: bonus.message,
-        description: `Yeni bakiyen: ${bonus.newBalance} 💰`,
-      });
-      
-      // Reload user data
-      const updatedUsers = JSON.parse(localStorage.getItem('coffee_users') || '[]');
-      const updatedUser = updatedUsers.find((u: any) => u.id === user?.id);
-      if (updatedUser) {
-        updateUser(updatedUser);
+    try {
+      const bonus = checkAndGiveDailyBonus();
+      if (bonus) {
+        setCanClaimBonus(false);
+        toast({
+          title: bonus.message,
+          description: `Yeni bakiyen: ${bonus.newBalance} 💰`,
+        });
+        
+        // Reload user data
+        const updatedUsers = JSON.parse(localStorage.getItem('coffee_users') || '[]');
+        const updatedUser = updatedUsers.find((u: any) => u.id === user?.id);
+        if (updatedUser) {
+          updateUser(updatedUser);
+        }
+        
+        window.dispatchEvent(new Event('coinsUpdated'));
+        checkBonusAvailability();
       }
-      
-      window.dispatchEvent(new Event('coinsUpdated'));
-      checkBonusAvailability();
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: "Bonus alınırken bir hata oluştu",
+        variant: "destructive"
+      });
     }
   };
 

@@ -81,8 +81,20 @@ export const loginUser = (email: string, password: string) => {
 };
 
 export const getCurrentUser = (): User | null => {
-  const user = localStorage.getItem(CURRENT_USER_KEY);
-  return user ? JSON.parse(user) : null;
+  try {
+    const user = localStorage.getItem(CURRENT_USER_KEY);
+    if (!user) return null;
+    
+    const parsed = JSON.parse(user);
+    
+    // Validate user object
+    if (!parsed.id || !parsed.email) return null;
+    
+    return parsed;
+  } catch (error) {
+    console.error('Error getting current user:', error);
+    return null;
+  }
 };
 
 export const logoutUser = () => {
