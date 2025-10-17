@@ -69,41 +69,39 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newErrors: FormErrors = {};
-    Object.keys(formData).forEach(key => {
-      const error = validateField(key as keyof FormData, formData[key as keyof FormData]);
-      if (error) newErrors[key as keyof FormErrors] = error;
-    });
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setTouched(Object.keys(formData).reduce((acc, key) => ({ ...acc, [key]: true }), {}));
+    if (!formData.email || !formData.password) {
+      toast({
+        title: "Hata",
+        description: "E-posta ve şifre gerekli",
+        variant: "destructive"
+      });
       return;
     }
-
+    
     setLoading(true);
-
+    
     try {
       const result = await loginUser(formData.email, formData.password);
       
-      if (result.success && result.user) {
+      if (result.success) {
         toast({
-          title: "Hoş geldin! ✨",
-          description: `${result.user.first_name}, tekrar görüşmek güzel`,
+          title: "✨ Giriş başarılı!",
+          description: "Yönlendiriliyorsunuz...",
         });
-
-        navigate('/fortune');
+        setTimeout(() => {
+          navigate('/fortune');
+        }, 500);
       } else {
         toast({
           title: "Hata",
-          description: result.error || "Giriş başarısız",
+          description: result.error || 'E-posta veya şifre hatalı',
           variant: "destructive"
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Hata",
-        description: error instanceof Error ? error.message : "Giriş başarısız",
+        description: error.message || 'Giriş başarısız',
         variant: "destructive"
       });
     } finally {
