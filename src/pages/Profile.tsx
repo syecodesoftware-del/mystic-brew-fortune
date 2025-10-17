@@ -42,15 +42,15 @@ const Profile = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedFortune, setSelectedFortune] = useState<Fortune | null>(null);
-  const [fortuneToDelete, setFortuneToDelete] = useState<number | null>(null);
+  const [fortuneToDelete, setFortuneToDelete] = useState<string | null>(null);
   const [canClaimBonus, setCanClaimBonus] = useState(false);
   const [timeUntilNextBonus, setTimeUntilNextBonus] = useState('');
   
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
-    birthDate: user?.birthDate || '',
-    birthTime: user?.birthTime || '',
+    firstName: user?.first_name || '',
+    lastName: user?.last_name || '',
+    birthDate: user?.birth_date || '',
+    birthTime: user?.birth_time || '',
     city: user?.city || '',
     gender: user?.gender || '',
     currentPassword: '',
@@ -58,18 +58,27 @@ const Profile = () => {
     newPasswordConfirm: ''
   });
 
-  const fortunes = getUserFortunes().sort((a, b) => 
-    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-  );
+  const [fortunes, setFortunes] = useState<Fortune[]>([]);
+  
+  // Load fortunes
+  useEffect(() => {
+    const loadFortunes = async () => {
+      if (user) {
+        const userFortunes = await getUserFortunes(user.id);
+        setFortunes(userFortunes);
+      }
+    };
+    loadFortunes();
+  }, [user]);
   
   // Check bonus availability
   const checkBonusAvailability = () => {
     if (!user) return;
     
     const today = new Date().toISOString().split('T')[0];
-    const lastBonus = user.lastDailyBonus;
+    const lastBonus = user.last_daily_bonus;
     
-    const canClaim = lastBonus !== today;
+    const canClaim = !lastBonus || lastBonus !== today;
     setCanClaimBonus(canClaim);
     
     if (!canClaim) {
@@ -92,22 +101,17 @@ const Profile = () => {
     return () => clearInterval(interval);
   }, [user]);
   
-  const handleClaimBonus = () => {
+  const handleClaimBonus = async () => {
+    if (!user) return;
+    
     try {
-      const bonus = checkAndGiveDailyBonus();
+      const bonus = await checkAndGiveDailyBonus(user.id);
       if (bonus) {
         setCanClaimBonus(false);
         toast({
           title: bonus.message,
-          description: `Yeni bakiyen: ${bonus.newBalance} 💰`,
+          description: `${bonus.amount} altın kazandın! 💰`,
         });
-        
-        // Reload user data
-        const updatedUsers = JSON.parse(localStorage.getItem('coffee_users') || '[]');
-        const updatedUser = updatedUsers.find((u: any) => u.id === user?.id);
-        if (updatedUser) {
-          updateUser(updatedUser);
-        }
         
         window.dispatchEvent(new Event('coinsUpdated'));
         checkBonusAvailability();
@@ -140,10 +144,10 @@ const Profile = () => {
 
   const handleEdit = () => {
     setFormData({
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      birthDate: user?.birthDate || '',
-      birthTime: user?.birthTime || '',
+      firstName: user?.first_name || '',
+      lastName: user?.last_name || '',
+      birthDate: user?.birth_date || '',
+      birthTime: user?.birth_time || '',
       city: user?.city || '',
       gender: user?.gender || '',
       currentPassword: '',
@@ -156,10 +160,10 @@ const Profile = () => {
   const handleCancel = () => {
     setIsEditing(false);
     setFormData({
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      birthDate: user?.birthDate || '',
-      birthTime: user?.birthTime || '',
+      firstName: user?.first_name || '',
+      lastName: user?.last_name || '',
+      birthDate: user?.birth_date || '',
+      birthTime: user?.birth_time || '',
       city: user?.city || '',
       gender: user?.gender || '',
       currentPassword: '',
@@ -168,20 +172,31 @@ const Profile = () => {
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!user) return;
+    
     try {
       if (formData.firstName.length < 2 || formData.lastName.length < 2) {
         throw new Error('Ad ve soyad en az 2 karakter olmalı');
       }
 
-      const updatedUser = updateUserProfile(formData);
-      updateUser(updatedUser);
+      await updateUserProfile(user.id, {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        birth_date: formData.birthDate,
+        birth_time: formData.birthTime,
+        city: formData.city,
+        gender: formData.gender
+      });
+      
       setIsEditing(false);
       
       toast({
         title: "Başarılı! ✨",
         description: "Profiliniz güncellendi",
       });
+      
+      window.dispatchEvent(new Event('coinsUpdated'));
     } catch (error) {
       toast({
         title: "Hata",
@@ -191,10 +206,14 @@ const Profile = () => {
     }
   };
 
-  const handleDeleteFortune = (fortuneId: number) => {
-    deleteFortune(fortuneId);
+  const handleDeleteFortune = async (fortuneId: string) => {
+    if (!user) return;
+    
+    await deleteFortune(fortuneId);
     setFortuneToDelete(null);
-    updateUser({ ...user!, fortunes: getUserFortunes() });
+    
+    const userFortunes = await getUserFortunes(user.id);
+    setFortunes(userFortunes);
     
     toast({
       title: "Silindi",
@@ -237,16 +256,16 @@ const Profile = () => {
           <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)] text-center">
             <Avatar className="w-24 h-24 mx-auto mb-4">
               <AvatarFallback className={`bg-gradient-to-br ${getAvatarColor(user.id)} text-white text-3xl font-bold`}>
-                {getInitials(user.firstName, user.lastName)}
+                {getInitials(user.first_name, user.last_name)}
               </AvatarFallback>
             </Avatar>
             
             <h1 className="text-3xl font-bold text-[hsl(220,13%,18%)] mb-2 font-display">
-              {user.firstName} {user.lastName}
+              {user.first_name} {user.last_name}
             </h1>
             
             <p className="text-[hsl(220,9%,46%)] mb-4">
-              Üye olma: {new Date(user.createdAt).toLocaleDateString('tr-TR')}
+              Üye olma: {new Date(user.created_at).toLocaleDateString('tr-TR')}
             </p>
             
             <div className="inline-flex items-center gap-2 bg-[hsl(258,90%,76%)]/20 px-4 py-2 rounded-full">
@@ -290,20 +309,20 @@ const Profile = () => {
                       <p className="text-sm text-gray-600 mb-1">Toplam Kazanılan</p>
                       <p className="text-2xl font-bold text-green-600 flex items-center gap-1">
                         <Coins className="w-5 h-5" />
-                        {user.totalCoinsEarned || 0}
+                        {user.total_coins_earned || 0}
                       </p>
                     </div>
                     <div className="bg-white/70 rounded-lg p-4">
                       <p className="text-sm text-gray-600 mb-1">Toplam Harcanan</p>
                       <p className="text-2xl font-bold text-red-600 flex items-center gap-1">
                         <Coins className="w-5 h-5" />
-                        {user.totalCoinsSpent || 0}
+                        {user.total_coins_spent || 0}
                       </p>
                     </div>
                     <div className="bg-white/70 rounded-lg p-4">
                       <p className="text-sm text-gray-600 mb-1">Son Günlük Bonus</p>
                       <p className="text-sm font-medium text-gray-800">
-                        {user.lastDailyBonus ? new Date(user.lastDailyBonus).toLocaleDateString('tr-TR') : 'Henüz alınmadı'}
+                        {user.last_daily_bonus ? new Date(user.last_daily_bonus).toLocaleDateString('tr-TR') : 'Henüz alınmadı'}
                       </p>
                     </div>
                   </div>
@@ -361,7 +380,7 @@ const Profile = () => {
                           placeholder="Adınız"
                         />
                       ) : (
-                        <div className="bg-card/50 p-3 rounded-lg text-foreground">{user.firstName}</div>
+                        <div className="bg-card/50 p-3 rounded-lg text-foreground">{user.first_name}</div>
                       )}
                     </div>
 
@@ -374,7 +393,7 @@ const Profile = () => {
                           placeholder="Soyadınız"
                         />
                       ) : (
-                        <div className="bg-card/50 p-3 rounded-lg text-foreground">{user.lastName}</div>
+                        <div className="bg-card/50 p-3 rounded-lg text-foreground">{user.last_name}</div>
                       )}
                     </div>
                   </div>
@@ -398,7 +417,7 @@ const Profile = () => {
                       ) : (
                         <div className="bg-card/50 p-3 rounded-lg text-foreground flex items-center gap-2">
                           <Calendar className="w-4 h-4" />
-                          {new Date(user.birthDate).toLocaleDateString('tr-TR')}
+                          {new Date(user.birth_date).toLocaleDateString('tr-TR')}
                         </div>
                       )}
                     </div>
@@ -414,7 +433,7 @@ const Profile = () => {
                       ) : (
                         <div className="bg-card/50 p-3 rounded-lg text-foreground flex items-center gap-2">
                           <Clock className="w-4 h-4" />
-                          {user.birthTime}
+                          {user.birth_time}
                         </div>
                       )}
                     </div>
@@ -582,7 +601,7 @@ const Profile = () => {
                         <div className="flex items-center gap-2 text-accent">
                           <Sparkles className="w-5 h-5" />
                           <span className="font-semibold">
-                            {new Date(fortune.timestamp).toLocaleDateString('tr-TR', {
+                            {new Date(fortune.created_at).toLocaleDateString('tr-TR', {
                               day: 'numeric',
                               month: 'long',
                               year: 'numeric',
@@ -594,7 +613,7 @@ const Profile = () => {
                       </div>
 
                       <p className="text-foreground mb-4 line-clamp-3">
-                        {fortune.fortune}
+                        {fortune.fortune_text}
                       </p>
 
                       <div className="flex gap-2">
@@ -638,13 +657,13 @@ const Profile = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Sparkles className="w-6 h-6 text-accent" />
-              Falınız - {selectedFortune && new Date(selectedFortune.timestamp).toLocaleDateString('tr-TR')}
+              Falınız - {selectedFortune && new Date(selectedFortune.created_at).toLocaleDateString('tr-TR')}
             </DialogTitle>
           </DialogHeader>
           
           <div className="py-4">
             <p className="text-foreground whitespace-pre-wrap leading-relaxed">
-              {selectedFortune?.fortune}
+              {selectedFortune?.fortune_text}
             </p>
           </div>
 

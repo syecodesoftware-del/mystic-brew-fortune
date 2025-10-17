@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Coins } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
-import { getCurrentUser } from '@/lib/auth';
+import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
 interface FortuneTeller {
@@ -16,7 +16,7 @@ interface FortuneTeller {
 const KahveFali = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const user = getCurrentUser();
+  const { user } = useAuth();
   
   const fortuneTellers: FortuneTeller[] = [
     { 

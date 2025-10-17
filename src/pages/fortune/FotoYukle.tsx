@@ -4,7 +4,8 @@ import { ArrowLeft, Upload, Sparkles, Moon, Star, Heart, RefreshCw, Coins, Check
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { getCurrentUser, saveFortune, checkCoinsAndDeduct, refundCoins } from '@/lib/auth';
+import { useAuth } from '@/hooks/useAuth';
+import { saveFortune, checkCoinsAndDeduct, refundCoins } from '@/lib/auth';
 import { sendFortuneReadyNotification } from '@/utils/notifications';
 import Header from '@/components/Header';
 import logo from '@/assets/logo.png';
@@ -12,24 +13,25 @@ import logo from '@/assets/logo.png';
 const WEBHOOK_URL = 'https://asil58.app.n8n.cloud/webhook/kahve-fali';
 
 interface FortuneTeller {
+  id: number;
   name: string;
   cost: number;
   emoji: string;
 }
 
 const fortuneTellers: Record<string, FortuneTeller> = {
-  '1': { name: "Tecrübeli Falcı", cost: 10, emoji: "⭐" },
-  '2': { name: "Usta Falcı", cost: 25, emoji: "🌟" },
-  '3': { name: "Mistik Falcı", cost: 50, emoji: "🔮" },
-  '4': { name: "Aşk Falcısı", cost: 40, emoji: "💖" },
-  '5': { name: "Gelecek Falcısı", cost: 75, emoji: "✨" }
+  '1': { id: 1, name: "Tecrübeli Falcı", cost: 10, emoji: "⭐" },
+  '2': { id: 2, name: "Usta Falcı", cost: 25, emoji: "🌟" },
+  '3': { id: 3, name: "Mistik Falcı", cost: 50, emoji: "🔮" },
+  '4': { id: 4, name: "Aşk Falcısı", cost: 40, emoji: "💖" },
+  '5': { id: 5, name: "Gelecek Falcısı", cost: 75, emoji: "✨" }
 };
 
 const FotoYukle = () => {
   const { tellerId } = useParams<{ tellerId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const user = getCurrentUser();
+  const { user } = useAuth();
   
   const [photos, setPhotos] = useState<{
     front: File | null;
@@ -169,7 +171,8 @@ const FotoYukle = () => {
     if (!user) return;
     
     const FORTUNE_COST = selectedTeller.cost;
-    if (!checkCoinsAndDeduct(FORTUNE_COST)) {
+    const hasEnoughCoins = await checkCoinsAndDeduct(user.id, FORTUNE_COST);
+    if (!hasEnoughCoins) {
       toast({
         title: "Yetersiz altın! 💰",
         description: `Fal baktırmak için ${FORTUNE_COST} altına ihtiyacın var.`,
@@ -202,9 +205,9 @@ const FotoYukle = () => {
           text: "Kahve falı yorumla - 4 fotoğraf",
           images: base64Photos,
           user_id: user.id,
-          user_name: `${user.firstName} ${user.lastName}`,
-          birth_date: user.birthDate,
-          birth_time: user.birthTime,
+          user_name: `${user.first_name} ${user.last_name}`,
+          birth_date: user.birth_date,
+          birth_time: user.birth_time,
           fortune_teller_id: parseInt(tellerId || '1')
         }),
         signal: controller.signal
@@ -232,11 +235,15 @@ const FotoYukle = () => {
       if (data.success && data.fortune) {
         setFortune(data.fortune);
         
-        const fortuneId = saveFortune(data.fortune, previews.front || undefined);
-        
-        if (user && fortuneId) {
-          sendFortuneReadyNotification(user.id, fortuneId);
-        }
+        await saveFortune({
+          userId: user.id,
+          fortuneText: data.fortune,
+          fortuneTellerId: selectedTeller.id || 1,
+          fortuneTellerName: selectedTeller.name,
+          fortuneTellerEmoji: selectedTeller.emoji,
+          fortuneTellerCost: FORTUNE_COST,
+          images: base64Photos
+        });
         
         toast({
           title: "Falın hazır! ✨",
@@ -253,11 +260,13 @@ const FotoYukle = () => {
       toast({
         title: "Hata",
         description: errorMessage,
-        variant: "destructive"
+      variant: "destructive"
       });
       
-      refundCoins(FORTUNE_COST);
-      window.dispatchEvent(new Event('coinsUpdated'));
+      if (user) {
+        await refundCoins(user.id, FORTUNE_COST);
+        window.dispatchEvent(new Event('coinsUpdated'));
+      }
     } finally {
       setLoading(false);
     }

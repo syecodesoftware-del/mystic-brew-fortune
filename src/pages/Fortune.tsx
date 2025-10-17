@@ -53,9 +53,9 @@ const Fortune = () => {
           text: "Kahve falı yorumla",
           image: base64Image,
           user_id: user.id,
-          user_name: `${user.firstName} ${user.lastName}`,
-          birth_date: user.birthDate,
-          birth_time: user.birthTime
+          user_name: `${user.first_name} ${user.last_name}`,
+          birth_date: user.birth_date,
+          birth_time: user.birth_time
         }),
         signal: controller.signal
       });
@@ -108,7 +108,10 @@ const Fortune = () => {
 
     // Check coins before deducting
     const FORTUNE_COST = 10;
-    if (!checkCoinsAndDeduct(FORTUNE_COST)) {
+    if (!user) return;
+    
+    const hasEnoughCoins = await checkCoinsAndDeduct(user.id, FORTUNE_COST);
+    if (!hasEnoughCoins) {
       toast({
         title: "Yetersiz altın! 💰",
         description: `Fal baktırmak için ${FORTUNE_COST} altına ihtiyacın var.`,
@@ -126,11 +129,16 @@ const Fortune = () => {
       const fortuneResult = await analyzeFortune(file);
       setFortune(fortuneResult);
       
-      const fortuneId = saveFortune(fortuneResult, imageUrl);
-      
-      // Send notification
-      if (user && fortuneId) {
-        sendFortuneReadyNotification(user.id, fortuneId);
+      if (user) {
+        await saveFortune({
+          userId: user.id,
+          fortuneText: fortuneResult,
+          fortuneTellerId: 1,
+          fortuneTellerName: 'Tecrübeli Falcı',
+          fortuneTellerEmoji: '⭐',
+          fortuneTellerCost: FORTUNE_COST,
+          images: imageUrl
+        });
       }
       
       toast({
@@ -149,8 +157,10 @@ const Fortune = () => {
       setImage(null);
       
       // Refund coins on error
-      refundCoins(FORTUNE_COST);
-      window.dispatchEvent(new Event('coinsUpdated'));
+      if (user) {
+        await refundCoins(user.id, FORTUNE_COST);
+        window.dispatchEvent(new Event('coinsUpdated'));
+      }
     } finally {
       setLoading(false);
     }

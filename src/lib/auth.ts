@@ -87,7 +87,10 @@ export const getCurrentUser = async (): Promise<User | null> => {
   try {
     const userId = localStorage.getItem('falcan_user_id')
     
-    if (!userId) return null
+    if (!userId) {
+      console.log('No user ID in localStorage')
+      return null
+    }
     
     const { data: user, error } = await supabase
       .from('users')
@@ -96,13 +99,20 @@ export const getCurrentUser = async (): Promise<User | null> => {
       .single()
     
     if (error) {
+      console.error('Get user error:', error)
+      localStorage.removeItem('falcan_user_id')
+      return null
+    }
+    
+    if (!user) {
+      console.log('User not found in database')
       localStorage.removeItem('falcan_user_id')
       return null
     }
     
     return user
   } catch (error) {
-    console.error('Get user error:', error)
+    console.error('Get user exception:', error)
     return null
   }
 }
@@ -165,6 +175,10 @@ export const checkCoinsAndDeduct = async (userId: string, amount: number) => {
 }
 
 export const refundCoins = async (userId: string, amount: number) => {
+  return updateCoins(userId, amount, 'earn')
+}
+
+export const addCoins = async (userId: string, amount: number) => {
   return updateCoins(userId, amount, 'earn')
 }
 

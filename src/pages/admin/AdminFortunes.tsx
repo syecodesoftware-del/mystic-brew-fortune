@@ -26,10 +26,10 @@ const AdminFortunes = () => {
     setTotalPages(result.totalPages);
   };
 
-  const handleDelete = (userId: string, fortuneId: number) => {
+  const handleDelete = async (userId: string, fortuneId: string) => {
     if (confirm('Bu falı silmek istediğinizden emin misiniz?')) {
       try {
-        deleteFortune(fortuneId);
+        await deleteFortune(fortuneId);
         loadFortunes();
         toast({
           title: 'Başarılı',
