@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { saveFortune, checkCoinsAndDeduct, refundCoins } from '@/lib/auth';
-import { sendFortuneReadyNotification } from '@/utils/notifications';
+import { getCurrentUser, updateCoins, saveFortune, createNotification } from '@/lib/auth';
 import Header from '@/components/Header';
 import logo from '@/assets/logo.png';
 
@@ -72,12 +71,12 @@ const FotoYukle = () => {
   const convertImageToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => {
-        const base64String = (reader.result as string).split(',')[1];
-        resolve(base64String);
-      };
-      reader.onerror = reject;
       reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        resolve(base64.split(',')[1]);
+      };
+      reader.onerror = error => reject(error);
     });
   };
   
@@ -157,6 +156,7 @@ const FotoYukle = () => {
   };
   
   const handleSubmit = async () => {
+    // Minimum 3 fotoğraf kontrolü
     const uploadedCount = Object.values(photos).filter(p => p !== null).length;
     
     if (uploadedCount < 3) {
@@ -168,105 +168,132 @@ const FotoYukle = () => {
       return;
     }
     
-    if (!user) return;
-    
-    const FORTUNE_COST = selectedTeller.cost;
-    const hasEnoughCoins = await checkCoinsAndDeduct(user.id, FORTUNE_COST);
-    if (!hasEnoughCoins) {
-      toast({
-        title: "Yetersiz altın! 💰",
-        description: `Fal baktırmak için ${FORTUNE_COST} altına ihtiyacın var.`,
-        variant: "destructive"
-      });
-      return;
-    }
-    
     setLoading(true);
     
     try {
+      // Kullanıcıyı al
+      const user = await getCurrentUser();
+      
+      if (!user) {
+        toast({
+          title: "Hata",
+          description: "Lütfen giriş yapın",
+          variant: "destructive"
+        });
+        navigate('/login');
+        return;
+      }
+      
+      // Altın kontrolü
+      if (user.coins < selectedTeller.cost) {
+        toast({
+          title: "Yetersiz altın! 💰",
+          description: `${selectedTeller.cost} altına ihtiyacın var.`,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Altını düş
+      const deductResult = await updateCoins(user.id, selectedTeller.cost, 'spend');
+      
+      if (!deductResult.success) {
+        toast({
+          title: "Hata",
+          description: "Altın düşülemedi",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      toast({
+        title: "Fotoğraflar hazırlanıyor...",
+        description: "Lütfen bekleyin",
+      });
+      
+      // Fotoğrafları base64'e çevir
       const photoPromises = Object.entries(photos).map(async ([key, file]) => {
         if (!file) return [key, null];
-        return [key, await convertImageToBase64(file)];
+        const base64 = await convertImageToBase64(file);
+        return [key, base64];
       });
       
       const photoResults = await Promise.all(photoPromises);
       const base64Photos = Object.fromEntries(photoResults);
       
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000);
+      toast({
+        title: "Falın yorumlanıyor...",
+        description: "Bu birkaç dakika sürebilir",
+      });
       
-      const response = await fetch(WEBHOOK_URL, {
+      // n8n'e gönder
+      const response = await fetch('https://asil58.app.n8n.cloud/webhook/kahve-fali', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: "Kahve falı yorumla - 4 fotoğraf",
           images: base64Photos,
           user_id: user.id,
-          user_name: `${user.first_name} ${user.last_name}`,
-          birth_date: user.birth_date,
-          birth_time: user.birth_time,
           fortune_teller_id: parseInt(tellerId || '1')
-        }),
-        signal: controller.signal
+        })
       });
       
-      clearTimeout(timeoutId);
-      
       if (!response.ok) {
-        throw new Error(`API Hatası: ${response.status}`);
+        throw new Error('Fal yorumlama başarısız');
       }
       
-      const responseText = await response.text();
-      
-      if (!responseText || responseText.trim() === '') {
-        throw new Error('API boş yanıt döndü');
-      }
-      
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (e) {
-        throw new Error('Geçersiz API yanıtı');
-      }
+      const data = await response.json();
       
       if (data.success && data.fortune) {
-        setFortune(data.fortune);
-        
+        // Falı Supabase'e kaydet
         await saveFortune({
           userId: user.id,
           fortuneText: data.fortune,
-          fortuneTellerId: selectedTeller.id || 1,
+          fortuneTellerId: selectedTeller.id,
           fortuneTellerName: selectedTeller.name,
           fortuneTellerEmoji: selectedTeller.emoji,
-          fortuneTellerCost: FORTUNE_COST,
+          fortuneTellerCost: selectedTeller.cost,
           images: base64Photos
         });
         
+        // Bildirim oluştur
+        await createNotification(
+          user.id,
+          '🔮 Falın Hazır!',
+          `${selectedTeller.name} falını yorumladı. Hemen incele!`,
+          'fortune_ready'
+        );
+        
         toast({
-          title: "Falın hazır! ✨",
-          description: `Telve okundu! ${FORTUNE_COST} altın harcandı.`,
+          title: "✨ Falın hazır!",
+          description: "Yönlendiriliyorsunuz...",
         });
         
+        // Coin güncellemesi için event tetikle
         window.dispatchEvent(new Event('coinsUpdated'));
+        
+        setFortune(data.fortune);
       } else {
-        throw new Error('Fal yorumu alınamadı');
+        throw new Error('Fal yorumlama başarısız');
+      }
+    } catch (error: any) {
+      console.error('Fal gönderme hatası:', error);
+      
+      // Hata olursa altını geri ver
+      const user = await getCurrentUser();
+      if (user) {
+        await updateCoins(user.id, selectedTeller.cost, 'earn');
+        toast({
+          title: "Altın iade edildi",
+          description: "Tekrar deneyebilirsin",
+        });
       }
       
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Telve bulanık görünüyor, tekrar dene 🌙';
       toast({
         title: "Hata",
-        description: errorMessage,
-      variant: "destructive"
+        description: error.message || 'Bir hata oluştu, lütfen tekrar dene',
+        variant: "destructive"
       });
-      
-      if (user) {
-        await refundCoins(user.id, FORTUNE_COST);
-        window.dispatchEvent(new Event('coinsUpdated'));
-      }
     } finally {
       setLoading(false);
     }
