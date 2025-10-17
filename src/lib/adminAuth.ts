@@ -59,10 +59,14 @@ export const getCurrentAdmin = async (): Promise<AdminUser | null> => {
 // Admin login with Supabase Auth
 export const adminLogin = async (email: string, password: string) => {
   try {
+    console.log('🔐 Admin login attempt:', email);
+    
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email,
+      email: email.trim(),
       password,
     });
+
+    console.log('📝 Auth response:', authData?.user?.id, authError?.message);
 
     if (authError) throw authError;
     if (!authData.user) throw new Error('Kullanıcı bulunamadı');
@@ -75,14 +79,19 @@ export const adminLogin = async (email: string, password: string) => {
       .eq('role', 'admin')
       .single();
 
+    console.log('👤 Role check:', roleData, roleError?.message);
+
     if (roleError || !roleData) {
       // Not an admin, sign them out
+      console.log('❌ No admin role found, signing out');
       await supabase.auth.signOut();
       throw new Error('Bu hesabın admin yetkisi yok');
     }
 
+    console.log('✅ Admin login successful');
     return authData.user;
   } catch (error: any) {
+    console.error('💥 Admin login error:', error);
     throw new Error(error.message || 'Giriş yapılamadı');
   }
 };
