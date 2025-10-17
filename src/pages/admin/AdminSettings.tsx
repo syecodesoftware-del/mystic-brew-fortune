@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { updateAdminPassword, exportAllData } from '@/lib/admin';
+import { exportAllData } from '@/lib/admin';
+import { supabase } from '@/lib/supabase';
 import { useAdmin } from '@/hooks/useAdmin';
 
 const AdminSettings = () => {
@@ -15,7 +16,7 @@ const AdminSettings = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handlePasswordUpdate = (e: React.FormEvent) => {
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (newPassword !== confirmPassword) {
@@ -27,8 +28,22 @@ const AdminSettings = () => {
       return;
     }
 
+    if (newPassword.length < 6) {
+      toast({
+        title: 'Hata',
+        description: 'Yeni şifre en az 6 karakter olmalı',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
-      updateAdminPassword(currentPassword, newPassword);
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+
       toast({
         title: 'Başarılı',
         description: 'Şifreniz güncellendi',
@@ -130,8 +145,8 @@ const AdminSettings = () => {
                 <p className="font-medium">{admin?.email}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Ad Soyad</p>
-                <p className="font-medium">{admin?.firstName} {admin?.lastName}</p>
+                <p className="text-sm text-gray-500">Rol</p>
+                <p className="font-medium">Admin</p>
               </div>
             </div>
           </div>

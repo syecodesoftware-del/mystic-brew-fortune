@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { adminLogin, isAdminAuthenticated, initializeAdmin } from '@/lib/admin';
+import { adminLogin, isAdmin } from '@/lib/adminAuth';
 import logo from '@/assets/logo.png';
 
 const AdminLogin = () => {
@@ -18,12 +18,13 @@ const AdminLogin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Admin hesabını initialize et
-    initializeAdmin();
-    
-    if (isAdminAuthenticated()) {
-      navigate('/admin/dashboard');
-    }
+    const checkAdmin = async () => {
+      const isAdminUser = await isAdmin();
+      if (isAdminUser) {
+        navigate('/admin/dashboard');
+      }
+    };
+    checkAdmin();
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,7 +41,7 @@ const AdminLogin = () => {
     } catch (error: any) {
       toast({
         title: 'Hata',
-        description: error.message,
+        description: error.message || 'Giriş yapılamadı',
         variant: 'destructive',
       });
     } finally {

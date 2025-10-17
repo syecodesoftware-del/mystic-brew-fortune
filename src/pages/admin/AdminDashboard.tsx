@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Users, Sparkles, Star, TrendingUp, Coins } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Button } from '@/components/ui/button';
-import { getAdminStats, getDailyFortuneStats, getAllFortunes } from '@/lib/admin';
+import { getAdminStats } from '@/lib/adminAuth';
+import { getDailyFortuneStats, getAllFortunes } from '@/lib/admin';
 import { motion } from 'framer-motion';
 
 const AdminDashboard = () => {
@@ -19,39 +20,20 @@ const AdminDashboard = () => {
   const [recentFortunes, setRecentFortunes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = () => {
-    console.log('Fetching admin dashboard data...');
+  const fetchData = async () => {
+    setLoading(true);
     
-    // LocalStorage'daki tüm anahtarları kontrol et
-    console.log('All localStorage keys:', Object.keys(localStorage));
-    
-    const users = localStorage.getItem('coffee_users');
-    console.log('Users in localStorage:', users);
-    
-    const currentUser = localStorage.getItem('coffee_current_user');
-    console.log('Current user:', currentUser);
-    
-    if (!users || users === '[]') {
-      console.warn('No users found in localStorage!');
-    }
-    
-    const adminStats = getAdminStats();
-    console.log('Admin stats:', adminStats);
-    
-    // Calculate total coins
-    const usersData = JSON.parse(users || '[]');
-    const totalCoins = usersData.reduce((sum: number, u: any) => sum + (u.coins || 0), 0);
+    const adminStats = await getAdminStats();
     
     setStats({
       ...adminStats,
-      totalCoins
+      totalCoins: 0 // TODO: Calculate from Supabase
     });
     
     const dailyStats = getDailyFortuneStats(30);
     setChartData(dailyStats);
     
     const { fortunes } = getAllFortunes(1, 5);
-    console.log('Recent fortunes:', fortunes);
     setRecentFortunes(fortunes);
     
     setLoading(false);
