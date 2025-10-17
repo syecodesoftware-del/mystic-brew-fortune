@@ -242,7 +242,7 @@ const Profile = () => {
       
       {/* Header */}
       <div className="relative z-10">
-        <Header showBackButton title="Profilim" />
+        <Header />
       </div>
 
       {/* Profile Content */}
