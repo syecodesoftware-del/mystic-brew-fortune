@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ContentProtection from "./components/ContentProtection";
+import Header from "./components/Header";
 import Landing from "./pages/Landing";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -53,6 +54,7 @@ const App = () => {
             path="/fortune" 
             element={
               <ProtectedRoute>
+                <Header />
                 <Index />
               </ProtectedRoute>
             } 
@@ -61,6 +63,7 @@ const App = () => {
             path="/fortune/kahve" 
             element={
               <ProtectedRoute>
+                <Header />
                 <KahveFali />
               </ProtectedRoute>
             } 
@@ -69,6 +72,7 @@ const App = () => {
             path="/fortune/kahve/upload/:tellerId" 
             element={
               <ProtectedRoute>
+                <Header />
                 <FotoYukle />
               </ProtectedRoute>
             } 
@@ -77,6 +81,7 @@ const App = () => {
             path="/fortune/tarot" 
             element={
               <ProtectedRoute>
+                <Header />
                 <ComingSoon type="Tarot Falı" emoji="🎴" />
               </ProtectedRoute>
             } 
@@ -85,6 +90,7 @@ const App = () => {
             path="/fortune/el" 
             element={
               <ProtectedRoute>
+                <Header />
                 <ComingSoon type="El Falı" emoji="🤚" />
               </ProtectedRoute>
             } 
@@ -93,6 +99,7 @@ const App = () => {
             path="/fortune/katina" 
             element={
               <ProtectedRoute>
+                <Header />
                 <ComingSoon type="Katina Falı" emoji="🕯️" />
               </ProtectedRoute>
             } 
@@ -101,6 +108,7 @@ const App = () => {
             path="/fortune/yuz" 
             element={
               <ProtectedRoute>
+                <Header />
                 <ComingSoon type="Yüz Falı" emoji="👤" />
               </ProtectedRoute>
             } 
@@ -109,6 +117,7 @@ const App = () => {
             path="/fortune/melek" 
             element={
               <ProtectedRoute>
+                <Header />
                 <ComingSoon type="Melek Kartları" emoji="😇" />
               </ProtectedRoute>
             } 
@@ -119,6 +128,7 @@ const App = () => {
             path="/profile" 
             element={
               <ProtectedRoute>
+                <Header />
                 <Profile />
               </ProtectedRoute>
             } 
