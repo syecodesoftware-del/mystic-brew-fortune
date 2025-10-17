@@ -176,7 +176,7 @@ const Register = () => {
         birthDate: formData.birthDate,
         birthTime: formData.birthTime,
         city: formData.city.trim(),
-        gender: formData.gender
+        gender: formData.gender || 'other'
       });
 
       if (result.success && result.user) {
@@ -430,9 +430,9 @@ const Register = () => {
                 <SelectValue placeholder="Cinsiyet seçin" />
               </SelectTrigger>
               <SelectContent className="bg-card z-50">
-                <SelectItem value="Kadın">Kadın</SelectItem>
-                <SelectItem value="Erkek">Erkek</SelectItem>
-                <SelectItem value="Belirtmek İstemiyorum">Belirtmek İstemiyorum</SelectItem>
+                <SelectItem value="female">Kadın</SelectItem>
+                <SelectItem value="male">Erkek</SelectItem>
+                <SelectItem value="other">Diğer</SelectItem>
               </SelectContent>
             </Select>
             {touched.gender && errors.gender && (
