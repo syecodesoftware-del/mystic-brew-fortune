@@ -147,6 +147,7 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validasyon
     const newErrors: FormErrors = {};
     Object.keys(formData).forEach(key => {
       const error = validateField(key as keyof FormData, formData[key as keyof FormData]);
@@ -180,16 +181,16 @@ const Register = () => {
 
       if (result.success && result.user) {
         toast({
-          title: "Hoş geldin! ✨",
-          description: `${result.user.first_name}, hesabın başarıyla oluşturuldu. 50 altın hediye! 💰`,
+          title: "🎉 Kayıt başarılı!",
+          description: `${result.user.first_name}, 50 altın kazandın! 💰`,
         });
 
-        // Bildirim event'i tetikle
+        // Coin event trigger
         window.dispatchEvent(new Event('coinsUpdated'));
 
         setTimeout(() => {
           navigate('/fortune');
-        }, 500);
+        }, 1000);
       } else {
         toast({
           title: "Hata",
@@ -197,10 +198,10 @@ const Register = () => {
           variant: "destructive"
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Hata",
-        description: error instanceof Error ? error.message : "Kayıt başarısız",
+        description: error.message || "Bir hata oluştu",
         variant: "destructive"
       });
     } finally {
