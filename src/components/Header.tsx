@@ -15,8 +15,8 @@ const MobileHeader = ({ showBackButton, title }: HeaderProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const updateCoins = () => {
-      const user = getCurrentUser();
+    const updateCoins = async () => {
+      const user = await getCurrentUser();
       if (user) setCoins(user.coins || 0);
     };
 
@@ -147,11 +147,11 @@ const DesktopHeader = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const updateHeader = () => {
-      const user = getCurrentUser();
+    const updateHeader = async () => {
+      const user = await getCurrentUser();
       if (user) {
         setCoins(user.coins || 0);
-        setUserName(user.firstName || 'Kullanıcı');
+        setUserName(user.first_name || 'Kullanıcı');
       }
     };
 

@@ -167,7 +167,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const user = registerUser({
+      const result = await registerUser({
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.toLowerCase().trim(),
@@ -178,22 +178,25 @@ const Register = () => {
         gender: formData.gender
       });
 
-      // Otomatik giriş yap
-      localStorage.setItem('coffee_current_user', JSON.stringify(user));
-      
-      updateUser(user);
+      if (result.success && result.user) {
+        toast({
+          title: "Hoş geldin! ✨",
+          description: `${result.user.first_name}, hesabın başarıyla oluşturuldu. 50 altın hediye! 💰`,
+        });
 
-      toast({
-        title: "Hoş geldin! ✨",
-        description: `${user.firstName}, hesabın başarıyla oluşturuldu. 50 altın hediye! 💰`,
-      });
+        // Bildirim event'i tetikle
+        window.dispatchEvent(new Event('coinsUpdated'));
 
-      // Bildirim event'i tetikle
-      window.dispatchEvent(new Event('coinsUpdated'));
-
-      setTimeout(() => {
-        navigate('/fortune');
-      }, 500);
+        setTimeout(() => {
+          navigate('/fortune');
+        }, 500);
+      } else {
+        toast({
+          title: "Hata",
+          description: result.error || "Kayıt başarısız",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
       toast({
         title: "Hata",

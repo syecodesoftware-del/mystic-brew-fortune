@@ -84,15 +84,22 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const user = loginUser(formData.email, formData.password);
-      updateUser(user);
+      const result = await loginUser(formData.email, formData.password);
+      
+      if (result.success && result.user) {
+        toast({
+          title: "Hoş geldin! ✨",
+          description: `${result.user.first_name}, tekrar görüşmek güzel`,
+        });
 
-      toast({
-        title: "Hoş geldin! ✨",
-        description: `${user.firstName}, tekrar görüşmek güzel`,
-      });
-
-      navigate('/fortune');
+        navigate('/fortune');
+      } else {
+        toast({
+          title: "Hata",
+          description: result.error || "Giriş başarısız",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
       toast({
         title: "Hata",

@@ -1,401 +1,408 @@
-import type { Notification, NotificationSettings } from '@/types/notifications';
+import { supabase, type User } from './supabase'
+import bcrypt from 'bcryptjs'
 
-export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  birthDate: string;
-  birthTime: string;
-  city: string;
-  gender: string;
-  createdAt: string;
-  coins: number;
-  lastDailyBonus: string;
-  totalCoinsEarned: number;
-  totalCoinsSpent: number;
-  fortunes: Fortune[];
-  notifications: Notification[];
-  notificationSettings: NotificationSettings;
-}
+export type { User }
+export type { Fortune } from './supabase'
 
-export interface Fortune {
-  id: number;
-  fortune: string;
-  timestamp: string;
-  imageUrl?: string;
-}
-
-const USERS_KEY = 'coffee_users';
-const CURRENT_USER_KEY = 'coffee_current_user';
-
-export const registerUser = (userData: Omit<User, 'id' | 'createdAt' | 'fortunes' | 'coins' | 'lastDailyBonus' | 'totalCoinsEarned' | 'totalCoinsSpent' | 'notifications' | 'notificationSettings'>) => {
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  
-  if (users.find(u => u.email === userData.email)) {
-    throw new Error('Bu e-posta adresi zaten kayıtlı');
-  }
-  
-  const newUser: User = {
-    id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-    firstName: userData.firstName,
-    lastName: userData.lastName,
-    email: userData.email,
-    password: userData.password,
-    birthDate: userData.birthDate,
-    birthTime: userData.birthTime,
-    city: userData.city,
-    gender: userData.gender,
-    createdAt: new Date().toISOString(),
-    coins: 50,
-    lastDailyBonus: new Date().toISOString().split('T')[0],
-    totalCoinsEarned: 50,
-    totalCoinsSpent: 0,
-    fortunes: [],
-    notifications: [],
-    notificationSettings: {
-      fortuneReady: true,
-      dailyBonus: true,
-      adminMessages: true
-    }
-  };
-  
-  users.push(newUser);
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
-  
-  return newUser;
-};
-
-export const loginUser = (email: string, password: string) => {
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  const user = users.find(u => u.email === email && u.password === password);
-  
-  if (!user) {
-    throw new Error('E-posta veya şifre hatalı');
-  }
-  
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-  return user;
-};
-
-export const getCurrentUser = (): User | null => {
+export const registerUser = async (userData: {
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  birthDate: string
+  birthTime: string
+  city: string
+  gender: string
+}) => {
   try {
-    const user = localStorage.getItem(CURRENT_USER_KEY);
-    if (!user) return null;
+    const { data: existing } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', userData.email.toLowerCase())
+      .single()
     
-    const parsed = JSON.parse(user);
+    if (existing) {
+      throw new Error('Bu e-posta adresi zaten kayıtlı')
+    }
     
-    // Validate user object
-    if (!parsed.id || !parsed.email) return null;
+    const passwordHash = await bcrypt.hash(userData.password, 10)
     
-    return parsed;
-  } catch (error) {
-    console.error('Error getting current user:', error);
-    return null;
+    const { data: user, error } = await supabase
+      .from('users')
+      .insert({
+        email: userData.email.toLowerCase(),
+        password_hash: passwordHash,
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        birth_date: userData.birthDate,
+        birth_time: userData.birthTime,
+        city: userData.city,
+        gender: userData.gender,
+        coins: 50,
+        total_coins_earned: 50,
+        total_coins_spent: 0
+      })
+      .select()
+      .single()
+    
+    if (error) throw error
+    
+    localStorage.setItem('falcan_user_id', user.id)
+    
+    return { success: true, user }
+  } catch (error: any) {
+    console.error('Register error:', error)
+    return { success: false, error: error.message }
   }
-};
+}
+
+export const loginUser = async (email: string, password: string) => {
+  try {
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email.toLowerCase())
+      .single()
+    
+    if (error || !user) {
+      throw new Error('E-posta veya şifre hatalı')
+    }
+    
+    const isValid = await bcrypt.compare(password, user.password_hash)
+    
+    if (!isValid) {
+      throw new Error('E-posta veya şifre hatalı')
+    }
+    
+    localStorage.setItem('falcan_user_id', user.id)
+    
+    return { success: true, user }
+  } catch (error: any) {
+    console.error('Login error:', error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const getCurrentUser = async (): Promise<User | null> => {
+  try {
+    const userId = localStorage.getItem('falcan_user_id')
+    
+    if (!userId) return null
+    
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single()
+    
+    if (error) {
+      localStorage.removeItem('falcan_user_id')
+      return null
+    }
+    
+    return user
+  } catch (error) {
+    console.error('Get user error:', error)
+    return null
+  }
+}
 
 export const logoutUser = () => {
-  localStorage.removeItem(CURRENT_USER_KEY);
-};
+  localStorage.removeItem('falcan_user_id')
+  window.location.href = '/login'
+}
 
-export const saveFortune = (fortune: string, imageUrl?: string): string => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) return '';
-  
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  const userIndex = users.findIndex(u => u.id === currentUser.id);
-  
-  if (userIndex !== -1) {
-    const newFortune: Fortune = {
-      id: Date.now(),
-      fortune,
-      timestamp: new Date().toISOString(),
-      imageUrl
-    };
+export const updateCoins = async (userId: string, amount: number, type: 'earn' | 'spend') => {
+  try {
+    const { data: user } = await supabase
+      .from('users')
+      .select('coins, total_coins_earned, total_coins_spent')
+      .eq('id', userId)
+      .single()
     
-    users[userIndex].fortunes.push(newFortune);
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    if (!user) throw new Error('User not found')
     
-    const updatedUser = users[userIndex];
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
+    const updates: any = {
+      coins: user.coins + (type === 'earn' ? amount : -amount),
+      updated_at: new Date().toISOString()
+    }
     
-    return String(newFortune.id);
+    if (type === 'earn') {
+      updates.total_coins_earned = user.total_coins_earned + amount
+    } else {
+      updates.total_coins_spent = user.total_coins_spent + amount
+    }
+    
+    const { error } = await supabase
+      .from('users')
+      .update(updates)
+      .eq('id', userId)
+    
+    if (error) throw error
+    
+    return { success: true }
+  } catch (error: any) {
+    console.error('Update coins error:', error)
+    return { success: false, error: error.message }
   }
-  
-  return '';
-};
+}
 
-export const updateUserProfile = (updatedData: {
-  firstName: string;
-  lastName: string;
-  birthDate: string;
-  birthTime: string;
-  city: string;
-  gender: string;
-  currentPassword?: string;
-  newPassword?: string;
-  newPasswordConfirm?: string;
+export const checkCoinsAndDeduct = async (userId: string, amount: number) => {
+  try {
+    const user = await getCurrentUser()
+    if (!user) return false
+    
+    if (user.coins < amount) {
+      return false
+    }
+    
+    const result = await updateCoins(userId, amount, 'spend')
+    return result.success
+  } catch (error) {
+    console.error('Check coins error:', error)
+    return false
+  }
+}
+
+export const refundCoins = async (userId: string, amount: number) => {
+  return updateCoins(userId, amount, 'earn')
+}
+
+export const saveFortune = async (fortuneData: {
+  userId: string
+  fortuneText: string
+  fortuneTellerId: number
+  fortuneTellerName: string
+  fortuneTellerEmoji: string
+  fortuneTellerCost: number
+  images?: any
 }) => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) throw new Error('Kullanıcı bulunamadı');
-
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  
-  if (updatedData.newPassword) {
-    if (currentUser.password !== updatedData.currentPassword) {
-      throw new Error('Mevcut şifre hatalı');
-    }
-    if (updatedData.newPassword !== updatedData.newPasswordConfirm) {
-      throw new Error('Yeni şifreler eşleşmiyor');
-    }
-    if (updatedData.newPassword.length < 6) {
-      throw new Error('Yeni şifre en az 6 karakter olmalı');
-    }
-  }
-  
-  const userIndex = users.findIndex(u => u.id === currentUser.id);
-  if (userIndex !== -1) {
-    users[userIndex] = {
-      ...users[userIndex],
-      firstName: updatedData.firstName,
-      lastName: updatedData.lastName,
-      birthDate: updatedData.birthDate,
-      birthTime: updatedData.birthTime,
-      city: updatedData.city,
-      gender: updatedData.gender,
-      ...(updatedData.newPassword && { password: updatedData.newPassword }),
-    };
+  try {
+    const { data, error } = await supabase
+      .from('fortunes')
+      .insert({
+        user_id: fortuneData.userId,
+        fortune_text: fortuneData.fortuneText,
+        fortune_teller_id: fortuneData.fortuneTellerId,
+        fortune_teller_name: fortuneData.fortuneTellerName,
+        fortune_teller_emoji: fortuneData.fortuneTellerEmoji,
+        fortune_teller_cost: fortuneData.fortuneTellerCost,
+        images: fortuneData.images || null
+      })
+      .select()
+      .single()
     
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
+    if (error) throw error
     
-    return users[userIndex];
+    return { success: true, fortune: data }
+  } catch (error: any) {
+    console.error('Save fortune error:', error)
+    return { success: false, error: error.message }
   }
-  
-  throw new Error('Kullanıcı güncellenemedi');
-};
+}
 
-export const getUserFortunes = (): Fortune[] => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) return [];
-  
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  const user = users.find(u => u.id === currentUser.id);
-  
-  return user?.fortunes || [];
-};
-
-export const deleteFortune = (fortuneId: number) => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) return;
-  
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  const userIndex = users.findIndex(u => u.id === currentUser.id);
-  
-  if (userIndex !== -1) {
-    users[userIndex].fortunes = users[userIndex].fortunes.filter(
-      f => f.id !== fortuneId
-    );
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
+export const getUserFortunes = async (userId: string) => {
+  try {
+    const { data: fortunes, error } = await supabase
+      .from('fortunes')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    
+    return fortunes || []
+  } catch (error) {
+    console.error('Get fortunes error:', error)
+    return []
   }
-};
+}
 
-export const deleteUser = (userId: string) => {
-  let users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  users = users.filter(u => u.id !== userId);
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-};
-
-export const adminUpdateUser = (userId: string, updatedData: {
-  firstName: string;
-  lastName: string;
-  email: string;
-  birthDate: string;
-  birthTime: string;
-  city: string;
-  gender: string;
-  password?: string;
-}) => {
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  const userIndex = users.findIndex(u => u.id === userId);
-  
-  if (userIndex === -1) {
-    throw new Error('Kullanıcı bulunamadı');
+export const createNotification = async (userId: string, title: string, message: string, type: string = 'info') => {
+  try {
+    const { error } = await supabase
+      .from('notifications')
+      .insert({
+        user_id: userId,
+        title,
+        message,
+        type
+      })
+    
+    if (error) throw error
+    
+    return { success: true }
+  } catch (error: any) {
+    console.error('Create notification error:', error)
+    return { success: false, error: error.message }
   }
-  
-  // Email değişikliği kontrolü
-  if (updatedData.email !== users[userIndex].email) {
-    const emailExists = users.some(u => u.email === updatedData.email && u.id !== userId);
-    if (emailExists) {
-      throw new Error('Bu e-posta adresi başka bir kullanıcı tarafından kullanılıyor');
+}
+
+export const getUserNotifications = async (userId: string) => {
+  try {
+    const { data: notifications, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    
+    return notifications || []
+  } catch (error) {
+    console.error('Get notifications error:', error)
+    return []
+  }
+}
+
+export const markNotificationAsRead = async (notificationId: string) => {
+  try {
+    const { error } = await supabase
+      .from('notifications')
+      .update({ read: true })
+      .eq('id', notificationId)
+    
+    if (error) throw error
+    
+    return { success: true }
+  } catch (error: any) {
+    console.error('Mark notification error:', error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const checkAndGiveDailyBonus = async (userId: string) => {
+  try {
+    const user = await getCurrentUser()
+    if (!user) return null
+    
+    const lastBonus = user.last_daily_bonus ? new Date(user.last_daily_bonus) : null
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    if (lastBonus) {
+      const lastBonusDate = new Date(lastBonus)
+      lastBonusDate.setHours(0, 0, 0, 0)
+      
+      if (lastBonusDate.getTime() === today.getTime()) {
+        return null
+      }
     }
+    
+    const DAILY_BONUS = 10
+    await updateCoins(userId, DAILY_BONUS, 'earn')
+    
+    await supabase
+      .from('users')
+      .update({ last_daily_bonus: new Date().toISOString() })
+      .eq('id', userId)
+    
+    return {
+      message: 'Günlük bonus kazandın! 🎁',
+      amount: DAILY_BONUS
+    }
+  } catch (error) {
+    console.error('Daily bonus error:', error)
+    return null
   }
-  
-  users[userIndex] = {
-    ...users[userIndex],
-    firstName: updatedData.firstName,
-    lastName: updatedData.lastName,
-    email: updatedData.email,
-    birthDate: updatedData.birthDate,
-    birthTime: updatedData.birthTime,
-    city: updatedData.city,
-    gender: updatedData.gender,
-    ...(updatedData.password && { password: updatedData.password }),
-  };
-  
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  
-  // Eğer güncellenene kullanıcı şu anki kullanıcıysa, current_user'ı da güncelle
-  const currentUser = getCurrentUser();
-  if (currentUser && currentUser.id === userId) {
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
-  }
-  
-  return users[userIndex];
-};
+}
 
-export const downloadFortune = (fortune: Fortune) => {
+export const updateUserProfile = async (userId: string, updates: Partial<User>) => {
+  try {
+    const { error } = await supabase
+      .from('users')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', userId)
+    
+    if (error) throw error
+    
+    return { success: true }
+  } catch (error: any) {
+    console.error('Update profile error:', error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const deleteFortune = async (fortuneId: string) => {
+  try {
+    const { error } = await supabase
+      .from('fortunes')
+      .delete()
+      .eq('id', fortuneId)
+    
+    if (error) throw error
+    
+    return { success: true }
+  } catch (error: any) {
+    console.error('Delete fortune error:', error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const deleteUser = async (userId: string) => {
+  try {
+    const { error } = await supabase
+      .from('users')
+      .delete()
+      .eq('id', userId)
+    
+    if (error) throw error
+    
+    return { success: true }
+  } catch (error: any) {
+    console.error('Delete user error:', error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const adminUpdateUser = async (userId: string, updates: any) => {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', userId)
+      .select()
+      .single()
+    
+    if (error) throw error
+    
+    return { success: true, user: data }
+  } catch (error: any) {
+    console.error('Admin update user error:', error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const downloadFortune = (fortune: any) => {
   const content = `
 ╔════════════════════════════════════╗
 ║     ✨ Dijital Kahve Falın ✨      ║
 ╚════════════════════════════════════╝
 
-Tarih: ${new Date(fortune.timestamp).toLocaleString('tr-TR')}
+Tarih: ${new Date(fortune.created_at).toLocaleString('tr-TR')}
 
-${fortune.fortune}
+${fortune.fortune_text}
 
 ────────────────────────────────────
 🌙 Telvenin içindeki semboller
    senin enerjini fısıldıyor...
-  `;
+  `
   
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `kahve-fali-${fortune.id}.txt`;
-  a.click();
-  URL.revokeObjectURL(url);
-};
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `kahve-fali-${fortune.id}.txt`
+  a.click()
+  URL.revokeObjectURL(url)
+}
 
-export const checkAndGiveDailyBonus = () => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) return null;
-  
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  const userIndex = users.findIndex(u => u.id === currentUser.id);
-  
-  if (userIndex === -1) return null;
-  
-  const today = new Date().toISOString().split('T')[0];
-  const lastBonus = users[userIndex].lastDailyBonus;
-  
-  if (lastBonus !== today) {
-    users[userIndex].coins += 20;
-    users[userIndex].lastDailyBonus = today;
-    users[userIndex].totalCoinsEarned += 20;
-    
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
-    
-    return {
-      bonus: 20,
-      newBalance: users[userIndex].coins,
-      message: '🎉 Günlük 20 altın kazandın!'
-    };
-  }
-  
-  return null;
-};
-
-export const checkCoinsAndDeduct = (cost: number = 10): boolean => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) return false;
-  
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  const userIndex = users.findIndex(u => u.id === currentUser.id);
-  
-  if (userIndex === -1) return false;
-  
-  if (users[userIndex].coins < cost) {
-    return false;
-  }
-  
-  users[userIndex].coins -= cost;
-  users[userIndex].totalCoinsSpent += cost;
-  
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
-  
-  return true;
-};
-
-export const refundCoins = (amount: number) => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) return;
-  
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  const userIndex = users.findIndex(u => u.id === currentUser.id);
-  
-  if (userIndex !== -1) {
-    users[userIndex].coins += amount;
-    users[userIndex].totalCoinsSpent -= amount;
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
-  }
-};
-
-export const adminGiveCoins = (userId: string, amount: number) => {
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  const userIndex = users.findIndex(u => u.id === userId);
-  
-  if (userIndex === -1) {
-    throw new Error('Kullanıcı bulunamadı');
-  }
-  
-  users[userIndex].coins += amount;
-  users[userIndex].totalCoinsEarned += amount;
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  
-  const currentUser = getCurrentUser();
-  if (currentUser && currentUser.id === userId) {
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users[userIndex]));
-  }
-  
-  return users[userIndex];
-};
-
+// Migration function (no longer needed with Supabase)
 export const migrateUsersToCoins = () => {
-  let users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]') as User[];
-  let updated = false;
-  
-  users = users.map(user => {
-    if (user.coins === undefined) {
-      updated = true;
-      return {
-        ...user,
-        coins: 50,
-        lastDailyBonus: new Date().toISOString().split('T')[0],
-        totalCoinsEarned: 50,
-        totalCoinsSpent: 0
-      };
-    }
-    return user;
-  });
-  
-  if (updated) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    
-    const currentUser = getCurrentUser();
-    if (currentUser && currentUser.coins === undefined) {
-      const updatedUser = users.find(u => u.id === currentUser.id);
-      if (updatedUser) {
-        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
-      }
-    }
-  }
-};
+  console.log('Migration not needed with Supabase')
+}
+
+// Keep compatibility with existing code
+export const adminGiveCoins = async (userId: string, amount: number) => {
+  return updateCoins(userId, amount, 'earn')
+}

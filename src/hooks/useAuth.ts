@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCurrentUser, logoutUser, type User, checkAndGiveDailyBonus, migrateUsersToCoins } from '@/lib/auth';
+import { getCurrentUser, logoutUser, type User, checkAndGiveDailyBonus } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 
 export const useAuth = () => {
@@ -10,36 +10,20 @@ export const useAuth = () => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // Migrate existing users to coins
-        migrateUsersToCoins();
-        
-        const currentUser = getCurrentUser();
+        const currentUser = await getCurrentUser();
         setUser(currentUser);
 
-        // Defensive sync: ensure current user exists in coffee_users
         if (currentUser) {
-          try {
-            const USERS_KEY = 'coffee_users';
-            const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-            const exists = users.some((u: any) => u.id === currentUser.id || u.email === currentUser.email);
-            if (!exists) {
-              users.push(currentUser);
-              localStorage.setItem(USERS_KEY, JSON.stringify(users));
-              console.log('Synchronized current user into coffee_users');
-            }
-          } catch (e) {
-            console.warn('User sync check failed', e);
-          }
-
           // Check daily bonus
-          const bonus = checkAndGiveDailyBonus();
+          const bonus = await checkAndGiveDailyBonus(currentUser.id);
           if (bonus) {
             toast({
               title: bonus.message,
-              description: `Yeni bakiyen: ${bonus.newBalance} 💰`,
+              description: `${bonus.amount} altın kazandın! 💰`,
               duration: 5000
             });
-            setUser(getCurrentUser());
+            const updatedUser = await getCurrentUser();
+            setUser(updatedUser);
             window.dispatchEvent(new Event('coinsUpdated'));
           }
         }

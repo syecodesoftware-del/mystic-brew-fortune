@@ -5,8 +5,8 @@ import { getCurrentUser } from '@/lib/auth';
 const CoinDisplay = () => {
   const [coins, setCoins] = useState(0);
 
-  const updateCoins = () => {
-    const user = getCurrentUser();
+  const updateCoins = async () => {
+    const user = await getCurrentUser();
     if (user) setCoins(user.coins || 0);
   };
 
