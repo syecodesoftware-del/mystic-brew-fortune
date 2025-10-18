@@ -9,6 +9,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       <Header />
+      <div className="h-[64px]"></div>
       <main>{children}</main>
     </>
   );
