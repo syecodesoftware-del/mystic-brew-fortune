@@ -232,62 +232,151 @@ const Profile = () => {
     });
   };
 
+  const optimizeImage = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        
+        img.onload = () => {
+          // Canvas oluştur
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Maksimum boyut 1000px
+          const maxSize = 1000;
+          if (width > height) {
+            if (width > maxSize) {
+              height *= maxSize / width;
+              width = maxSize;
+            }
+          } else {
+            if (height > maxSize) {
+              width *= maxSize / height;
+              height = maxSize;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Blob'a çevir (sıkıştırılmış)
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const optimizedFile = new File([blob], file.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+                resolve(optimizedFile);
+              } else {
+                reject(new Error('Resim işlenemedi'));
+              }
+            },
+            'image/jpeg',
+            0.8 // %80 kalite
+          );
+        };
+        
+        img.onerror = () => reject(new Error('Resim yüklenemedi'));
+      };
+      
+      reader.onerror = () => reject(new Error('Dosya okunamadı'));
+    });
+  };
+
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0] || !user) return;
     
     const file = e.target.files[0];
     
-    // Dosya boyutu kontrolü (2MB)
-    if (file.size > 2 * 1024 * 1024) {
+    console.log('File selected:', file.name, 'Size:', file.size, 'Type:', file.type); // DEBUG
+    
+    // Dosya boyutu kontrolü (5MB'a çıkardık)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
       toast({
         title: "Dosya çok büyük",
-        description: "Fotoğraf boyutu 2MB'dan küçük olmalı",
+        description: `Fotoğraf boyutu çok büyük (${(file.size / 1024 / 1024).toFixed(2)}MB). Maksimum 5MB olmalı.`,
         variant: "destructive"
       });
       return;
     }
     
     // Dosya tipi kontrolü
-    if (!file.type.startsWith('image/')) {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
       toast({
         title: "Geçersiz dosya",
-        description: "Sadece resim dosyası yükleyebilirsiniz",
+        description: "Sadece JPG, PNG veya WEBP formatında resim yükleyebilirsiniz",
         variant: "destructive"
       });
       return;
     }
     
     setUploadingPhoto(true);
+    toast({
+      title: "Yükleniyor...",
+      description: "Fotoğraf yükleniyor, lütfen bekleyin",
+    });
     
     try {
+      // Resmi optimize et/sıkıştır
+      const optimizedFile = await optimizeImage(file);
+      console.log('Optimized size:', optimizedFile.size); // DEBUG
+      
+      // Dosya adı oluştur
+      const fileExt = file.name.split('.').pop() || 'jpg';
+      const fileName = `profile_${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+      
+      console.log('Uploading to:', filePath); // DEBUG
+      
       // Eski fotoğrafı sil (varsa)
       if (user.profile_photo) {
-        const oldFileName = user.profile_photo.split('/').pop();
-        if (oldFileName) {
-          await supabase.storage
-            .from('profile-photos')
-            .remove([`${user.id}/${oldFileName}`]);
+        try {
+          const oldPath = user.profile_photo.split('profile-photos/')[1];
+          if (oldPath) {
+            await supabase.storage
+              .from('profile-photos')
+              .remove([oldPath]);
+            console.log('Old photo removed'); // DEBUG
+          }
+        } catch (error) {
+          console.log('No old photo to remove or error:', error);
         }
       }
       
       // Yeni fotoğrafı yükle
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
-      
-      const { error: uploadError } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('profile-photos')
-        .upload(filePath, file, {
+        .upload(filePath, optimizedFile, {
           cacheControl: '3600',
-          upsert: false
+          upsert: true,
+          contentType: file.type
         });
       
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Upload error:', uploadError); // DEBUG
+        throw uploadError;
+      }
+      
+      console.log('Upload successful:', uploadData); // DEBUG
       
       // Public URL al
-      const { data: { publicUrl } } = supabase.storage
+      const { data: urlData } = supabase.storage
         .from('profile-photos')
         .getPublicUrl(filePath);
+      
+      const publicUrl = urlData.publicUrl;
+      console.log('Public URL:', publicUrl); // DEBUG
       
       // Users tablosunu güncelle
       const { error: updateError } = await supabase
@@ -295,7 +384,10 @@ const Profile = () => {
         .update({ profile_photo: publicUrl })
         .eq('id', user.id);
       
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('Update error:', updateError); // DEBUG
+        throw updateError;
+      }
       
       // State'i güncelle
       updateUser({ ...user, profile_photo: publicUrl });
@@ -309,7 +401,7 @@ const Profile = () => {
       console.error('Photo upload error:', error);
       toast({
         title: "Hata",
-        description: "Fotoğraf yüklenemedi",
+        description: `Hata: ${error.message || 'Fotoğraf yüklenemedi'}`,
         variant: "destructive"
       });
     } finally {
