@@ -113,48 +113,6 @@ const Index = () => {
       
       {/* Content */}
       <div className="relative z-10">
-        {/* Header */}
-        <header className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] flex items-center justify-center shadow-lg">
-                <span className="text-3xl">🔮</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-mystic font-bold text-foreground tracking-wide">
-                  Falcan
-                </h1>
-                <p className="text-xs text-muted-foreground">Geleceğini keşfet</p>
-              </div>
-            </div>
-            
-            {/* Nav */}
-            <nav className="flex items-center gap-3">
-              {/* Coins */}
-              <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[hsl(43,96%,56%)]/20 to-[hsl(24,95%,61%)]/20 backdrop-blur-md border border-[hsl(43,96%,56%)]/30 shadow-lg">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[hsl(43,96%,56%)] to-[hsl(24,95%,61%)] flex items-center justify-center shadow-md">
-                  <span className="text-base">💰</span>
-                </div>
-                <span className="font-bold text-foreground">100</span>
-              </div>
-              
-              {/* Notifications */}
-              <button className="relative p-3 rounded-xl bg-white/70 backdrop-blur-md border border-primary/20 hover:bg-white shadow-md hover:shadow-lg transition-all">
-                <Bell size={20} className="text-foreground" />
-              </button>
-              
-              {/* Profile */}
-              <button 
-                onClick={() => navigate('/profile')}
-                className="p-3 rounded-xl bg-white/70 backdrop-blur-md border border-primary/20 hover:bg-white shadow-md hover:shadow-lg transition-all"
-              >
-                <User size={20} className="text-foreground" />
-              </button>
-            </nav>
-          </div>
-        </header>
-        
         {/* Hero Section */}
         <section className="container mx-auto px-4 pt-16 pb-12 text-center">
           <div className="max-w-3xl mx-auto space-y-6">
