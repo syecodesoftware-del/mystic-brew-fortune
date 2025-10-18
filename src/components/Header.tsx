@@ -39,7 +39,7 @@ const Header = () => {
             <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] bg-clip-text text-transparent font-mystic leading-tight">
               FALCAN
             </h1>
-            <p className="text-xs text-[hsl(220,9%,46%)] font-medium">Enerjini keşfet</p>
+            <p className="text-xs text-[hsl(220,9%,46%)] font-medium">Enerjini keşfet...</p>
           </div>
         </div>
         
