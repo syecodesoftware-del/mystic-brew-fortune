@@ -57,13 +57,16 @@ const Header = () => {
             <Bell size={20} className="text-[hsl(220,13%,18%)]" />
           </button>
           
-          {/* Profile Button */}
+          {/* Profile Button with Name */}
           <button
             onClick={() => navigate('/profile')}
-            className="p-2 rounded-xl bg-white/70 border border-[hsl(258,90%,76%)]/20 hover:bg-white hover:shadow-lg transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/70 border border-[hsl(258,90%,76%)]/20 hover:bg-white hover:shadow-lg transition-all"
             aria-label="Profil"
           >
-            <UserIcon size={20} className="text-[hsl(220,13%,18%)]" />
+            <UserIcon size={18} className="text-[hsl(220,13%,18%)]" />
+            <span className="text-sm font-medium text-[hsl(220,13%,18%)] hidden sm:block">
+              {user.first_name}
+            </span>
           </button>
         </div>
       </div>
