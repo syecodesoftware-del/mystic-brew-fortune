@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Edit, Save, X, Download, Trash2, 
-  Calendar, Clock, Eye, EyeOff, Sparkles, MapPin, Coins, Gift
+  Calendar, Clock, Eye, EyeOff, Sparkles, MapPin, Coins, Gift, Camera
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { updateUserProfile, getUserFortunes, deleteFortune, downloadFortune, checkAndGiveDailyBonus, type Fortune } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
 import Header from '@/components/Header';
 import MysticalBackground from '@/components/MysticalBackground';
 import logo from '@/assets/logo.png';
@@ -45,6 +46,7 @@ const Profile = () => {
   const [fortuneToDelete, setFortuneToDelete] = useState<string | null>(null);
   const [canClaimBonus, setCanClaimBonus] = useState(false);
   const [timeUntilNextBonus, setTimeUntilNextBonus] = useState('');
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   
   const [formData, setFormData] = useState({
     firstName: user?.first_name || '',
@@ -230,6 +232,91 @@ const Profile = () => {
     });
   };
 
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0] || !user) return;
+    
+    const file = e.target.files[0];
+    
+    // Dosya boyutu kontrolü (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast({
+        title: "Dosya çok büyük",
+        description: "Fotoğraf boyutu 2MB'dan küçük olmalı",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Dosya tipi kontrolü
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Geçersiz dosya",
+        description: "Sadece resim dosyası yükleyebilirsiniz",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setUploadingPhoto(true);
+    
+    try {
+      // Eski fotoğrafı sil (varsa)
+      if (user.profile_photo) {
+        const oldFileName = user.profile_photo.split('/').pop();
+        if (oldFileName) {
+          await supabase.storage
+            .from('profile-photos')
+            .remove([`${user.id}/${oldFileName}`]);
+        }
+      }
+      
+      // Yeni fotoğrafı yükle
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+      
+      if (uploadError) throw uploadError;
+      
+      // Public URL al
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(filePath);
+      
+      // Users tablosunu güncelle
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ profile_photo: publicUrl })
+        .eq('id', user.id);
+      
+      if (updateError) throw updateError;
+      
+      // State'i güncelle
+      updateUser({ ...user, profile_photo: publicUrl });
+      
+      toast({
+        title: "Başarılı! ✨",
+        description: "Profil fotoğrafı güncellendi",
+      });
+      
+    } catch (error: any) {
+      console.error('Photo upload error:', error);
+      toast({
+        title: "Hata",
+        description: "Fotoğraf yüklenemedi",
+        variant: "destructive"
+      });
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
   if (!user) return null;
 
   return (
@@ -254,11 +341,45 @@ const Profile = () => {
         >
           {/* User Summary */}
           <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)] text-center">
-            <Avatar className="w-24 h-24 mx-auto mb-4">
-              <AvatarFallback className={`bg-gradient-to-br ${getAvatarColor(user.id)} text-white text-3xl font-bold`}>
-                {getInitials(user.first_name, user.last_name)}
-              </AvatarFallback>
-            </Avatar>
+            {/* Profile Photo with Upload */}
+            <div className="relative w-24 h-24 mx-auto mb-4 group">
+              <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-[hsl(258,90%,76%)]/30 shadow-lg">
+                {user.profile_photo ? (
+                  <img 
+                    src={user.profile_photo} 
+                    alt={`${user.first_name} ${user.last_name}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className={`w-full h-full bg-gradient-to-br ${getAvatarColor(user.id)} flex items-center justify-center`}>
+                    <span className="text-3xl font-bold text-white">
+                      {getInitials(user.first_name, user.last_name)}
+                    </span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Upload Button Overlay */}
+              <label 
+                htmlFor="photo-upload" 
+                className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              >
+                {uploadingPhoto ? (
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                ) : (
+                  <Camera className="w-8 h-8 text-white" />
+                )}
+              </label>
+              
+              <input
+                id="photo-upload"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handlePhotoUpload}
+                className="hidden"
+                disabled={uploadingPhoto}
+              />
+            </div>
             
             <h1 className="text-3xl font-bold text-[hsl(220,13%,18%)] mb-2 font-display">
               {user.first_name} {user.last_name}

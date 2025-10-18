@@ -60,13 +60,25 @@ const Header = () => {
             <Bell size={20} className="text-[hsl(220,13%,18%)]" />
           </button>
           
-          {/* Profile Button with Name */}
+          {/* Profile Button with Photo/Name */}
           <button
             onClick={() => navigate('/profile')}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/70 border border-[hsl(258,90%,76%)]/20 hover:bg-white hover:shadow-lg transition-all"
             aria-label="Profil"
           >
-            <UserIcon size={18} className="text-[hsl(220,13%,18%)]" />
+            {user.profile_photo ? (
+              <img 
+                src={user.profile_photo} 
+                alt="Profil"
+                className="w-8 h-8 rounded-full object-cover border-2 border-[hsl(258,90%,76%)]/30"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] flex items-center justify-center border-2 border-[hsl(258,90%,76%)]/30">
+                <span className="text-xs font-bold text-white">
+                  {user.first_name.charAt(0)}{user.last_name.charAt(0)}
+                </span>
+              </div>
+            )}
             <span className="text-sm font-medium text-[hsl(220,13%,18%)] hidden sm:block">
               {user.first_name}
             </span>

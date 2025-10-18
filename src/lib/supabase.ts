@@ -18,6 +18,7 @@ export type User = {
   total_coins_earned: number
   total_coins_spent: number
   last_daily_bonus: string | null
+  profile_photo: string | null
   created_at: string
   updated_at: string
 }
