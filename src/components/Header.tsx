@@ -35,9 +35,12 @@ const Header = () => {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] flex items-center justify-center">
             <span className="text-2xl">🔮</span>
           </div>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] bg-clip-text text-transparent font-mystic">
-            FALCAN
-          </h1>
+          <div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] bg-clip-text text-transparent font-mystic leading-tight">
+              FALCAN
+            </h1>
+            <p className="text-xs text-[hsl(220,9%,46%)] font-medium">Enerjini keşfet</p>
+          </div>
         </div>
         
         {/* Right side: Coins, Notifications, Profile */}
