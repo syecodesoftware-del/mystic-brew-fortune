@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, Coffee, Star, Heart, Hand, Flame, CloudSun } from 'lucide-react';
+import { ArrowRight, Sparkles, Coffee, Star, Heart, Moon, Eye, Zap } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import type { LucideIcon } from 'lucide-react';
 
@@ -8,10 +8,9 @@ interface FortuneType {
   type: string;
   title: string;
   icon: LucideIcon;
-  description: string;
+  emoji: string;
   gradient: string;
-  bgColor: string;
-  borderColor: string;
+  glowColor: string;
   isActive: boolean;
   badge?: string;
 }
@@ -25,53 +24,18 @@ const Index = () => {
       type: 'kahve',
       title: 'Kahve Falı',
       icon: Coffee,
-      description: 'Geleneksel kahve falı yorumlama',
-      gradient: 'from-amber-600 to-orange-600',
-      bgColor: 'bg-amber-50',
-      borderColor: 'border-amber-200',
+      emoji: '☕',
+      gradient: 'from-amber-700 to-orange-600',
+      glowColor: 'shadow-amber-500/50',
       isActive: true
     },
     {
       type: 'tarot',
-      title: 'Tarot Falı',
-      icon: Sparkles,
-      description: 'Tarot kartları ile gelecek yorumu',
-      gradient: 'from-purple-600 to-pink-600',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200',
-      isActive: false,
-      badge: 'Yakında'
-    },
-    {
-      type: 'el',
-      title: 'El Falı',
-      icon: Hand,
-      description: 'Avuç içi çizgilerinden fal',
-      gradient: 'from-rose-500 to-red-600',
-      bgColor: 'bg-rose-50',
-      borderColor: 'border-rose-200',
-      isActive: false,
-      badge: 'Yakında'
-    },
-    {
-      type: 'katina',
-      title: 'Katina Falı',
-      icon: Flame,
-      description: 'Ateş ve mum ile mistik yorum',
-      gradient: 'from-yellow-500 to-orange-600',
-      bgColor: 'bg-yellow-50',
-      borderColor: 'border-yellow-200',
-      isActive: false,
-      badge: 'Yakında'
-    },
-    {
-      type: 'yildiz',
-      title: 'Yıldız Falı',
-      icon: Star,
-      description: 'Astroloji ve burç yorumu',
-      gradient: 'from-blue-600 to-indigo-600',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
+      title: 'Tarot',
+      icon: Moon,
+      emoji: '🌙',
+      gradient: 'from-indigo-600 to-purple-600',
+      glowColor: 'shadow-purple-500/50',
       isActive: false,
       badge: 'Yakında'
     },
@@ -79,10 +43,39 @@ const Index = () => {
       type: 'ask',
       title: 'Aşk Falı',
       icon: Heart,
-      description: 'İlişkiler ve aşk hayatı yorumu',
+      emoji: '💕',
       gradient: 'from-pink-500 to-rose-600',
-      bgColor: 'bg-pink-50',
-      borderColor: 'border-pink-200',
+      glowColor: 'shadow-pink-500/50',
+      isActive: false,
+      badge: 'Yakında'
+    },
+    {
+      type: 'yildiz',
+      title: 'Yıldız Falı',
+      icon: Star,
+      emoji: '⭐',
+      gradient: 'from-yellow-500 to-amber-600',
+      glowColor: 'shadow-yellow-500/50',
+      isActive: false,
+      badge: 'Yakında'
+    },
+    {
+      type: 'ruya',
+      title: 'Rüya Yorumu',
+      icon: Eye,
+      emoji: '👁️',
+      gradient: 'from-cyan-500 to-blue-600',
+      glowColor: 'shadow-cyan-500/50',
+      isActive: false,
+      badge: 'Yakında'
+    },
+    {
+      type: 'el',
+      title: 'El Falı',
+      icon: Zap,
+      emoji: '✋',
+      gradient: 'from-emerald-500 to-teal-600',
+      glowColor: 'shadow-emerald-500/50',
       isActive: false,
       badge: 'Yakında'
     }
@@ -215,7 +208,7 @@ const Index = () => {
             </div>
             
             {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto px-4">
               {fortuneTypes.map((fortune, index) => {
                 const IconComponent = fortune.icon;
                 
@@ -224,52 +217,52 @@ const Index = () => {
                     key={fortune.type}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ delay: index * 0.05 }}
                     onClick={() => fortune.isActive && handleFortuneTypeClick(fortune.type)}
-                    className={`
-                      relative overflow-hidden rounded-2xl p-6 cursor-pointer
-                      transition-all duration-300
-                      ${fortune.isActive 
-                        ? `${fortune.bgColor} border-2 ${fortune.borderColor} group hover:shadow-xl hover:scale-105` 
-                        : 'bg-white/40 border-2 border-gray-200 opacity-60 cursor-not-allowed'
-                      }
-                    `}
+                    className={`relative group ${fortune.isActive ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}
                   >
-                    {/* Badge */}
-                    {fortune.badge && (
-                      <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-gradient-to-r from-[hsl(43,96%,56%)] to-[hsl(24,95%,61%)] text-xs font-bold text-white shadow-lg">
-                        {fortune.badge}
+                    {/* Card */}
+                    <div className={`relative bg-white/80 backdrop-blur-lg rounded-2xl p-4 border transition-all duration-300 ${
+                      fortune.isActive 
+                        ? 'border-[hsl(258,90%,76%)]/20 hover:border-[hsl(258,90%,76%)]/40 hover:shadow-2xl hover:-translate-y-2' 
+                        : 'border-gray-200'
+                    }`}>
+                      
+                      {/* Badge */}
+                      {fortune.badge && (
+                        <div className="absolute -top-2 -right-2 px-2 py-1 rounded-full bg-gradient-to-r from-[hsl(43,96%,56%)] to-[hsl(24,95%,61%)] text-[10px] font-bold text-white shadow-lg z-10">
+                          {fortune.badge}
+                        </div>
+                      )}
+                      
+                      {/* Glow effect on hover */}
+                      {fortune.isActive && (
+                        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${fortune.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300 blur-xl`} />
+                      )}
+                      
+                      {/* Icon */}
+                      <div className={`relative w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br ${fortune.gradient} flex items-center justify-center ${
+                        fortune.isActive ? `group-hover:scale-110 group-hover:${fortune.glowColor} group-hover:shadow-lg` : ''
+                      } transition-all duration-300`}>
+                        <IconComponent className="w-7 h-7 text-white" strokeWidth={2} />
                       </div>
-                    )}
-                    
-                    {/* Gradient background on hover */}
-                    {fortune.isActive && (
-                      <div className={`absolute inset-0 bg-gradient-to-br ${fortune.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
-                    )}
-                    
-                    {/* Icon Container */}
-                    <div className={`relative w-16 h-16 rounded-2xl bg-gradient-to-br ${fortune.gradient} flex items-center justify-center mb-4 ${fortune.isActive ? 'group-hover:scale-110' : ''} transition-transform duration-300`}>
-                      <IconComponent className="w-8 h-8 text-white" strokeWidth={2.5} />
-                    </div>
-                    
-                    {/* Content */}
-                    <div className="relative">
-                      <h3 className={`text-xl font-bold mb-2 ${fortune.isActive ? 'text-foreground group-hover:bg-gradient-to-r group-hover:from-[hsl(258,90%,76%)] group-hover:to-[hsl(243,75%,59%)] group-hover:bg-clip-text group-hover:text-transparent' : 'text-gray-600'} transition-all`}>
+                      
+                      {/* Title */}
+                      <h3 className={`text-center text-sm font-bold transition-all duration-300 ${
+                        fortune.isActive 
+                          ? 'text-foreground group-hover:bg-gradient-to-r group-hover:from-[hsl(258,90%,76%)] group-hover:to-[hsl(243,75%,59%)] group-hover:bg-clip-text group-hover:text-transparent' 
+                          : 'text-gray-500'
+                      }`}>
                         {fortune.title}
                       </h3>
-                      <p className={`text-sm mb-4 ${fortune.isActive ? 'text-muted-foreground group-hover:text-foreground' : 'text-gray-500'} transition-colors`}>
-                        {fortune.description}
-                      </p>
-                    </div>
-                    
-                    {/* Arrow indicator */}
-                    {fortune.isActive && (
-                      <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${fortune.gradient} flex items-center justify-center`}>
-                          <ArrowRight className="w-4 h-4 text-white" />
+                      
+                      {/* Sparkle effect */}
+                      {fortune.isActive && (
+                        <div className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <span className="text-lg">✨</span>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </motion.div>
                 );
               })}
