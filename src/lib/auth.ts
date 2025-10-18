@@ -189,7 +189,7 @@ export const saveFortune = async (fortuneData: {
   fortuneTellerName: string
   fortuneTellerEmoji: string
   fortuneTellerCost: number
-  images?: any
+  images?: any // Opsiyonel, kullanılmıyor
 }) => {
   try {
     const { data, error } = await supabase
@@ -201,7 +201,7 @@ export const saveFortune = async (fortuneData: {
         fortune_teller_name: fortuneData.fortuneTellerName,
         fortune_teller_emoji: fortuneData.fortuneTellerEmoji,
         fortune_teller_cost: fortuneData.fortuneTellerCost,
-        images: fortuneData.images || null
+        images: null // Her zaman null kaydet - fotoğraflar saklanmıyor
       })
       .select()
       .single()

@@ -245,7 +245,7 @@ const FotoYukle = () => {
       const data = await response.json();
       
       if (data.success && data.fortune) {
-        // Falı Supabase'e kaydet
+        // Falı Supabase'e kaydet - FOTOĞRAFSIZ!
         await saveFortune({
           userId: user.id,
           fortuneText: data.fortune,
@@ -253,7 +253,7 @@ const FotoYukle = () => {
           fortuneTellerName: selectedTeller.name,
           fortuneTellerEmoji: selectedTeller.emoji,
           fortuneTellerCost: selectedTeller.cost,
-          images: base64Photos
+          images: null // Fotoğrafları kaydetme!
         });
         
         // Bildirim oluştur
@@ -271,6 +271,20 @@ const FotoYukle = () => {
         
         // Coin güncellemesi için event tetikle
         window.dispatchEvent(new Event('coinsUpdated'));
+        
+        // Memory'deki base64 verilerini temizle
+        setPhotos({
+          front: null,
+          side: null,
+          top: null,
+          plate: null
+        });
+        setPreviews({
+          front: null,
+          side: null,
+          top: null,
+          plate: null
+        });
         
         setFortune(data.fortune);
       } else {
