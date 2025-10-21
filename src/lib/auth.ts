@@ -290,19 +290,19 @@ export const checkAndGiveDailyBonus = async (userId: string) => {
     const user = await getCurrentUser()
     if (!user) return null
     
-    const lastBonus = user.last_daily_bonus ? new Date(user.last_daily_bonus) : null
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    
-    if (lastBonus) {
-      const lastBonusDate = new Date(lastBonus)
-      lastBonusDate.setHours(0, 0, 0, 0)
+    // Son bonus zamanını kontrol et
+    if (user.last_daily_bonus) {
+      const lastBonusTime = new Date(user.last_daily_bonus).getTime()
+      const now = new Date().getTime()
+      const hoursPassed = (now - lastBonusTime) / (1000 * 60 * 60)
       
-      if (lastBonusDate.getTime() === today.getTime()) {
+      // 24 saat geçmemişse bonus verme
+      if (hoursPassed < 24) {
         return null
       }
     }
     
+    // 24 saat geçmiş veya hiç bonus alınmamış - bonus ver
     const DAILY_BONUS = 10
     await updateCoins(userId, DAILY_BONUS, 'earn')
     
