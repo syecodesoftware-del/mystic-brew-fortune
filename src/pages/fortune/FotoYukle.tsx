@@ -240,11 +240,27 @@ const FotoYukle = () => {
         })
       });
       
+      console.log('📡 n8n Response Status:', response.status, response.statusText);
+      
+      // Response'u text olarak oku
+      const responseText = await response.text();
+      console.log('📡 n8n Response Text:', responseText.substring(0, 500)); // İlk 500 karakter
+      
       if (!response.ok) {
-        throw new Error('Fal yorumlama başarısız');
+        console.error('❌ n8n Error:', responseText);
+        throw new Error(`Fal yorumlama başarısız (${response.status}): ${responseText.substring(0, 100)}`);
       }
       
-      const data = await response.json();
+      // JSON parse et
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log('✅ n8n Response Data:', data);
+      } catch (parseError) {
+        console.error('❌ JSON Parse Error:', parseError);
+        console.error('Raw response:', responseText);
+        throw new Error('n8n yanıtı işlenemedi. Lütfen tekrar deneyin.');
+      }
       
       if (data.success && data.fortune) {
         // Falı Supabase'e kaydet - FOTOĞRAFSIZ!
