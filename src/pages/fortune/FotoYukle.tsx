@@ -241,14 +241,22 @@ const FotoYukle = () => {
       });
       
       console.log('📡 n8n Response Status:', response.status, response.statusText);
+      console.log('📡 n8n Response Headers:', Object.fromEntries(response.headers.entries()));
       
       // Response'u text olarak oku
       const responseText = await response.text();
-      console.log('📡 n8n Response Text:', responseText.substring(0, 500)); // İlk 500 karakter
+      console.log('📡 n8n Response Text (full):', responseText);
+      console.log('📡 Response Length:', responseText.length);
       
       if (!response.ok) {
         console.error('❌ n8n Error:', responseText);
         throw new Error(`Fal yorumlama başarısız (${response.status}): ${responseText.substring(0, 100)}`);
+      }
+      
+      // Boş response kontrolü
+      if (!responseText || responseText.trim() === '') {
+        console.error('❌ n8n boş response döndü!');
+        throw new Error('n8n yanıt vermedi. Workflow\'da "Respond to Webhook" node\'unu kontrol et.');
       }
       
       // JSON parse et
@@ -259,7 +267,7 @@ const FotoYukle = () => {
       } catch (parseError) {
         console.error('❌ JSON Parse Error:', parseError);
         console.error('Raw response:', responseText);
-        throw new Error('n8n yanıtı işlenemedi. Lütfen tekrar deneyin.');
+        throw new Error('n8n geçersiz JSON döndürdü. Response node\'unu kontrol et: ' + responseText.substring(0, 100));
       }
       
       if (data.success && data.fortune) {
