@@ -211,27 +211,29 @@ const FotoYukle = () => {
         description: "Lütfen bekleyin",
       });
       
-      // Fotoğrafları base64'e çevir
-      const photoPromises = Object.entries(photos).map(async ([key, file]) => {
-        if (!file) return [key, null];
-        const base64 = await convertImageToBase64(file);
-        return [key, base64];
-      });
+      // Sadece yüklenen fotoğrafları base64'e çevir (null olanları gönderme!)
+      const base64Photos: Record<string, string> = {};
       
-      const photoResults = await Promise.all(photoPromises);
-      const base64Photos = Object.fromEntries(photoResults);
+      for (const [key, file] of Object.entries(photos)) {
+        if (file) {
+          const base64 = await convertImageToBase64(file);
+          base64Photos[key] = base64;
+        }
+      }
+      
+      console.log('🖼️ Gönderilen fotoğraf sayısı:', Object.keys(base64Photos).length);
       
       toast({
         title: "Falın yorumlanıyor...",
         description: "Bu birkaç dakika sürebilir",
       });
       
-      // n8n'e gönder
+      // n8n'e gönder - sadece yüklenen fotoğraflar
       const response = await fetch('https://asil58.app.n8n.cloud/webhook/kahve-fali', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: "Kahve falı yorumla - 4 fotoğraf",
+          text: "Kahve falı yorumla",
           images: base64Photos,
           user_id: user.id,
           fortune_teller_id: parseInt(tellerId || '1')
