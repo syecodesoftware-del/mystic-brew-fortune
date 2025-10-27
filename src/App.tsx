@@ -10,6 +10,8 @@ import Login from "./pages/Login";
 import Index from "./pages/Index";
 import KahveFali from "./pages/fortune/KahveFali";
 import FotoYukle from "./pages/fortune/FotoYukle";
+import ElFali from "./pages/fortune/ElFali";
+import ElFotoYukle from "./pages/fortune/ElFotoYukle";
 import ComingSoon from "./components/ComingSoon";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -93,7 +95,17 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <ComingSoon type="El Falı" emoji="🤚" />
+                  <ElFali />
+                </Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/el/upload/:tellerId" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ElFotoYukle />
                 </Layout>
               </ProtectedRoute>
             } 

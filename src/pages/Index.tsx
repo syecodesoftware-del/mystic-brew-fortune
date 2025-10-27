@@ -76,8 +76,8 @@ const Index = () => {
       emoji: '✋',
       gradient: 'from-emerald-500 to-teal-600',
       glowColor: 'shadow-emerald-500/50',
-      isActive: false,
-      badge: 'Yakında'
+      isActive: true,
+      badge: null
     }
   ];
   
