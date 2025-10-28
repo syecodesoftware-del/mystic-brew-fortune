@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { getCurrentUser, updateCoins, saveFortune, createNotification } from '@/lib/auth';
+import { resizeBase64Image } from '@/utils/imageOptimization';
 import Header from '@/components/Header';
 import logo from '@/assets/logo.png';
 
@@ -206,13 +207,20 @@ const ElFotoYukle = () => {
         description: "Lütfen bekleyin",
       });
       
-      // Fotoğrafları base64'e çevir
+      // Fotoğrafları base64'e çevir ve resize et
       const base64Photos: Record<string, string> = {};
       
       for (const [key, file] of Object.entries(photos)) {
         if (file) {
-          const base64 = await convertImageToBase64(file);
-          base64Photos[key] = base64;
+          // Önce base64'e çevir
+          const fullBase64 = await convertImageToBase64(file);
+          const fullBase64WithPrefix = `data:image/jpeg;base64,${fullBase64}`;
+          
+          // Sonra resize et (800x800, quality 0.7)
+          const resizedBase64 = await resizeBase64Image(fullBase64WithPrefix, 800, 800, 0.7);
+          
+          // Prefix'i kaldır (sadece base64 data'yı gönder)
+          base64Photos[key] = resizedBase64.split(',')[1];
         }
       }
       
