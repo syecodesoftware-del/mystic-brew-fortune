@@ -36,8 +36,7 @@ const Index = () => {
       emoji: '🌙',
       gradient: 'from-indigo-600 to-purple-600',
       glowColor: 'shadow-purple-500/50',
-      isActive: false,
-      badge: 'Yakında'
+      isActive: true
     },
     {
       type: 'ask',

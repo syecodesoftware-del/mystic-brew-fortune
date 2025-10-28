@@ -12,6 +12,8 @@ import KahveFali from "./pages/fortune/KahveFali";
 import FotoYukle from "./pages/fortune/FotoYukle";
 import ElFali from "./pages/fortune/ElFali";
 import ElFotoYukle from "./pages/fortune/ElFotoYukle";
+import TarotFali from "./pages/fortune/TarotFali";
+import TarotSecim from "./pages/fortune/TarotSecim";
 import ComingSoon from "./components/ComingSoon";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -85,7 +87,17 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <ComingSoon type="Tarot Falı" emoji="🎴" />
+                  <TarotFali />
+                </Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/tarot/select/:tellerId" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <TarotSecim />
                 </Layout>
               </ProtectedRoute>
             } 
