@@ -6,18 +6,11 @@ import SpaceBackground from '@/components/SpaceBackground';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
-// Import fortune teller icons
-import beginnerIcon from '@/assets/fortune-tellers/beginner-teller.png';
-import masterIcon from '@/assets/fortune-tellers/master-teller.png';
-import mysticIcon from '@/assets/fortune-tellers/mystic-teller.png';
-import loveIcon from '@/assets/fortune-tellers/love-teller.png';
-import futureIcon from '@/assets/fortune-tellers/future-teller.png';
-
 interface FortuneTeller {
   id: number;
   name: string;
   cost: number;
-  iconSrc: string;
+  emoji: string;
   description: string;
 }
 
@@ -31,35 +24,35 @@ const KahveFali = () => {
       id: 1, 
       name: "Tecrübeli Falcı", 
       cost: 10, 
-      iconSrc: beginnerIcon, 
+      emoji: "⭐", 
       description: "Hızlı ve öz yorumlar" 
     },
     { 
       id: 2, 
       name: "Usta Falcı", 
       cost: 25, 
-      iconSrc: masterIcon, 
+      emoji: "🌟", 
       description: "Detaylı ve ilişki odaklı" 
     },
     { 
       id: 3, 
       name: "Mistik Falcı", 
       cost: 50, 
-      iconSrc: mysticIcon, 
+      emoji: "🔮", 
       description: "Ruhsal gelişim" 
     },
     { 
       id: 4, 
       name: "Aşk Falcısı", 
       cost: 40, 
-      iconSrc: loveIcon, 
+      emoji: "💖", 
       description: "Sadece aşk ve ilişkiler" 
     },
     { 
       id: 5, 
       name: "Gelecek Falcısı", 
       cost: 75, 
-      iconSrc: futureIcon, 
+      emoji: "✨", 
       description: "En detaylı yorum" 
     }
   ];
@@ -137,13 +130,7 @@ const KahveFali = () => {
                       : 'opacity-60 cursor-not-allowed'
                   }`}
                 >
-                  <div className="w-24 h-24 mx-auto mb-4">
-                    <img 
-                      src={teller.iconSrc} 
-                      alt={teller.name}
-                      className="w-full h-full object-contain drop-shadow-2xl"
-                    />
-                  </div>
+                  <div className="text-6xl text-center mb-4">{teller.emoji}</div>
                   <h3 className="text-xl font-bold text-center text-white mb-2">
                     {teller.name}
                   </h3>

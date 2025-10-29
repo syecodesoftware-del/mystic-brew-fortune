@@ -5,18 +5,10 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import SpaceBackground from '@/components/SpaceBackground';
 
-// Import fortune icons
-import coffeeIcon from '@/assets/fortune-icons/coffee-fortune.png';
-import tarotIcon from '@/assets/fortune-icons/tarot-fortune.png';
-import loveIcon from '@/assets/fortune-icons/love-fortune.png';
-import starIcon from '@/assets/fortune-icons/star-fortune.png';
-import dreamIcon from '@/assets/fortune-icons/dream-fortune.png';
-import palmIcon from '@/assets/fortune-icons/palm-fortune.png';
-
 interface FortuneType {
   type: string;
   title: string;
-  iconSrc: string;
+  emoji: string;
   gradient: string;
   glowColor: string;
   isActive: boolean;
@@ -31,7 +23,7 @@ const Index = () => {
     {
       type: 'kahve',
       title: 'Kahve Falı',
-      iconSrc: coffeeIcon,
+      emoji: '☕',
       gradient: 'from-amber-700 to-orange-600',
       glowColor: 'shadow-amber-500/50',
       isActive: true
@@ -39,7 +31,7 @@ const Index = () => {
     {
       type: 'tarot',
       title: 'Tarot',
-      iconSrc: tarotIcon,
+      emoji: '🌙',
       gradient: 'from-indigo-600 to-purple-600',
       glowColor: 'shadow-purple-500/50',
       isActive: true
@@ -47,7 +39,7 @@ const Index = () => {
     {
       type: 'ask',
       title: 'Çift Falı',
-      iconSrc: loveIcon,
+      emoji: '💕',
       gradient: 'from-pink-500 to-rose-600',
       glowColor: 'shadow-pink-500/50',
       isActive: false,
@@ -56,7 +48,7 @@ const Index = () => {
     {
       type: 'yildiz',
       title: 'Yıldız Falı',
-      iconSrc: starIcon,
+      emoji: '⭐',
       gradient: 'from-yellow-500 to-amber-600',
       glowColor: 'shadow-yellow-500/50',
       isActive: false,
@@ -65,7 +57,7 @@ const Index = () => {
     {
       type: 'ruya',
       title: 'Rüya Yorumu',
-      iconSrc: dreamIcon,
+      emoji: '👁️',
       gradient: 'from-cyan-500 to-blue-600',
       glowColor: 'shadow-cyan-500/50',
       isActive: false,
@@ -74,7 +66,7 @@ const Index = () => {
     {
       type: 'el',
       title: 'El Falı',
-      iconSrc: palmIcon,
+      emoji: '✋',
       gradient: 'from-emerald-500 to-teal-600',
       glowColor: 'shadow-emerald-500/50',
       isActive: true,
@@ -221,15 +213,11 @@ const Index = () => {
                         <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${fortune.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300 blur-xl`} />
                       )}
                       
-                      {/* Icon */}
-                      <div className={`relative w-20 h-20 mx-auto mb-3 flex items-center justify-center ${
+                      {/* Emoji */}
+                      <div className={`relative text-5xl text-center mb-3 ${
                         fortune.isActive ? 'group-hover:scale-110' : ''
                       } transition-all duration-300`}>
-                        <img 
-                          src={fortune.iconSrc} 
-                          alt={fortune.title}
-                          className="w-full h-full object-contain drop-shadow-2xl"
-                        />
+                        {fortune.emoji}
                       </div>
                       
                       {/* Title */}
