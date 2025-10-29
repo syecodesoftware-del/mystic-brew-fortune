@@ -37,7 +37,7 @@ const Header = () => {
           </div>
           <div>
             <h1 className="text-xl font-bold gradient-text font-mystic leading-tight">
-              Mistik Fal
+              FALCAN
             </h1>
             <p className="text-xs text-white/60 font-medium">Enerjini keşfet...</p>
           </div>
