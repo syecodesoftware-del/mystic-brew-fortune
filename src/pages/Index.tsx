@@ -1,16 +1,22 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, Coffee, Star, Heart, Moon, Eye, Zap } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import SpaceBackground from '@/components/SpaceBackground';
-import type { LucideIcon } from 'lucide-react';
+
+// Import fortune icons
+import coffeeIcon from '@/assets/fortune-icons/coffee-fortune.png';
+import tarotIcon from '@/assets/fortune-icons/tarot-fortune.png';
+import loveIcon from '@/assets/fortune-icons/love-fortune.png';
+import starIcon from '@/assets/fortune-icons/star-fortune.png';
+import dreamIcon from '@/assets/fortune-icons/dream-fortune.png';
+import palmIcon from '@/assets/fortune-icons/palm-fortune.png';
 
 interface FortuneType {
   type: string;
   title: string;
-  icon: LucideIcon;
-  emoji: string;
+  iconSrc: string;
   gradient: string;
   glowColor: string;
   isActive: boolean;
@@ -25,8 +31,7 @@ const Index = () => {
     {
       type: 'kahve',
       title: 'Kahve Falı',
-      icon: Coffee,
-      emoji: '☕',
+      iconSrc: coffeeIcon,
       gradient: 'from-amber-700 to-orange-600',
       glowColor: 'shadow-amber-500/50',
       isActive: true
@@ -34,8 +39,7 @@ const Index = () => {
     {
       type: 'tarot',
       title: 'Tarot',
-      icon: Moon,
-      emoji: '🌙',
+      iconSrc: tarotIcon,
       gradient: 'from-indigo-600 to-purple-600',
       glowColor: 'shadow-purple-500/50',
       isActive: true
@@ -43,8 +47,7 @@ const Index = () => {
     {
       type: 'ask',
       title: 'Çift Falı',
-      icon: Heart,
-      emoji: '💕',
+      iconSrc: loveIcon,
       gradient: 'from-pink-500 to-rose-600',
       glowColor: 'shadow-pink-500/50',
       isActive: false,
@@ -53,8 +56,7 @@ const Index = () => {
     {
       type: 'yildiz',
       title: 'Yıldız Falı',
-      icon: Star,
-      emoji: '⭐',
+      iconSrc: starIcon,
       gradient: 'from-yellow-500 to-amber-600',
       glowColor: 'shadow-yellow-500/50',
       isActive: false,
@@ -63,8 +65,7 @@ const Index = () => {
     {
       type: 'ruya',
       title: 'Rüya Yorumu',
-      icon: Eye,
-      emoji: '👁️',
+      iconSrc: dreamIcon,
       gradient: 'from-cyan-500 to-blue-600',
       glowColor: 'shadow-cyan-500/50',
       isActive: false,
@@ -73,8 +74,7 @@ const Index = () => {
     {
       type: 'el',
       title: 'El Falı',
-      icon: Zap,
-      emoji: '✋',
+      iconSrc: palmIcon,
       gradient: 'from-emerald-500 to-teal-600',
       glowColor: 'shadow-emerald-500/50',
       isActive: true,
@@ -193,8 +193,6 @@ const Index = () => {
             {/* Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto px-4">
               {fortuneTypes.map((fortune, index) => {
-                const IconComponent = fortune.icon;
-                
                 return (
                   <motion.div
                     key={fortune.type}
@@ -224,10 +222,14 @@ const Index = () => {
                       )}
                       
                       {/* Icon */}
-                      <div className={`relative w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br ${fortune.gradient} flex items-center justify-center ${
-                        fortune.isActive ? `group-hover:scale-110 group-hover:${fortune.glowColor} group-hover:shadow-lg` : ''
+                      <div className={`relative w-20 h-20 mx-auto mb-3 flex items-center justify-center ${
+                        fortune.isActive ? 'group-hover:scale-110' : ''
                       } transition-all duration-300`}>
-                        <IconComponent className="w-7 h-7 text-white" strokeWidth={2} />
+                        <img 
+                          src={fortune.iconSrc} 
+                          alt={fortune.title}
+                          className="w-full h-full object-contain drop-shadow-2xl"
+                        />
                       </div>
                       
                       {/* Title */}
