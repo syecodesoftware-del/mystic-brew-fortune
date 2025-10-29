@@ -9,11 +9,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "group relative overflow-hidden rounded-2xl bg-gradient-to-r from-[hsl(258,90%,76%)] via-[hsl(258,90%,66%)] to-[hsl(243,75%,59%)] bg-size-200 bg-pos-0 hover:bg-pos-100 text-white shadow-[0_4px_24px_rgba(167,139,250,0.35)] hover:shadow-[0_8px_32px_rgba(167,139,250,0.5)] hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:translate-x-[-200%] hover:before:translate-x-[200%] before:transition-transform before:duration-700",
+        default: "group relative overflow-hidden rounded-xl bg-gradient-to-r from-cyan-600 via-cyan-500 to-blue-600 text-white shadow-[0_10px_25px_-5px_rgba(6,182,212,0.4),0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_15px_35px_-5px_rgba(6,182,212,0.5),0_0_30px_rgba(6,182,212,0.3)] hover:scale-105 active:scale-95 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-200%] hover:before:translate-x-[200%] before:transition-transform before:duration-700",
         destructive: "rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "rounded-xl border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "rounded-xl bg-white/80 backdrop-blur-md border border-primary/20 text-foreground hover:bg-white hover:border-primary/30 hover:shadow-lg",
-        ghost: "rounded-lg text-foreground/60 hover:text-foreground hover:bg-white/50",
+        outline: "rounded-xl border border-white/30 bg-transparent text-white hover:bg-white/10 hover:border-white/50",
+        secondary: "rounded-xl bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 hover:border-white/40",
+        ghost: "rounded-lg text-white/80 hover:text-white hover:bg-white/10",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
