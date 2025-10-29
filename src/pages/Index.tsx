@@ -40,7 +40,7 @@ const Index = () => {
     },
     {
       type: 'ask',
-      title: 'Aşk Falı',
+      title: 'Çift Falı',
       icon: Heart,
       emoji: '💕',
       gradient: 'from-pink-500 to-rose-600',
