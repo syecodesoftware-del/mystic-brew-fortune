@@ -8,8 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { saveFortune, checkCoinsAndDeduct, refundCoins } from '@/lib/auth';
 import { sendFortuneReadyNotification } from '@/utils/notifications';
 import Header from '@/components/Header';
-import MysticalBackground from '@/components/MysticalBackground';
-import logo from '@/assets/logo.png';
+import SpaceBackground from '@/components/SpaceBackground';
 
 const WEBHOOK_URL = 'https://asil58.app.n8n.cloud/webhook/kahve-fali';
 
@@ -208,12 +207,8 @@ const Fortune = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] flex flex-col relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      <SpaceBackground />
       
       {/* Header */}
       <div className="relative z-10">
@@ -233,18 +228,18 @@ const Fortune = () => {
                 className="text-center"
               >
                 <motion.div
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                  animate={{ y: [-10, 10, -10] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                   className="mb-8"
                 >
-                  <img src={logo} alt="Falcan Logo" className="w-24 h-24 mx-auto animate-pulse-glow" />
+                  <div className="text-8xl">✨</div>
                 </motion.div>
 
-                <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
-                  Falcan ✨
+                <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 gradient-text">
+                  Mistik Fal
                 </h1>
-                <p className="text-xl text-muted-foreground mb-12 italic">
-                  Can cana değil, Falcan'a ...
+                <p className="text-xl text-white/70 mb-12 italic">
+                  Profesyonel Fal Uygulaması
                 </p>
 
                 <div
@@ -254,8 +249,8 @@ const Fortune = () => {
                   onDrop={handleDrop}
                   className={`relative border-2 border-dashed rounded-2xl p-12 transition-all duration-300 ${
                     dragActive
-                      ? 'border-[hsl(258,90%,76%)] bg-white/20 shadow-[0_8px_32px_rgba(167,139,250,0.25)] scale-105'
-                      : 'border-[hsl(258,90%,76%)]/30 bg-white/70 hover:border-[hsl(258,90%,76%)]/50'
+                      ? 'border-cyan-400 bg-white/20 shadow-[0_25px_50px_-12px_rgba(6,182,212,0.4)] scale-105'
+                      : 'border-white/30 card-mystical hover:border-white/50'
                   }`}
                 >
                   <input
@@ -266,14 +261,14 @@ const Fortune = () => {
                     id="file-upload"
                   />
                 <label htmlFor="file-upload" className="cursor-pointer block">
-                  <Upload className="w-16 h-16 mx-auto mb-4 text-[hsl(258,90%,76%)]" />
-                  <p className="text-lg text-[hsl(220,13%,18%)] mb-2 font-medium">
+                  <Upload className="w-16 h-16 mx-auto mb-4 text-cyan-400" />
+                  <p className="text-lg text-white mb-2 font-medium">
                     Kahve fincanı fotoğrafını yükle
                   </p>
-                  <p className="text-sm text-[hsl(220,9%,46%)] mb-2">
+                  <p className="text-sm text-white/70 mb-2">
                     veya sürükle bırak
                   </p>
-                  <div className="flex items-center justify-center gap-2 mt-4 text-[hsl(43,96%,56%)]">
+                  <div className="flex items-center justify-center gap-2 mt-4 text-amber-400">
                     <Coins className="w-5 h-5" />
                     <span className="font-semibold">Fal maliyeti: 10 altın</span>
                   </div>
@@ -286,24 +281,24 @@ const Fortune = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="text-center bg-white/70 backdrop-blur-xl rounded-3xl p-12 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
+                className="text-center card-mystical p-12"
               >
                 <div className="relative w-32 h-32 mx-auto mb-8">
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 flex items-center justify-center"
+                    className="absolute inset-0 flex items-center justify-center text-6xl"
                   >
-                    <img src={logo} alt="Falcan Logo" className="w-full h-full object-contain" />
+                    ☕
                   </motion.div>
-                    <Sparkles className="absolute top-0 right-0 w-8 h-8 text-[hsl(258,90%,76%)] animate-pulse" />
-                    <Moon className="absolute bottom-0 left-0 w-8 h-8 text-[hsl(243,75%,59%)] animate-pulse" />
+                    <Sparkles className="absolute top-0 right-0 w-8 h-8 text-cyan-400 animate-pulse" />
+                    <Moon className="absolute bottom-0 left-0 w-8 h-8 text-purple-400 animate-pulse" />
                   </div>
                   
-                  <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] mb-4">
+                  <h2 className="text-3xl font-bold text-white mb-4">
                     Telve okunuyor... ☕✨
                   </h2>
-                  <p className="text-[hsl(220,9%,46%)]">
+                  <p className="text-white/70">
                     Semboller analiz ediliyor, sabırlı ol...
                   </p>
               </motion.div>
@@ -313,12 +308,12 @@ const Fortune = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
+                className="card-mystical p-8"
               >
                 <div className="flex items-center justify-center gap-2 mb-6">
-                  <Star className="w-6 h-6 text-[hsl(43,96%,56%)]" />
-                  <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] font-display">Falın Yorumu</h2>
-                  <Moon className="w-6 h-6 text-[hsl(258,90%,76%)]" />
+                  <Star className="w-6 h-6 text-amber-400" />
+                  <h2 className="text-3xl font-bold text-white font-display">Falın Yorumu</h2>
+                  <Moon className="w-6 h-6 text-purple-400" />
                 </div>
 
                 {image && (
@@ -331,21 +326,21 @@ const Fortune = () => {
                   </div>
                 )}
 
-                <div className="bg-white/50 rounded-xl p-6 mb-6">
-                  <p className="text-[hsl(220,13%,18%)] leading-relaxed whitespace-pre-wrap">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6 border border-white/20">
+                  <p className="text-white/90 leading-relaxed whitespace-pre-wrap">
                     {fortune}
                   </p>
                 </div>
 
-                <div className="flex items-center justify-center gap-2 text-[hsl(220,9%,46%)] text-sm mb-6">
-                  <Heart className="w-4 h-4 text-[hsl(330,81%,70%)]" />
+                <div className="flex items-center justify-center gap-2 text-white/70 text-sm mb-6">
+                  <Heart className="w-4 h-4 text-pink-400" />
                   <span>Enerjin okundu</span>
-                  <Sparkles className="w-4 h-4 text-[hsl(258,90%,76%)]" />
+                  <Sparkles className="w-4 h-4 text-cyan-400" />
                 </div>
 
                 <Button
                   onClick={resetFortune}
-                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6 rounded-xl"
+                  className="w-full text-lg py-6"
                 >
                   <RefreshCw className="w-5 h-5 mr-2" />
                   Yeni Fal Bak

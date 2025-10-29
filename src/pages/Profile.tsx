@@ -17,8 +17,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { updateUserProfile, getUserFortunes, deleteFortune, downloadFortune, checkAndGiveDailyBonus, type Fortune } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import Header from '@/components/Header';
-import MysticalBackground from '@/components/MysticalBackground';
-import logo from '@/assets/logo.png';
+import SpaceBackground from '@/components/SpaceBackground';
 
 const TURKISH_CITIES = [
   'Adana', 'Adıyaman', 'Afyonkarahisar', 'Ağrı', 'Aksaray', 'Amasya', 'Ankara', 'Antalya',
@@ -412,12 +411,8 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
+    <div className="min-h-screen relative overflow-hidden">
+      <SpaceBackground />
       
       {/* Header */}
       <div className="relative z-10">
@@ -432,10 +427,10 @@ const Profile = () => {
           className="space-y-6"
         >
           {/* User Summary */}
-          <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)] text-center">
+          <div className="card-mystical p-8 text-center">
             {/* Profile Photo with Upload */}
             <div className="relative w-24 h-24 mx-auto mb-4 group">
-              <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-[hsl(258,90%,76%)]/30 shadow-lg">
+              <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-cyan-400/30 shadow-lg">
                 {user.profile_photo ? (
                   <img 
                     src={user.profile_photo} 
@@ -473,17 +468,17 @@ const Profile = () => {
               />
             </div>
             
-            <h1 className="text-3xl font-bold text-[hsl(220,13%,18%)] mb-2 font-display">
+            <h1 className="text-3xl font-bold text-white mb-2 font-display">
               {user.first_name} {user.last_name}
             </h1>
             
-            <p className="text-[hsl(220,9%,46%)] mb-4">
+            <p className="text-white/70 mb-4">
               Üye olma: {new Date(user.created_at).toLocaleDateString('tr-TR')}
             </p>
             
-            <div className="inline-flex items-center gap-2 bg-[hsl(258,90%,76%)]/20 px-4 py-2 rounded-full">
-              <Sparkles className="w-5 h-5 text-[hsl(258,90%,76%)]" />
-              <span className="text-[hsl(220,13%,18%)] font-semibold">
+            <div className="inline-flex items-center gap-2 bg-purple-500/20 px-4 py-2 rounded-full">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+              <span className="text-white font-semibold">
                 {fortunes.length} fal baktırıldı 🔮
               </span>
             </div>
