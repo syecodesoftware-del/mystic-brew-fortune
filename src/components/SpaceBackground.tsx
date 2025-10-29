@@ -53,25 +53,25 @@ const SpaceBackground = () => {
     // Nebula colors
     const nebulaColors = ['#9333ea', '#3b82f6', '#dc2626', '#06b6d4'];
 
-    // Create stars
-    const stars: Star[] = Array.from({ length: 1000 }, () => ({
+    // Create stars (daha az, daha soft)
+    const stars: Star[] = Array.from({ length: 200 }, () => ({
       x: Math.random() * canvas.width - canvas.width / 2,
       y: Math.random() * canvas.height - canvas.height / 2,
       z: Math.random() * 2000,
-      size: Math.random() * 2,
+      size: Math.random() * 1.5,
       color: starColors[Math.floor(Math.random() * starColors.length)],
       twinkle: Math.random() * Math.PI * 2,
     }));
 
-    // Create nebulas
-    const nebulas: Nebula[] = Array.from({ length: 20 }, () => ({
+    // Create nebulas (daha az, daha soft)
+    const nebulas: Nebula[] = Array.from({ length: 8 }, () => ({
       x: Math.random() * canvas.width - canvas.width / 2,
       y: Math.random() * canvas.height - canvas.height / 2,
       z: Math.random() * 1500 + 500,
-      size: Math.random() * 100 + 50,
+      size: Math.random() * 150 + 100,
       color: nebulaColors[Math.floor(Math.random() * nebulaColors.length)],
       rotation: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * 0.01,
+      rotationSpeed: (Math.random() - 0.5) * 0.005,
       pulse: Math.random() * Math.PI * 2,
     }));
 
@@ -79,14 +79,15 @@ const SpaceBackground = () => {
     let shootingStars: ShootingStar[] = [];
 
     const createShootingStar = () => {
-      if (Math.random() > 0.98) {
+      // Daha az sıklıkta
+      if (Math.random() > 0.995) {
         shootingStars.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height * 0.5,
-          vx: Math.random() * 5 + 3,
-          vy: Math.random() * 3 + 2,
-          life: 100,
-          maxLife: 100,
+          vx: Math.random() * 3 + 2,
+          vy: Math.random() * 2 + 1,
+          life: 80,
+          maxLife: 80,
         });
       }
     };
@@ -118,9 +119,9 @@ const SpaceBackground = () => {
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
 
-      // Draw nebulas
+      // Draw nebulas (daha soft, daha yavaş)
       nebulas.forEach((nebula) => {
-        nebula.z -= 0.5;
+        nebula.z -= 0.2;
         if (nebula.z <= 0) nebula.z = 2000;
 
         const scale = 1000 / nebula.z;
@@ -128,19 +129,19 @@ const SpaceBackground = () => {
         const y2d = (nebula.y * scale) + centerY;
         const size = nebula.size * scale;
 
-        if (x2d < -100 || x2d > canvas.width + 100 || y2d < -100 || y2d > canvas.height + 100) return;
+        if (x2d < -200 || x2d > canvas.width + 200 || y2d < -200 || y2d > canvas.height + 200) return;
 
         nebula.rotation += nebula.rotationSpeed;
-        nebula.pulse += 0.02;
-        const pulseFactor = 0.8 + Math.sin(nebula.pulse) * 0.2;
+        nebula.pulse += 0.01;
+        const pulseFactor = 0.85 + Math.sin(nebula.pulse) * 0.15;
 
         ctx.save();
         ctx.translate(x2d, y2d);
         ctx.rotate(nebula.rotation);
 
         const nebulaGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, size * pulseFactor);
-        nebulaGradient.addColorStop(0, nebula.color + '40');
-        nebulaGradient.addColorStop(0.5, nebula.color + '20');
+        nebulaGradient.addColorStop(0, nebula.color + '20');
+        nebulaGradient.addColorStop(0.5, nebula.color + '10');
         nebulaGradient.addColorStop(1, nebula.color + '00');
 
         ctx.fillStyle = nebulaGradient;
@@ -148,10 +149,10 @@ const SpaceBackground = () => {
         ctx.restore();
       });
 
-      // Draw stars
+      // Draw stars (daha soft ve yavaş)
       stars.forEach((star) => {
-        // Warp speed effect - stars moving toward camera
-        star.z -= 2;
+        // Daha yavaş hareket
+        star.z -= 0.5;
         if (star.z <= 0) {
           star.z = 2000;
           star.x = Math.random() * canvas.width - canvas.width / 2;
@@ -166,56 +167,33 @@ const SpaceBackground = () => {
 
         const size = star.size * scale;
         
-        // Twinkle effect
-        star.twinkle += 0.05;
-        const twinkleFactor = 0.5 + Math.sin(star.twinkle) * 0.5;
+        // Soft twinkle
+        star.twinkle += 0.03;
+        const twinkleFactor = 0.6 + Math.sin(star.twinkle) * 0.4;
 
-        // Motion blur trail for faster stars
-        if (star.z < 500) {
-          const prevX = ((star.x) * (1000 / (star.z + 2))) + centerX;
-          const prevY = ((star.y) * (1000 / (star.z + 2))) + centerY;
-          
-          ctx.beginPath();
-          ctx.moveTo(prevX, prevY);
-          ctx.lineTo(x2d, y2d);
-          ctx.strokeStyle = star.color + '60';
-          ctx.lineWidth = size;
-          ctx.stroke();
-        }
-
-        // Star glow
-        const starGradient = ctx.createRadialGradient(x2d, y2d, 0, x2d, y2d, size * 3);
+        // Soft star glow (blur olmadan daha soft)
+        const starGradient = ctx.createRadialGradient(x2d, y2d, 0, x2d, y2d, size * 2);
         starGradient.addColorStop(0, star.color);
-        starGradient.addColorStop(0.5, star.color + '80');
+        starGradient.addColorStop(0.7, star.color + '40');
         starGradient.addColorStop(1, star.color + '00');
         
         ctx.fillStyle = starGradient;
-        ctx.globalAlpha = twinkleFactor;
-        ctx.fillRect(x2d - size * 3, y2d - size * 3, size * 6, size * 6);
+        ctx.globalAlpha = twinkleFactor * 0.8;
+        ctx.beginPath();
+        ctx.arc(x2d, y2d, size * 2, 0, Math.PI * 2);
+        ctx.fill();
 
         // Core star
         ctx.fillStyle = star.color;
+        ctx.globalAlpha = twinkleFactor;
+        ctx.beginPath();
+        ctx.arc(x2d, y2d, size / 2, 0, Math.PI * 2);
+        ctx.fill();
+        
         ctx.globalAlpha = 1;
-        ctx.fillRect(x2d - size / 2, y2d - size / 2, size, size);
-
-        // Lens flare for bright stars
-        if (size > 1.5) {
-          ctx.strokeStyle = star.color + '60';
-          ctx.lineWidth = 0.5;
-          // Horizontal flare
-          ctx.beginPath();
-          ctx.moveTo(x2d - size * 4, y2d);
-          ctx.lineTo(x2d + size * 4, y2d);
-          ctx.stroke();
-          // Vertical flare
-          ctx.beginPath();
-          ctx.moveTo(x2d, y2d - size * 4);
-          ctx.lineTo(x2d, y2d + size * 4);
-          ctx.stroke();
-        }
       });
 
-      // Create and draw shooting stars
+      // Create and draw shooting stars (daha soft)
       createShootingStar();
       shootingStars = shootingStars.filter((star) => {
         star.x += star.vx;
@@ -224,12 +202,12 @@ const SpaceBackground = () => {
 
         if (star.life <= 0) return false;
 
-        const alpha = star.life / star.maxLife;
+        const alpha = (star.life / star.maxLife) * 0.6;
         ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(star.x, star.y);
-        ctx.lineTo(star.x - star.vx * 3, star.y - star.vy * 3);
+        ctx.lineTo(star.x - star.vx * 2, star.y - star.vy * 2);
         ctx.stroke();
 
         return true;
