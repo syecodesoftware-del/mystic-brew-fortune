@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
-import logo from '@/assets/logo.png';
+import SpaceBackground from '@/components/SpaceBackground';
 
 interface TarotTeller {
   id: number;
@@ -71,7 +71,8 @@ const TarotFali = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-violet-950">
+    <div className="min-h-screen relative overflow-hidden">
+      <SpaceBackground />
       <Header />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -85,7 +86,6 @@ const TarotFali = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Geri
           </Button>
-          <img src={logo} alt="Logo" className="h-10" />
         </div>
 
         {/* Hero Section */}
@@ -100,7 +100,7 @@ const TarotFali = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Tarot Falı 🌙
           </h1>
-          <p className="text-lg text-purple-200 max-w-2xl mx-auto">
+          <p className="text-lg text-white/70 max-w-2xl mx-auto">
             Antik bilgeliğin rehberliğinde geleceğini keşfet. 78 kart arasından seçeceğin 3 kart, geçmişini, şimdini ve geleceğini aydınlatacak.
           </p>
         </motion.div>
@@ -122,9 +122,9 @@ const TarotFali = () => {
                 onClick={() => handleTellerSelect(teller.id)}
                 className="group cursor-pointer"
               >
-                <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 hover:border-purple-400/50 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/30 hover:-translate-y-2">
+                <div className="relative card-mystical p-6 hover:shadow-[0_25px_50px_-12px_rgba(147,51,234,0.4)] hover:-translate-y-2">
                   {/* Glow effect */}
-                  <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${teller.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 blur-xl`} />
+                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${teller.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 blur-xl`} />
 
                   {/* Icon */}
                   <div className={`relative w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${teller.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
@@ -136,7 +136,7 @@ const TarotFali = () => {
                     <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
                       {teller.name}
                     </h3>
-                    <p className="text-sm text-purple-200/80 mb-3">
+                    <p className="text-sm text-white/70 mb-3">
                       {teller.description}
                     </p>
 
@@ -150,8 +150,8 @@ const TarotFali = () => {
                   {/* Features */}
                   <div className="space-y-2 pt-4 border-t border-white/10">
                     {teller.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-sm text-purple-200/80">
-                        <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                      <div key={idx} className="flex items-center gap-2 text-sm text-white/70">
+                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                         {feature}
                       </div>
                     ))}
@@ -173,11 +173,11 @@ const TarotFali = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20"
+            className="card-mystical p-6"
           >
             <div className="text-3xl mb-3">🌙</div>
             <h3 className="text-lg font-semibold text-white mb-2">78 Kart</h3>
-            <p className="text-sm text-purple-200/80">
+            <p className="text-sm text-white/70">
               Tam tarot destesi ile geçmiş, şimdi ve gelecek
             </p>
           </motion.div>
@@ -186,11 +186,11 @@ const TarotFali = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20"
+            className="card-mystical p-6"
           >
             <div className="text-3xl mb-3">🔮</div>
             <h3 className="text-lg font-semibold text-white mb-2">Kişisel Yorum</h3>
-            <p className="text-sm text-purple-200/80">
+            <p className="text-sm text-white/70">
               Senin için özel hazırlanmış detaylı analiz
             </p>
           </motion.div>
@@ -199,11 +199,11 @@ const TarotFali = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20"
+            className="card-mystical p-6"
           >
             <div className="text-3xl mb-3">⭐</div>
             <h3 className="text-lg font-semibold text-white mb-2">Hızlı Sonuç</h3>
-            <p className="text-sm text-purple-200/80">
+            <p className="text-sm text-white/70">
               Birkaç dakika içinde falın hazır
             </p>
           </motion.div>

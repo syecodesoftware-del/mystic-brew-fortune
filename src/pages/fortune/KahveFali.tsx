@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Coins } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
+import SpaceBackground from '@/components/SpaceBackground';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -70,12 +71,8 @@ const KahveFali = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
+    <div className="min-h-screen relative overflow-hidden">
+      <SpaceBackground />
       
       <div className="relative z-10">
         <Header />
@@ -86,7 +83,7 @@ const KahveFali = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             onClick={() => navigate('/fortune')}
-            className="flex items-center gap-2 text-[hsl(220,13%,18%)] mb-6 hover:underline font-medium"
+            className="flex items-center gap-2 text-white mb-6 hover:text-cyan-300 transition-colors font-medium"
           >
             <ArrowLeft size={20} />
             Fal Türleri
@@ -98,14 +95,14 @@ const KahveFali = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-8"
           >
-            <h1 className="text-3xl lg:text-4xl font-bold text-[hsl(220,13%,18%)] mb-2 font-display">
+            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 font-display">
               ☕ Kahve Falcısını Seç
             </h1>
-            <p className="text-[hsl(220,9%,46%)]">
+            <p className="text-white/70">
               Sana en uygun falcıyı seç ve falına başla
             </p>
             {user && (
-              <div className="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-[hsl(43,96%,56%)] to-[hsl(24,95%,61%)] text-white font-bold px-4 py-2 rounded-full shadow-lg">
+              <div className="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold px-4 py-2 rounded-full shadow-lg">
                 <Coins size={20} />
                 <span>Bakiyen: {user.coins} altın</span>
               </div>
@@ -127,25 +124,25 @@ const KahveFali = () => {
                   key={teller.id}
                   whileHover={canAfford ? { scale: 1.05 } : {}}
                   onClick={() => handleTellerClick(teller)}
-                  className={`bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_32px_rgba(167,139,250,0.12)] transition-all ${
+                  className={`card-mystical p-6 transition-all ${
                     canAfford 
-                      ? 'cursor-pointer hover:shadow-[0_16px_48px_rgba(167,139,250,0.25)] hover:-translate-y-1' 
+                      ? 'cursor-pointer hover:shadow-[0_25px_50px_-12px_rgba(6,182,212,0.4)] hover:-translate-y-1' 
                       : 'opacity-60 cursor-not-allowed'
                   }`}
                 >
                   <div className="text-6xl text-center mb-4">{teller.emoji}</div>
-                  <h3 className="text-xl font-bold text-center text-gray-900 mb-2">
+                  <h3 className="text-xl font-bold text-center text-white mb-2">
                     {teller.name}
                   </h3>
-                  <p className="text-sm text-gray-600 text-center mb-4">
+                  <p className="text-sm text-white/70 text-center mb-4">
                     {teller.description}
                   </p>
-                  <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white font-bold py-2 px-4 rounded-full">
+                  <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold py-2 px-4 rounded-full">
                     <span>💰</span>
                     <span>{teller.cost} altın</span>
                   </div>
                   {!canAfford && (
-                    <p className="text-xs text-red-500 text-center mt-2">
+                    <p className="text-xs text-red-400 text-center mt-2">
                       Yetersiz altın
                     </p>
                   )}

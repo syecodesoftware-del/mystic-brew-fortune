@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, Coffee, Star, Heart, Moon, Eye, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import SpaceBackground from '@/components/SpaceBackground';
 import type { LucideIcon } from 'lucide-react';
 
 interface FortuneType {
@@ -106,31 +108,8 @@ const Index = () => {
   ];
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(270,100%,99%)] via-[hsl(270,100%,97%)] to-[hsl(270,100%,95%)] relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Soft gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 right-1/4 w-[300px] h-[300px] bg-gradient-radial from-[hsl(330,81%,70%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
-        
-        {/* Floating sparkles */}
-        <div className="absolute inset-0">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-twinkle"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`
-              }}
-            >
-              <div className="text-xl opacity-60">✨</div>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="min-h-screen relative overflow-hidden">
+      <SpaceBackground />
       
       {/* Content */}
       <div className="relative z-10">
@@ -141,10 +120,10 @@ const Index = () => {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/70 backdrop-blur-md border border-primary/20 shadow-lg"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg"
             >
               <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse shadow-lg" />
-              <span className="text-sm font-medium text-foreground">5 falcı çevrimiçi <Sparkles className="inline w-4 h-4 ml-1" /></span>
+              <span className="text-sm font-medium text-white">5 falcı çevrimiçi <Sparkles className="inline w-4 h-4 ml-1" /></span>
             </motion.div>
             
             {/* Main heading */}
@@ -152,10 +131,10 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl lg:text-7xl font-display font-bold text-foreground leading-tight"
+              className="text-5xl lg:text-7xl font-display font-bold text-white leading-tight"
             >
               Geleceğini
-              <span className="block mt-2 bg-gradient-to-r from-[hsl(258,90%,76%)] via-[hsl(243,75%,59%)] to-[hsl(330,81%,70%)] bg-clip-text text-transparent">
+              <span className="block mt-2 gradient-text">
                 Aydınlat ✨
               </span>
             </motion.h2>
@@ -165,7 +144,7 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+              className="text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
             >
               Binlerce yıllık bilgelik ve modern teknoloji bir arada. Umudunu taşıyan, yolunu aydınlatan fallar burada.
             </motion.p>
@@ -177,18 +156,23 @@ const Index = () => {
               transition={{ delay: 0.3 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6"
             >
-              <button 
+              <Button 
                 onClick={() => navigate('/fortune/kahve')}
-                className="group w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] text-white font-semibold shadow-[0_4px_24px_rgba(167,139,250,0.35)] hover:shadow-[0_8px_32px_rgba(167,139,250,0.5)] hover:-translate-y-0.5 transition-all"
+                className="w-full sm:w-auto"
+                size="lg"
               >
-                <span className="flex items-center justify-center gap-2 relative z-10">
+                <span className="flex items-center gap-2">
                   🔮 Fal Baktır
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </span>
-              </button>
-              <button className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/70 backdrop-blur-md border border-primary/20 text-foreground font-medium hover:bg-white hover:shadow-lg transition-all">
+              </Button>
+              <Button 
+                variant="secondary"
+                className="w-full sm:w-auto"
+                size="lg"
+              >
                 Nasıl Çalışır?
-              </button>
+              </Button>
             </motion.div>
           </div>
         </section>
@@ -198,10 +182,10 @@ const Index = () => {
           <div className="max-w-6xl mx-auto">
             {/* Section header */}
             <div className="text-center mb-10">
-              <h3 className="text-3xl font-mystic font-bold text-foreground mb-2">
+              <h3 className="text-3xl font-mystic font-bold text-white mb-2">
                 Fal Türlerini Keşfet
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-white/70">
                 Sana en uygun fal türünü seç, yolculuğuna başla
               </p>
             </div>
@@ -221,10 +205,10 @@ const Index = () => {
                     className={`relative group ${fortune.isActive ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}
                   >
                     {/* Card */}
-                    <div className={`relative bg-white/80 backdrop-blur-lg rounded-2xl p-4 border transition-all duration-300 ${
+                    <div className={`relative bg-white/10 backdrop-blur-lg rounded-2xl p-4 border transition-all duration-300 ${
                       fortune.isActive 
-                        ? 'border-[hsl(258,90%,76%)]/20 hover:border-[hsl(258,90%,76%)]/40 hover:shadow-2xl hover:-translate-y-2' 
-                        : 'border-gray-200'
+                        ? 'border-white/20 hover:border-cyan-400/50 hover:shadow-2xl hover:-translate-y-2' 
+                        : 'border-white/10'
                     }`}>
                       
                       {/* Badge */}
@@ -249,8 +233,8 @@ const Index = () => {
                       {/* Title */}
                       <h3 className={`text-center text-sm font-bold transition-all duration-300 ${
                         fortune.isActive 
-                          ? 'text-foreground group-hover:bg-gradient-to-r group-hover:from-[hsl(258,90%,76%)] group-hover:to-[hsl(243,75%,59%)] group-hover:bg-clip-text group-hover:text-transparent' 
-                          : 'text-gray-500'
+                          ? 'text-white group-hover:text-cyan-300' 
+                          : 'text-white/40'
                       }`}>
                         {fortune.title}
                       </h3>
