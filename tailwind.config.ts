@@ -27,6 +27,16 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0369a1',
+          700: '#0c4a6e',
+          800: '#082f49',
+          900: '#0a1929',
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -43,6 +53,28 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          50: '#ecfeff',
+          100: '#cffafe',
+          200: '#a5f3fc',
+          300: '#67e8f9',
+          400: '#22d3ee',
+          500: '#06b6d4',
+          600: '#0891b2',
+          700: '#0e7490',
+          800: '#155e75',
+          900: '#164e63',
+        },
+        mystical: {
+          50: '#fef3c7',
+          100: '#fde68a',
+          200: '#fcd34d',
+          300: '#fbbf24',
+          400: '#f59e0b',
+          500: '#d97706',
+          600: '#b45309',
+          700: '#92400e',
+          800: '#78350f',
+          900: '#451a03',
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -62,6 +94,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-mystical': 'linear-gradient(135deg, #0a1929 0%, #164e63 50%, #0c4a6e 100%)',
+        'gradient-coffee': 'linear-gradient(135deg, #92400e 0%, #d97706 100%)',
+        'gradient-palm': 'linear-gradient(135deg, #0e7490 0%, #06b6d4 100%)',
+        'gradient-tarot': 'linear-gradient(135deg, #0369a1 0%, #22d3ee 100%)',
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -112,6 +151,22 @@ export default {
           "100%": {
             transform: "rotate(360deg)"
           }
+        },
+        "float": {
+          "0%, 100%": { 
+            transform: "translateY(0px)" 
+          },
+          "50%": { 
+            transform: "translateY(-20px)" 
+          }
+        },
+        "glow": {
+          "0%": { 
+            boxShadow: "0 0 5px rgba(168, 85, 247, 0.5)" 
+          },
+          "100%": { 
+            boxShadow: "0 0 20px rgba(168, 85, 247, 0.8)" 
+          }
         }
       },
       animation: {
@@ -120,6 +175,8 @@ export default {
         "fade-in": "fade-in 0.5s ease-out",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "spin-slow": "spin-slow 3s linear infinite",
+        "float": "float 3s ease-in-out infinite",
+        "glow": "glow 2s ease-in-out infinite alternate",
       },
     },
   },
