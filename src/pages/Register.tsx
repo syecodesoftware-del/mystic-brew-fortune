@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { registerUser } from '@/lib/auth';
 import { useAuth } from '@/hooks/useAuth';
+import SpaceBackground from '@/components/SpaceBackground';
 import logo from '@/assets/logo.png';
 
 const TURKISH_CITIES = [
@@ -210,33 +211,29 @@ const Register = () => {
   };
 
   const getInputClassName = (fieldName: keyof FormData) => {
-    const baseClass = "bg-card/50 border-2 text-foreground placeholder:text-muted-foreground transition-all";
+    const baseClass = "bg-white/10 border-2 text-white placeholder:text-white/50 transition-all";
     if (!touched[fieldName]) return baseClass;
-    if (errors[fieldName]) return `${baseClass} border-destructive focus:border-destructive`;
-    return `${baseClass} border-green-500 focus:border-green-500`;
+    if (errors[fieldName]) return `${baseClass} border-red-400 focus:border-red-400`;
+    return `${baseClass} border-green-400 focus:border-green-400`;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      <SpaceBackground />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-8">
-          <img src={logo} alt="Falcan Logo" className="w-16 h-16 mx-auto mb-4 animate-pulse-glow" />
-          <h1 className="text-4xl font-bold text-[hsl(220,13%,18%)] mb-2 font-mystic">Üye Ol</h1>
-          <p className="text-[hsl(220,9%,46%)]">Enerjini keşfet, falını öğren</p>
+          <img src={logo} alt="Falcan Logo" className="w-16 h-16 mx-auto mb-4 drop-shadow-2xl" />
+          <h1 className="text-4xl font-bold text-white mb-2 font-mystic gradient-text">Üye Ol</h1>
+          <p className="text-white/70">Enerjini keşfet, falını öğren</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)] space-y-5">
+        <form onSubmit={handleSubmit} className="card-mystical p-8 space-y-5">
           <div>
-            <Label htmlFor="firstName" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="firstName" className="text-white flex items-center gap-2 mb-2">
               <User className="w-4 h-4" />
               Ad
             </Label>
@@ -252,12 +249,12 @@ const Register = () => {
               className={getInputClassName('firstName') + ' select-text'}
             />
             {touched.firstName && errors.firstName && (
-              <p className="text-destructive text-sm mt-1">{errors.firstName}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.firstName}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="lastName" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="lastName" className="text-white flex items-center gap-2 mb-2">
               <User className="w-4 h-4" />
               Soyad
             </Label>
@@ -273,12 +270,12 @@ const Register = () => {
               className={getInputClassName('lastName') + ' select-text'}
             />
             {touched.lastName && errors.lastName && (
-              <p className="text-destructive text-sm mt-1">{errors.lastName}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.lastName}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="email" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="email" className="text-white flex items-center gap-2 mb-2">
               <Mail className="w-4 h-4" />
               E-posta
             </Label>
@@ -294,12 +291,12 @@ const Register = () => {
               className={getInputClassName('email') + ' select-text'}
             />
             {touched.email && errors.email && (
-              <p className="text-destructive text-sm mt-1">{errors.email}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.email}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="password" className="text-white flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4" />
               Şifre
             </Label>
@@ -318,18 +315,18 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
             {touched.password && errors.password && (
-              <p className="text-destructive text-sm mt-1">{errors.password}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.password}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="confirmPassword" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="confirmPassword" className="text-white flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4" />
               Şifre Tekrar
             </Label>
@@ -348,18 +345,18 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
               >
                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
             {touched.confirmPassword && errors.confirmPassword && (
-              <p className="text-destructive text-sm mt-1">{errors.confirmPassword}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="birthDate" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="birthDate" className="text-white flex items-center gap-2 mb-2">
               <Calendar className="w-4 h-4" />
               Doğum Tarihiniz
             </Label>
@@ -374,12 +371,12 @@ const Register = () => {
               className={getInputClassName('birthDate') + ' select-text'}
             />
             {touched.birthDate && errors.birthDate && (
-              <p className="text-destructive text-sm mt-1">{errors.birthDate}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.birthDate}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="birthTime" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="birthTime" className="text-white flex items-center gap-2 mb-2">
               <Clock className="w-4 h-4" />
               Doğum Saatiniz
             </Label>
@@ -394,20 +391,20 @@ const Register = () => {
               className={getInputClassName('birthTime') + ' select-text'}
             />
             {touched.birthTime && errors.birthTime && (
-              <p className="text-destructive text-sm mt-1">{errors.birthTime}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.birthTime}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="city" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="city" className="text-white flex items-center gap-2 mb-2">
               <MapPin className="w-4 h-4" />
               Şehir
             </Label>
             <Select value={formData.city} onValueChange={(value) => handleSelectChange('city', value)}>
-              <SelectTrigger className={`${getInputClassName('city')} bg-card/50`}>
+              <SelectTrigger className={`${getInputClassName('city')}`}>
                 <SelectValue placeholder="Şehir seçin" />
               </SelectTrigger>
-              <SelectContent className="bg-card z-50 max-h-[300px]">
+              <SelectContent className="bg-gray-900 z-50 max-h-[300px]">
                 {TURKISH_CITIES.map((city) => (
                   <SelectItem key={city} value={city}>
                     {city}
@@ -416,34 +413,34 @@ const Register = () => {
               </SelectContent>
             </Select>
             {touched.city && errors.city && (
-              <p className="text-destructive text-sm mt-1">{errors.city}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.city}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="gender" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="gender" className="text-white flex items-center gap-2 mb-2">
               <User className="w-4 h-4" />
               Cinsiyet
             </Label>
             <Select value={formData.gender} onValueChange={(value) => handleSelectChange('gender', value)}>
-              <SelectTrigger className={`${getInputClassName('gender')} bg-card/50`}>
+              <SelectTrigger className={`${getInputClassName('gender')}`}>
                 <SelectValue placeholder="Cinsiyet seçin" />
               </SelectTrigger>
-              <SelectContent className="bg-card z-50">
+              <SelectContent className="bg-gray-900 z-50">
                 <SelectItem value="female">Kadın</SelectItem>
                 <SelectItem value="male">Erkek</SelectItem>
                 <SelectItem value="other">Diğer</SelectItem>
               </SelectContent>
             </Select>
             {touched.gender && errors.gender && (
-              <p className="text-destructive text-sm mt-1">{errors.gender}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.gender}</p>
             )}
           </div>
 
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6 rounded-xl transition-all hover:scale-105"
+            className="w-full text-lg py-6 rounded-xl"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -451,20 +448,20 @@ const Register = () => {
                 Kayıt yapılıyor...
               </span>
             ) : (
-              'Üye Ol'
+              "Üye Ol"
             )}
           </Button>
 
-          <p className="text-center text-muted-foreground text-sm">
+          <p className="text-center text-white/70 text-sm">
             Zaten hesabınız var mı?{' '}
-            <Link to="/login" className="text-accent hover:underline font-medium">
+            <Link to="/login" className="text-cyan-300 hover:underline font-medium">
               Giriş Yap
             </Link>
           </p>
         </form>
 
         <div className="text-center mt-6">
-          <Link to="/" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
+          <Link to="/" className="text-white/70 hover:text-white text-sm transition-colors">
             ← Ana Sayfaya Dön
           </Link>
         </div>

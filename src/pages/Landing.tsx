@@ -35,7 +35,7 @@ const Landing = () => {
           </motion.div>
 
           <h1 className="text-6xl md:text-7xl font-bold mb-4 font-mystic gradient-text">
-            Mistik Fal
+            FALCAN
           </h1>
           
           <p className="text-xl text-white/70 mb-12 italic px-4">

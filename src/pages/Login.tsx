@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { loginUser } from '@/lib/auth';
 import { useAuth } from '@/hooks/useAuth';
-import MysticalBackground from '@/components/MysticalBackground';
+import SpaceBackground from '@/components/SpaceBackground';
 import logo from '@/assets/logo.png';
 
 interface FormData {
@@ -110,19 +110,15 @@ const Login = () => {
   };
 
   const getInputClassName = (fieldName: keyof FormData) => {
-    const baseClass = "bg-card/50 border-2 text-foreground placeholder:text-muted-foreground transition-all";
+    const baseClass = "bg-white/10 border-2 text-white placeholder:text-white/50 transition-all";
     if (!touched[fieldName]) return baseClass;
-    if (errors[fieldName]) return `${baseClass} border-destructive focus:border-destructive`;
-    return `${baseClass} border-green-500 focus:border-green-500`;
+    if (errors[fieldName]) return `${baseClass} border-red-400 focus:border-red-400`;
+    return `${baseClass} border-green-400 focus:border-green-400`;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      <SpaceBackground />
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -130,14 +126,14 @@ const Login = () => {
         className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-8">
-          <img src={logo} alt="Falcan Logo" className="w-16 h-16 mx-auto mb-4 animate-pulse-glow" />
-          <h1 className="text-4xl font-bold text-[hsl(220,13%,18%)] mb-2 font-mystic">Giriş Yap</h1>
-          <p className="text-[hsl(220,9%,46%)]">Enerjine tekrar hoş geldin</p>
+          <img src={logo} alt="Falcan Logo" className="w-16 h-16 mx-auto mb-4 drop-shadow-2xl" />
+          <h1 className="text-4xl font-bold text-white mb-2 font-mystic gradient-text">Giriş Yap</h1>
+          <p className="text-white/70">Enerjine tekrar hoş geldin</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)] space-y-6">
+        <form onSubmit={handleSubmit} className="card-mystical p-8 space-y-6">
           <div>
-            <Label htmlFor="email" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="email" className="text-white flex items-center gap-2 mb-2">
               <Mail className="w-4 h-4" />
               E-posta
             </Label>
@@ -152,12 +148,12 @@ const Login = () => {
               className={getInputClassName('email')}
             />
             {touched.email && errors.email && (
-              <p className="text-destructive text-sm mt-1">{errors.email}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.email}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-[hsl(220,13%,18%)] flex items-center gap-2 mb-2">
+            <Label htmlFor="password" className="text-white flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4" />
               Şifre
             </Label>
@@ -181,14 +177,14 @@ const Login = () => {
               </button>
             </div>
             {touched.password && errors.password && (
-              <p className="text-destructive text-sm mt-1">{errors.password}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.password}</p>
             )}
           </div>
 
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6 rounded-xl transition-all hover:scale-105"
+            className="w-full text-lg py-6 rounded-xl"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -201,14 +197,14 @@ const Login = () => {
           </Button>
 
           <div className="space-y-3">
-            <p className="text-center text-muted-foreground text-sm">
+            <p className="text-center text-white/70 text-sm">
               Hesabınız yok mu?{' '}
-              <Link to="/register" className="text-accent hover:underline font-medium">
+              <Link to="/register" className="text-cyan-300 hover:underline font-medium">
                 Üye Ol
               </Link>
             </p>
             <p className="text-center">
-              <Link to="#" className="text-muted-foreground hover:text-accent text-sm transition-colors">
+              <Link to="#" className="text-white/70 hover:text-cyan-300 text-sm transition-colors">
                 Şifremi Unuttum
               </Link>
             </p>
@@ -216,7 +212,7 @@ const Login = () => {
         </form>
 
         <div className="text-center mt-6">
-          <Link to="/" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
+          <Link to="/" className="text-white/70 hover:text-white text-sm transition-colors">
             ← Ana Sayfaya Dön
           </Link>
         </div>

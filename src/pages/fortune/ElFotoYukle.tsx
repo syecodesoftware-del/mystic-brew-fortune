@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { getCurrentUser, updateCoins, saveFortune, createNotification } from '@/lib/auth';
 import { resizeBase64Image } from '@/utils/imageOptimization';
 import Header from '@/components/Header';
+import SpaceBackground from '@/components/SpaceBackground';
 import logo from '@/assets/logo.png';
 
 const WEBHOOK_URL = 'https://asil58.app.n8n.cloud/webhook/el-fali';
@@ -381,12 +382,8 @@ const ElFotoYukle = () => {
   ];
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(252,100%,99%)] via-[hsl(252,100%,95%)] to-[hsl(252,100%,92%)] relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-[hsl(258,90%,76%)]/10 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-[hsl(243,75%,59%)]/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
+    <div className="min-h-screen relative overflow-hidden">
+      <SpaceBackground />
       
       <div className="relative z-10">
         <Header />
@@ -398,7 +395,7 @@ const ElFotoYukle = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate('/fortune/el')}
-              className="flex items-center gap-2 text-[hsl(220,13%,18%)] mb-6 hover:underline font-medium"
+              className="flex items-center gap-2 text-white mb-6 hover:text-cyan-300 transition-colors font-medium"
             >
               <ArrowLeft size={18} />
               <span className="text-sm">Geri</span>
@@ -412,15 +409,15 @@ const ElFotoYukle = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-8"
             >
-              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/70 backdrop-blur-xl border border-[hsl(258,90%,76%)]/20">
+              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/10 backdrop-blur-lg border border-white/20">
                 <span className="text-3xl">{selectedTeller.emoji}</span>
                 <div className="text-left">
-                  <h2 className="text-lg font-bold text-[hsl(220,13%,18%)]">
+                  <h2 className="text-lg font-bold text-white">
                     {selectedTeller.name}
                   </h2>
                   <div className="flex items-center gap-1 text-sm">
                     <Coins size={14} />
-                    <span className="font-semibold text-[hsl(43,96%,56%)]">{selectedTeller.cost} coin</span>
+                    <span className="font-semibold text-amber-300">{selectedTeller.cost} coin</span>
                   </div>
                 </div>
               </div>
@@ -430,9 +427,9 @@ const ElFotoYukle = () => {
           {/* Açıklama */}
           {!fortune && !loading && (
             <div className="max-w-4xl mx-auto mb-6">
-              <div className="rounded-xl p-4 bg-white/60 backdrop-blur-md border border-[hsl(258,90%,76%)]/15">
-                <p className="text-sm text-[hsl(220,9%,46%)] text-center">
-                  🤚 Ellerini <span className="font-semibold text-[hsl(220,13%,18%)]">3 farklı açıdan</span> çek • <span className="font-semibold text-[hsl(258,90%,76%)]">Sol el, sağ el ve iki el birlikte</span>
+              <div className="rounded-xl p-4 bg-white/10 backdrop-blur-md border border-white/20">
+                <p className="text-sm text-white/70 text-center">
+                  🤚 Ellerini <span className="font-semibold text-white">3 farklı açıdan</span> çek • <span className="font-semibold text-cyan-300">Sol el, sağ el ve iki el birlikte</span>
                 </p>
               </div>
             </div>
@@ -464,19 +461,19 @@ const ElFotoYukle = () => {
                   
                   {/* Progress Bar */}
                   <div className="mb-6">
-                    <div className="rounded-xl p-4 bg-white/60 backdrop-blur-md border border-[hsl(258,90%,76%)]/15">
+                    <div className="rounded-xl p-4 bg-white/10 backdrop-blur-md border border-white/20">
                       <div className="flex items-center gap-4">
                         <div className="flex-1">
-                          <div className="h-2 bg-white/50 rounded-full overflow-hidden">
+                          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
                             <div 
-                              className="h-full bg-gradient-to-r from-[hsl(258,90%,76%)] to-[hsl(243,75%,59%)] transition-all duration-500"
+                              className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-500"
                               style={{ 
                                 width: `${(Object.values(uploadStatus).filter(Boolean).length / 3) * 100}%` 
                               }}
                             />
                           </div>
                         </div>
-                        <span className="text-sm font-bold text-[hsl(258,90%,76%)] whitespace-nowrap">
+                        <span className="text-sm font-bold text-cyan-300 whitespace-nowrap">
                           {Object.values(uploadStatus).filter(Boolean).length}/3
                         </span>
                       </div>
