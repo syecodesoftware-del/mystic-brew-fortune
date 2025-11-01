@@ -30,7 +30,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <div 
-          className="flex flex-col items-center cursor-pointer" 
+          className="cursor-pointer" 
           onClick={() => navigate('/fortune')}
         >
           <img 
@@ -38,7 +38,6 @@ const Header = () => {
             alt="Falcan Logo" 
             className="h-14 object-contain"
           />
-          <p className="text-xs text-amber-300/80 font-medium mt-1">Enerjini keşfet...</p>
         </div>
         
         {/* Right side: Coins, Notifications, Profile */}
