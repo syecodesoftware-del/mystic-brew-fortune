@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '@/lib/auth';
 import { Bell, User as UserIcon, Sparkles } from 'lucide-react';
 import type { User } from '@/lib/supabase';
+import falcanLogo from '@/assets/falcan-logo.png';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -32,9 +33,11 @@ const Header = () => {
           className="flex items-center gap-3 cursor-pointer" 
           onClick={() => navigate('/fortune')}
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30">
-            <span className="text-2xl">✨</span>
-          </div>
+          <img 
+            src={falcanLogo} 
+            alt="Falcan Logo" 
+            className="w-12 h-12 object-contain"
+          />
           <div>
             <h1 className="text-xl font-bold gradient-text font-mystic leading-tight">
               FALCAN
