@@ -9,12 +9,13 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CalendarIcon, Loader2, Moon, ArrowLeft, ArrowRight } from 'lucide-react';
+import { CalendarIcon, Loader2, Moon, ArrowLeft, ArrowRight, Star, Heart, Sparkles, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { getCurrentUser, updateCoins, createNotification } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
 import Header from '@/components/Header';
 import MysticalBackground from '@/components/MysticalBackground';
 import { cn } from '@/lib/utils';
@@ -47,6 +48,7 @@ const RuyaYorumuForm = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState('');
+  const [fortune, setFortune] = useState('');
 
   // Rüya bilgileri
   const [dreamText, setDreamText] = useState('');
@@ -142,7 +144,7 @@ const RuyaYorumuForm = () => {
       }
 
       const result = await response.json();
-      const fortuneText = result.interpretation || result.result || 'Rüya yorumunuz hazırlandı';
+      const fortuneText = result.fortune || result.interpretation || result.result || 'Rüya yorumunuz hazırlandı';
 
       // Falı kaydet
       const { error: fortuneError } = await supabase
@@ -180,11 +182,15 @@ const RuyaYorumuForm = () => {
 
       toast({
         title: "Başarılı! 🌟",
-        description: "Rüya yorumunuz hazırlandı. Profilinizden görebilirsiniz.",
+        description: "Rüya yorumunuz hazırlandı.",
         duration: 5000
       });
 
-      navigate('/profile');
+      // Coin güncellemesi için event tetikle
+      window.dispatchEvent(new Event('coinsUpdated'));
+
+      // Yorumu göster
+      setFortune(fortuneText);
 
     } catch (error) {
       console.error('Rüya yorumu hatası:', error);
@@ -207,6 +213,18 @@ const RuyaYorumuForm = () => {
     return null;
   }
 
+  const resetFortune = () => {
+    setFortune('');
+    setStep(1);
+    setDreamText('');
+    setDreamDate(undefined);
+    setEmotion('');
+    setRecurring(false);
+    setAgeRange('');
+    setGender('');
+    setLifeSituation('');
+  };
+
   return (
     <div className="min-h-screen relative">
       <MysticalBackground />
@@ -214,26 +232,28 @@ const RuyaYorumuForm = () => {
 
       <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8 animate-fade-in">
-            <Moon className="w-12 h-12 text-purple-400 mx-auto mb-4 animate-pulse" />
-            <h1 className="text-3xl font-bold text-white mb-2">
-              {teller.icon} {teller.name}
-            </h1>
-            <p className="text-purple-200">Rüyanızı yorumlayalım</p>
-            <div className="mt-4 flex justify-center gap-2">
-              {[1, 2, 3].map(s => (
-                <div
-                  key={s}
-                  className={cn(
-                    "w-3 h-3 rounded-full transition-all",
-                    s === step ? "bg-purple-400 w-8" : "bg-purple-800/50"
-                  )}
-                />
-              ))}
-            </div>
-          </div>
+          {!fortune && !loading && (
+            <>
+              <div className="text-center mb-8 animate-fade-in">
+                <Moon className="w-12 h-12 text-purple-400 mx-auto mb-4 animate-pulse" />
+                <h1 className="text-3xl font-bold text-white mb-2">
+                  {teller.icon} {teller.name}
+                </h1>
+                <p className="text-purple-200">Rüyanızı yorumlayalım</p>
+                <div className="mt-4 flex justify-center gap-2">
+                  {[1, 2, 3].map(s => (
+                    <div
+                      key={s}
+                      className={cn(
+                        "w-3 h-3 rounded-full transition-all",
+                        s === step ? "bg-purple-400 w-8" : "bg-purple-800/50"
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
 
-          <Card className="p-8 bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-sm border-purple-500/30">
+              <Card className="p-8 bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-sm border-purple-500/30">
             {step === 1 && (
               <div className="space-y-6 animate-fade-in">
                 <h2 className="text-2xl font-semibold text-white mb-6">Rüya Bilgileri</h2>
@@ -438,16 +458,94 @@ const RuyaYorumuForm = () => {
             )}
           </Card>
 
-          <div className="text-center mt-6">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/fortune/dream-interpretation')}
-              className="border-purple-500/50 text-purple-200 hover:bg-purple-500/20"
-              disabled={loading}
+          {!fortune && !loading && (
+            <div className="text-center mt-6">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/fortune/dream-interpretation')}
+                className="border-purple-500/50 text-purple-200 hover:bg-purple-500/20"
+                disabled={loading}
+              >
+                İptal
+              </Button>
+            </div>
+          )}
+            </>
+          )}
+
+          {loading && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center bg-white/90 backdrop-blur-xl rounded-3xl p-12 shadow-xl"
             >
-              İptal
-            </Button>
-          </div>
+              <div className="relative w-32 h-32 mx-auto mb-8">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <Moon className="w-full h-full text-purple-500" />
+                </motion.div>
+                <Sparkles className="absolute top-0 right-0 w-8 h-8 text-purple-400 animate-pulse" />
+              </div>
+              
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                {teller.icon} {teller.name} rüyanızı yorumluyor... 🌙✨
+              </h2>
+              <p className="text-gray-600">
+                Semboller analiz ediliyor, sabırlı olun...
+              </p>
+            </motion.div>
+          )}
+
+          {fortune && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-xl"
+            >
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <Star className="w-6 h-6 text-yellow-500" />
+                <h2 className="text-3xl font-bold text-gray-800">Rüya Yorumunuz</h2>
+                <Moon className="w-6 h-6 text-purple-500" />
+              </div>
+              
+              <div className="text-center mb-4">
+                <span className="text-4xl">{teller.icon}</span>
+                <p className="text-gray-600 mt-2">{teller.name}</p>
+              </div>
+
+              <div className="bg-purple-50 rounded-xl p-6 mb-6">
+                <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                  {fortune}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 text-gray-600 text-sm mb-6">
+                <Heart className="w-4 h-4 text-pink-500" />
+                <span>Rüyanız yorumlandı</span>
+                <Sparkles className="w-4 h-4 text-purple-500" />
+              </div>
+
+              <div className="flex gap-4">
+                <Button
+                  onClick={resetFortune}
+                  variant="outline"
+                  className="flex-1 text-lg py-6 rounded-xl font-bold border-purple-500/50 text-purple-700 hover:bg-purple-500/20"
+                >
+                  <RefreshCw className="w-5 h-5 mr-2" />
+                  Yeni Yorum
+                </Button>
+                <Button
+                  onClick={() => navigate('/profile')}
+                  className="flex-1 text-lg py-6 rounded-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                >
+                  Profile Git
+                </Button>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
     </div>
