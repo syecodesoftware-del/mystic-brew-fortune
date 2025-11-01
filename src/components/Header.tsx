@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '@/lib/auth';
 import { Bell, User as UserIcon, Sparkles } from 'lucide-react';
 import type { User } from '@/lib/supabase';
-import falcanLogo from '@/assets/falcan-logo-full.png';
+import falcanLogo from '@/assets/falcan-logo-full.webp';
 
 const Header = () => {
   const navigate = useNavigate();
