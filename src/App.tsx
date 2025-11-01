@@ -16,6 +16,8 @@ import TarotFali from "./pages/fortune/TarotFali";
 import TarotSecim from "./pages/fortune/TarotSecim";
 import CiftFali from "./pages/fortune/CiftFali";
 import CiftFaliForm from "./pages/fortune/CiftFaliForm";
+import RuyaYorumu from "./pages/fortune/RuyaYorumu";
+import RuyaYorumuForm from "./pages/fortune/RuyaYorumuForm";
 import ComingSoon from "./components/ComingSoon";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -145,6 +147,36 @@ const App = () => {
             } 
           />
           <Route 
+            path="/fortune/ruya" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <RuyaYorumu />
+                </Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/dream-interpretation" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <RuyaYorumu />
+                </Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/dream-interpretation/form/:tellerId" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <RuyaYorumuForm />
+                </Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route
             path="/fortune/katina"
             element={
               <ProtectedRoute>
