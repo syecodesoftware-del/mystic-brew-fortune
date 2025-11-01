@@ -42,8 +42,7 @@ const Index = () => {
       emoji: '💕',
       gradient: 'from-pink-500 to-rose-600',
       glowColor: 'shadow-pink-500/50',
-      isActive: false,
-      badge: 'Yakında'
+      isActive: true
     },
     {
       type: 'yildiz',

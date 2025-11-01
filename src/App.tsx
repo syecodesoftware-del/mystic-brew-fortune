@@ -14,6 +14,8 @@ import ElFali from "./pages/fortune/ElFali";
 import ElFotoYukle from "./pages/fortune/ElFotoYukle";
 import TarotFali from "./pages/fortune/TarotFali";
 import TarotSecim from "./pages/fortune/TarotSecim";
+import CiftFali from "./pages/fortune/CiftFali";
+import CiftFaliForm from "./pages/fortune/CiftFaliForm";
 import ComingSoon from "./components/ComingSoon";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -123,7 +125,27 @@ const App = () => {
             } 
           />
           <Route 
-            path="/fortune/katina" 
+            path="/fortune/ask" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CiftFali />
+                </Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/ask/form/:tellerId" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CiftFaliForm />
+                </Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/katina"
             element={
               <ProtectedRoute>
                 <Layout>
