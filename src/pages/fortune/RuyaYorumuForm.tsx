@@ -477,7 +477,7 @@ const RuyaYorumuForm = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center bg-white/90 backdrop-blur-xl rounded-3xl p-12 shadow-xl"
+              className="text-center bg-white/70 backdrop-blur-xl rounded-3xl p-12 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
             >
               <div className="relative w-32 h-32 mx-auto mb-8">
                 <motion.div
@@ -485,15 +485,15 @@ const RuyaYorumuForm = () => {
                   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   className="absolute inset-0 flex items-center justify-center"
                 >
-                  <Moon className="w-full h-full text-purple-500" />
+                  <Moon className="w-full h-full text-[hsl(258,90%,76%)]" />
                 </motion.div>
-                <Sparkles className="absolute top-0 right-0 w-8 h-8 text-purple-400 animate-pulse" />
+                <Sparkles className="absolute top-0 right-0 w-8 h-8 text-[hsl(258,90%,76%)] animate-pulse" />
               </div>
               
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] mb-4">
                 {teller.icon} {teller.name} rüyanızı yorumluyor... 🌙✨
               </h2>
-              <p className="text-gray-600">
+              <p className="text-[hsl(220,9%,46%)]">
                 Semboller analiz ediliyor, sabırlı olun...
               </p>
             </motion.div>
@@ -503,43 +503,43 @@ const RuyaYorumuForm = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-xl"
+              className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
             >
               <div className="flex items-center justify-center gap-2 mb-6">
-                <Star className="w-6 h-6 text-yellow-500" />
-                <h2 className="text-3xl font-bold text-gray-800">Rüya Yorumunuz</h2>
-                <Moon className="w-6 h-6 text-purple-500" />
+                <Star className="w-6 h-6 text-[hsl(43,96%,56%)]" />
+                <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] font-display">Rüya Yorumunuz</h2>
+                <Moon className="w-6 h-6 text-[hsl(258,90%,76%)]" />
               </div>
               
               <div className="text-center mb-4">
                 <span className="text-4xl">{teller.icon}</span>
-                <p className="text-gray-600 mt-2">{teller.name}</p>
+                <p className="text-[hsl(220,9%,46%)] mt-2">{teller.name}</p>
               </div>
 
-              <div className="bg-purple-50 rounded-xl p-6 mb-6">
-                <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+              <div className="bg-white/50 rounded-xl p-6 mb-6">
+                <p className="text-[hsl(220,13%,18%)] leading-relaxed whitespace-pre-wrap">
                   {fortune}
                 </p>
               </div>
 
-              <div className="flex items-center justify-center gap-2 text-gray-600 text-sm mb-6">
-                <Heart className="w-4 h-4 text-pink-500" />
+              <div className="flex items-center justify-center gap-2 text-[hsl(220,9%,46%)] text-sm mb-6">
+                <Heart className="w-4 h-4 text-[hsl(330,81%,70%)]" />
                 <span>Rüyanız yorumlandı</span>
-                <Sparkles className="w-4 h-4 text-purple-500" />
+                <Sparkles className="w-4 h-4 text-[hsl(258,90%,76%)]" />
               </div>
 
               <div className="flex gap-4">
                 <Button
                   onClick={resetFortune}
                   variant="outline"
-                  className="flex-1 text-lg py-6 rounded-xl font-bold border-purple-500/50 text-purple-700 hover:bg-purple-500/20"
+                  className="flex-1 text-lg py-6 rounded-xl font-bold"
                 >
                   <RefreshCw className="w-5 h-5 mr-2" />
                   Yeni Yorum
                 </Button>
                 <Button
                   onClick={() => navigate('/profile')}
-                  className="flex-1 text-lg py-6 rounded-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                  className="flex-1 text-lg py-6 rounded-xl font-bold"
                 >
                   Profile Git
                 </Button>

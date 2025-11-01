@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Camera, Upload, X, Heart, Sparkles, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Camera, Upload, X, Heart, Sparkles, ChevronRight, Star, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -632,9 +632,9 @@ const CiftFaliForm = () => {
             {loading && (
               <motion.div
                 key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="card-mystical p-12 text-center"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center bg-white/70 backdrop-blur-xl rounded-3xl p-12 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
               >
                 <motion.div
                   animate={{ rotate: 360 }}
@@ -643,10 +643,10 @@ const CiftFaliForm = () => {
                 >
                   💕
                 </motion.div>
-                <h2 className="text-2xl font-bold text-white mb-4">
+                <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] mb-4">
                   Falınız Bakılıyor...
                 </h2>
-                <p className="text-white/70">
+                <p className="text-[hsl(220,9%,46%)]">
                   {selectedTeller?.name} çiftinizin kahve fallarını analiz ediyor
                 </p>
               </motion.div>
@@ -656,47 +656,69 @@ const CiftFaliForm = () => {
             {step === 6 && fortune && (
               <motion.div
                 key="result"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="card-mystical p-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
               >
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <Star className="w-6 h-6 text-[hsl(43,96%,56%)]" />
+                  <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] font-display">Çift Falınız Hazır! 💕</h2>
+                  <Heart className="w-6 h-6 text-[hsl(330,81%,70%)]" />
+                </div>
+                
                 <div className="text-center mb-6">
-                  <div className="text-6xl mb-4">{selectedTeller?.emoji}</div>
-                  <h2 className="text-2xl font-bold text-white mb-2">
-                    Çift Falınız Hazır! 💕
-                  </h2>
-                  <p className="text-white/70">
+                  <span className="text-4xl">{selectedTeller?.emoji}</span>
+                  <p className="text-[hsl(220,9%,46%)] mt-2">{selectedTeller?.name}</p>
+                  <p className="text-[hsl(220,9%,46%)] text-sm mt-1">
                     {person1.name} & {person2.name}
                   </p>
                 </div>
 
-                <div className="bg-white/10 rounded-xl p-6 mb-6">
-                  <div className="grid grid-cols-4 gap-2 mb-4">
-                    {person1.fincan.preview && (
-                      <img src={person1.fincan.preview} alt="P1 Fincan" className="rounded-lg aspect-square object-cover" />
-                    )}
-                    {person1.tabak.preview && (
-                      <img src={person1.tabak.preview} alt="P1 Tabak" className="rounded-lg aspect-square object-cover" />
-                    )}
-                    {person2.fincan.preview && (
-                      <img src={person2.fincan.preview} alt="P2 Fincan" className="rounded-lg aspect-square object-cover" />
-                    )}
-                    {person2.tabak.preview && (
-                      <img src={person2.tabak.preview} alt="P2 Tabak" className="rounded-lg aspect-square object-cover" />
-                    )}
+                {(person1.fincan.preview || person1.tabak.preview || person2.fincan.preview || person2.tabak.preview) && (
+                  <div className="mb-6 rounded-2xl overflow-hidden bg-white/50 backdrop-blur-sm border border-[hsl(330,81%,70%)]/20 shadow-lg p-4">
+                    <div className="grid grid-cols-4 gap-2">
+                      {person1.fincan.preview && (
+                        <img src={person1.fincan.preview} alt="P1 Fincan" className="rounded-lg aspect-square object-cover" />
+                      )}
+                      {person1.tabak.preview && (
+                        <img src={person1.tabak.preview} alt="P1 Tabak" className="rounded-lg aspect-square object-cover" />
+                      )}
+                      {person2.fincan.preview && (
+                        <img src={person2.fincan.preview} alt="P2 Fincan" className="rounded-lg aspect-square object-cover" />
+                      )}
+                      {person2.tabak.preview && (
+                        <img src={person2.tabak.preview} alt="P2 Tabak" className="rounded-lg aspect-square object-cover" />
+                      )}
+                    </div>
                   </div>
-                  <div className="prose prose-invert max-w-none">
-                    <p className="text-white whitespace-pre-wrap">{fortune}</p>
-                  </div>
+                )}
+
+                <div className="bg-white/50 rounded-xl p-6 mb-6">
+                  <p className="text-[hsl(220,13%,18%)] leading-relaxed whitespace-pre-wrap">{fortune}</p>
                 </div>
 
-                <Button
-                  onClick={() => navigate('/fortune')}
-                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500"
-                  size="lg"
-                >
-                  Fal Türlerine Dön
-                </Button>
+                <div className="flex items-center justify-center gap-2 text-[hsl(220,9%,46%)] text-sm mb-6">
+                  <Heart className="w-4 h-4 text-[hsl(330,81%,70%)]" />
+                  <span>Çiftinizin falı okundu</span>
+                  <Sparkles className="w-4 h-4 text-[hsl(330,81%,70%)]" />
+                </div>
+
+                <div className="flex gap-4">
+                  <Button
+                    onClick={() => window.location.reload()}
+                    variant="outline"
+                    className="flex-1 text-lg py-6 rounded-xl font-bold"
+                  >
+                    <RefreshCw className="w-5 h-5 mr-2" />
+                    Yeni Fal
+                  </Button>
+                  <Button
+                    onClick={() => navigate('/profile')}
+                    className="flex-1 text-lg py-6 rounded-xl font-bold"
+                  >
+                    Profile Git
+                  </Button>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

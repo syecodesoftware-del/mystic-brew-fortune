@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Loader2, Heart, Briefcase, DollarSign, Activity, Sparkles, Eye } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2, Heart, Briefcase, DollarSign, Activity, Sparkles, Eye, Star, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -147,6 +147,7 @@ const TarotSecim = () => {
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fortune, setFortune] = useState('');
 
   const tellerPrice = TELLER_PRICES[Number(tellerId)] || 35;
 
@@ -263,11 +264,12 @@ const TarotSecim = () => {
       }
 
       const result = await response.json();
+      const fortuneText = result.fortune || result.message || 'Tarot falınız hazırlandı';
 
       // Save fortune
       await saveFortune({
         userId: user.id,
-        fortuneText: result.fortune || result.message || 'Tarot falınız',
+        fortuneText: fortuneText,
         fortuneTellerId: Number(tellerId),
         fortuneTellerName: `Tarot Okuyucu ${tellerId}`,
         fortuneTellerEmoji: '🎴',
@@ -279,10 +281,15 @@ const TarotSecim = () => {
 
       toast({
         title: 'Falınız hazır! 🎴',
-        description: 'Profilinizden görüntüleyebilirsiniz'
+        description: 'Tarot falınız hazırlandı'
       });
 
-      navigate('/profile');
+      // Coin güncellemesi için event tetikle
+      window.dispatchEvent(new Event('coinsUpdated'));
+
+      // Yorumu göster
+      setStep(4);
+      setFortune(fortuneText);
     } catch (error: any) {
       console.error('Tarot error:', error);
       
@@ -540,10 +547,79 @@ const TarotSecim = () => {
               </div>
             </motion.div>
           )}
+
+          {/* Step 4: Sonuç Ekranı */}
+          {step === 4 && fortune && (
+            <motion.div
+              key="step4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
+            >
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <Star className="w-6 h-6 text-[hsl(43,96%,56%)]" />
+                <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] font-display">Tarot Falınız</h2>
+                <Sparkles className="w-6 h-6 text-[hsl(258,90%,76%)]" />
+              </div>
+              
+              <div className="text-center mb-4">
+                <span className="text-4xl">🎴</span>
+                <p className="text-[hsl(220,9%,46%)] mt-2">Tarot Okuyucu {tellerId}</p>
+              </div>
+
+              {/* Seçilen kartları göster */}
+              <div className="mb-6 flex justify-center gap-4">
+                {selectedCards.map((cardId, index) => {
+                  const card = TAROT_CARDS.find(c => c.id === cardId);
+                  const positions = ['Geçmiş', 'Şimdi', 'Gelecek'];
+                  return (
+                    <div key={cardId} className="text-center">
+                      <div className="w-20 h-28 rounded-lg bg-gradient-to-br from-purple-400 to-indigo-600 flex items-center justify-center mb-2 shadow-lg">
+                        <span className="text-2xl">{card?.emoji || '🎴'}</span>
+                      </div>
+                      <p className="text-xs text-[hsl(220,9%,46%)] font-medium">{positions[index]}</p>
+                      <p className="text-xs text-[hsl(220,13%,18%)]">{card?.tr}</p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="bg-white/50 rounded-xl p-6 mb-6">
+                <p className="text-[hsl(220,13%,18%)] leading-relaxed whitespace-pre-wrap">
+                  {fortune}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 text-[hsl(220,9%,46%)] text-sm mb-6">
+                <Heart className="w-4 h-4 text-[hsl(330,81%,70%)]" />
+                <span>Kartların okundu</span>
+                <Sparkles className="w-4 h-4 text-[hsl(258,90%,76%)]" />
+              </div>
+
+              <div className="flex gap-4">
+                <Button
+                  onClick={() => navigate('/fortune/tarot')}
+                  variant="outline"
+                  className="flex-1 text-lg py-6 rounded-xl font-bold"
+                >
+                  <RefreshCw className="w-5 h-5 mr-2" />
+                  Yeni Fal
+                </Button>
+                <Button
+                  onClick={() => navigate('/profile')}
+                  className="flex-1 text-lg py-6 rounded-xl font-bold"
+                >
+                  Profile Git
+                </Button>
+              </div>
+            </motion.div>
+          )}
         </AnimatePresence>
 
         {/* Actions */}
-        <div className="mt-8 flex items-center justify-between">
+        {step < 4 && !fortune && (
+          <div className="mt-8 flex items-center justify-between">
           <div className="text-white">
             <p className="text-sm text-purple-200">Falcı ücreti</p>
             <div className="flex items-center gap-2">
@@ -576,8 +652,9 @@ const TarotSecim = () => {
                 'Falıma Bak 🎴'
               )}
             </Button>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
