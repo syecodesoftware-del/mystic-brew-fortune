@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '@/lib/auth';
 import { Bell, User as UserIcon, Sparkles } from 'lucide-react';
 import type { User } from '@/lib/supabase';
-import falcanLogo from '@/assets/falcan-logo-clear.png';
+import falcanLogo from '@/assets/falcan-logo-full.png';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -30,20 +30,15 @@ const Header = () => {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <div 
-          className="flex items-center gap-3 cursor-pointer" 
+          className="flex flex-col items-center cursor-pointer" 
           onClick={() => navigate('/fortune')}
         >
           <img 
             src={falcanLogo} 
             alt="Falcan Logo" 
-            className="w-12 h-12 object-contain"
+            className="h-14 object-contain"
           />
-          <div>
-            <h1 className="text-xl font-bold gradient-text font-mystic leading-tight">
-              FALCAN
-            </h1>
-            <p className="text-xs text-white/60 font-medium">Enerjini keşfet...</p>
-          </div>
+          <p className="text-xs text-amber-300/80 font-medium mt-1">Enerjini keşfet...</p>
         </div>
         
         {/* Right side: Coins, Notifications, Profile */}
