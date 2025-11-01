@@ -27,7 +27,7 @@ const Header = () => {
   
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-lg border-b border-white/10">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
         {/* Logo */}
         <div 
           className="cursor-pointer" 
@@ -36,47 +36,47 @@ const Header = () => {
           <img 
             src={falcanLogo} 
             alt="Falcan Logo" 
-            className="h-14 object-contain"
+            className="h-10 sm:h-12 md:h-14 object-contain"
           />
         </div>
         
         {/* Right side: Coins, Notifications, Profile */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
           {/* Coins */}
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30">
-            <span className="text-lg">💰</span>
-            <span className="font-bold text-amber-300">{user.coins}</span>
+          <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30">
+            <span className="text-base sm:text-lg">💰</span>
+            <span className="font-bold text-amber-300 text-sm sm:text-base">{user.coins}</span>
           </div>
           
           {/* Notifications Button */}
           <button
             onClick={() => navigate('/notifications')}
-            className="relative p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all"
+            className="relative p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all"
             aria-label="Bildirimler"
           >
-            <Bell size={20} className="text-white" />
+            <Bell size={18} className="text-white sm:w-5 sm:h-5" />
           </button>
           
           {/* Profile Button with Photo/Name */}
           <button
             onClick={() => navigate('/profile')}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all"
+            className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all"
             aria-label="Profil"
           >
             {user.profile_photo ? (
               <img 
                 src={user.profile_photo} 
                 alt="Profil"
-                className="w-8 h-8 rounded-full object-cover border-2 border-cyan-400/30"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-cyan-400/30"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center border-2 border-cyan-400/30">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center border-2 border-cyan-400/30">
                 <span className="text-xs font-bold text-white">
                   {user.first_name.charAt(0)}{user.last_name.charAt(0)}
                 </span>
               </div>
             )}
-            <span className="text-sm font-medium text-white hidden sm:block">
+            <span className="text-sm font-medium text-white hidden md:block">
               {user.first_name}
             </span>
           </button>
