@@ -564,14 +564,17 @@ const Profile = () => {
                 </div>
 
                 {/* Personal Info */}
-                <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_32px_rgba(167,139,250,0.12)]">
+                <div className="card-mystical p-6 border-2 border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-300">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-[hsl(220,13%,18%)] flex items-center gap-2 font-display">
-                      <User className="w-6 h-6" />
-                      Kişisel Bilgiler
+                    <h2 className="text-2xl font-bold text-white flex items-center gap-2 font-display">
+                      <User className="w-6 h-6 text-cyan-400" />
+                      ✨ Kişisel Bilgiler
                     </h2>
                     {!isEditing && (
-                      <Button onClick={handleEdit} variant="outline" className="border-accent/50">
+                      <Button 
+                        onClick={handleEdit} 
+                        className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-none shadow-lg hover:shadow-cyan-500/50 transition-all"
+                      >
                         <Edit className="w-4 h-4 mr-2" />
                         Düzenle
                       </Button>
@@ -579,175 +582,207 @@ const Profile = () => {
                   </div>
 
                   <div className="space-y-4">
-                    <div>
-                      <Label>Ad</Label>
+                    {/* Ad */}
+                    <div className="space-y-2">
+                      <Label className="text-white/90 font-medium flex items-center gap-2">
+                        👤 Ad
+                      </Label>
                       {isEditing ? (
                         <Input
                           value={formData.firstName}
                           onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                           placeholder="Adınız"
+                          className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                         />
                       ) : (
-                        <div className="bg-card/50 p-3 rounded-lg text-foreground">{user.first_name}</div>
+                        <div className="bg-white/5 border border-white/10 p-3 rounded-xl text-white font-medium">
+                          {user.first_name}
+                        </div>
                       )}
                     </div>
 
-                    <div>
-                      <Label>Soyad</Label>
+                    {/* Soyad */}
+                    <div className="space-y-2">
+                      <Label className="text-white/90 font-medium flex items-center gap-2">
+                        👤 Soyad
+                      </Label>
                       {isEditing ? (
                         <Input
                           value={formData.lastName}
                           onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                           placeholder="Soyadınız"
+                          className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                         />
                       ) : (
-                        <div className="bg-card/50 p-3 rounded-lg text-foreground">{user.last_name}</div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label>E-posta</Label>
-                    <div className="bg-card/50 p-3 rounded-lg text-muted-foreground">
-                      {user.email}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label>Doğum Tarihi</Label>
-                      {isEditing ? (
-                        <Input
-                          type="date"
-                          value={formData.birthDate}
-                          onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                        />
-                      ) : (
-                        <div className="bg-card/50 p-3 rounded-lg text-foreground flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          {new Date(user.birth_date).toLocaleDateString('tr-TR')}
+                        <div className="bg-white/5 border border-white/10 p-3 rounded-xl text-white font-medium">
+                          {user.last_name}
                         </div>
                       )}
                     </div>
 
-                    <div>
-                      <Label>Doğum Saati</Label>
-                      {isEditing ? (
-                        <Input
-                          type="time"
-                          value={formData.birthTime}
-                          onChange={(e) => setFormData({ ...formData, birthTime: e.target.value })}
-                        />
-                      ) : (
-                        <div className="bg-card/50 p-3 rounded-lg text-foreground flex items-center gap-2">
-                          <Clock className="w-4 h-4" />
-                          {user.birth_time}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label>Şehir</Label>
-                      {isEditing ? (
-                        <Select value={formData.city} onValueChange={(value) => setFormData({ ...formData, city: value })}>
-                          <SelectTrigger className="bg-card/50">
-                            <SelectValue placeholder="Şehir seçin" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-card z-50 max-h-[300px]">
-                            {TURKISH_CITIES.map((city) => (
-                              <SelectItem key={city} value={city}>
-                                {city}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <div className="bg-card/50 p-3 rounded-lg text-foreground flex items-center gap-2">
-                          <MapPin className="w-4 h-4" />
-                          {user.city || 'Belirtilmemiş'}
-                        </div>
-                      )}
+                    {/* E-posta */}
+                    <div className="space-y-2">
+                      <Label className="text-white/90 font-medium flex items-center gap-2">
+                        📧 E-posta
+                      </Label>
+                      <div className="bg-white/5 border border-white/10 p-3 rounded-xl text-white/70 font-medium">
+                        {user.email}
+                      </div>
                     </div>
 
-                    <div>
-                      <Label>Cinsiyet</Label>
-                      {isEditing ? (
-                        <Select value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })}>
-                          <SelectTrigger className="bg-card/50">
-                            <SelectValue placeholder="Cinsiyet seçin" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-card z-50">
-                            <SelectItem value="Kadın">Kadın</SelectItem>
-                            <SelectItem value="Erkek">Erkek</SelectItem>
-                            <SelectItem value="Belirtmek İstemiyorum">Belirtmek İstemiyorum</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <div className="bg-card/50 p-3 rounded-lg text-foreground">
-                          {user.gender || 'Belirtilmemiş'}
-                        </div>
-                      )}
+                    {/* Doğum Bilgileri */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-white/90 font-medium flex items-center gap-2">
+                          📅 Doğum Tarihi
+                        </Label>
+                        {isEditing ? (
+                          <Input
+                            type="date"
+                            value={formData.birthDate}
+                            onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
+                            className="bg-white/10 border-white/20 text-white"
+                          />
+                        ) : (
+                          <div className="bg-white/5 border border-white/10 p-3 rounded-xl text-white font-medium flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-cyan-400" />
+                            {new Date(user.birth_date).toLocaleDateString('tr-TR')}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-white/90 font-medium flex items-center gap-2">
+                          ⏰ Doğum Saati
+                        </Label>
+                        {isEditing ? (
+                          <Input
+                            type="time"
+                            value={formData.birthTime}
+                            onChange={(e) => setFormData({ ...formData, birthTime: e.target.value })}
+                            className="bg-white/10 border-white/20 text-white"
+                          />
+                        ) : (
+                          <div className="bg-white/5 border border-white/10 p-3 rounded-xl text-white font-medium flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-cyan-400" />
+                            {user.birth_time}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Şehir ve Cinsiyet */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-white/90 font-medium flex items-center gap-2">
+                          📍 Şehir
+                        </Label>
+                        {isEditing ? (
+                          <Select value={formData.city} onValueChange={(value) => setFormData({ ...formData, city: value })}>
+                            <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                              <SelectValue placeholder="Şehir seçin" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#1a1a2e] border-white/20 z-50 max-h-[300px]">
+                              {TURKISH_CITIES.map((city) => (
+                                <SelectItem key={city} value={city} className="text-white hover:bg-white/10">
+                                  {city}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="bg-white/5 border border-white/10 p-3 rounded-xl text-white font-medium flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-cyan-400" />
+                            {user.city || 'Belirtilmemiş'}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-white/90 font-medium flex items-center gap-2">
+                          ⚧ Cinsiyet
+                        </Label>
+                        {isEditing ? (
+                          <Select value={formData.gender} onValueChange={(value) => setFormData({ ...formData, gender: value })}>
+                            <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                              <SelectValue placeholder="Cinsiyet seçin" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#1a1a2e] border-white/20 z-50">
+                              <SelectItem value="Kadın" className="text-white hover:bg-white/10">Kadın</SelectItem>
+                              <SelectItem value="Erkek" className="text-white hover:bg-white/10">Erkek</SelectItem>
+                              <SelectItem value="Belirtmek İstemiyorum" className="text-white hover:bg-white/10">Belirtmek İstemiyorum</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="bg-white/5 border border-white/10 p-3 rounded-xl text-white font-medium">
+                            {user.gender || 'Belirtilmemiş'}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
                   {isEditing && (
-                    <div className="pt-4 border-t border-accent/20">
-                      <h3 className="text-lg font-semibold text-foreground mb-4">Şifre Değiştir (Opsiyonel)</h3>
+                    <div className="pt-6 mt-6 border-t border-cyan-400/20">
+                      <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                        🔐 Şifre Değiştir <span className="text-sm text-white/60 font-normal">(Opsiyonel)</span>
+                      </h3>
                       
                       <div className="space-y-4">
-                        <div>
-                          <Label>Mevcut Şifre</Label>
+                        <div className="space-y-2">
+                          <Label className="text-white/90 font-medium">Mevcut Şifre</Label>
                           <div className="relative">
                             <Input
                               type={showCurrentPassword ? "text" : "password"}
                               value={formData.currentPassword}
                               onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
                               placeholder="Mevcut şifreniz"
+                              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 pr-10"
                             />
                             <button
                               type="button"
                               onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
                             >
                               {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
                           </div>
                         </div>
 
-                        <div>
-                          <Label>Yeni Şifre</Label>
+                        <div className="space-y-2">
+                          <Label className="text-white/90 font-medium">Yeni Şifre</Label>
                           <div className="relative">
                             <Input
                               type={showNewPassword ? "text" : "password"}
                               value={formData.newPassword}
                               onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
                               placeholder="Yeni şifre (min 6 karakter)"
+                              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 pr-10"
                             />
                             <button
                               type="button"
                               onClick={() => setShowNewPassword(!showNewPassword)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
                             >
                               {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
                           </div>
                         </div>
 
-                        <div>
-                          <Label>Yeni Şifre Tekrar</Label>
+                        <div className="space-y-2">
+                          <Label className="text-white/90 font-medium">Yeni Şifre Tekrar</Label>
                           <div className="relative">
                             <Input
                               type={showConfirmPassword ? "text" : "password"}
                               value={formData.newPasswordConfirm}
                               onChange={(e) => setFormData({ ...formData, newPasswordConfirm: e.target.value })}
                               placeholder="Yeni şifrenizi tekrar girin"
+                              className="bg-white/10 border-white/20 text-white placeholder:text-white/50 pr-10"
                             />
                             <button
                               type="button"
                               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
                             >
                               {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
@@ -758,14 +793,20 @@ const Profile = () => {
                   )}
 
                   {isEditing && (
-                    <div className="flex gap-4 pt-4">
-                      <Button onClick={handleSave} className="flex-1 bg-accent hover:bg-accent/90">
+                    <div className="flex gap-4 pt-6">
+                      <Button 
+                        onClick={handleSave} 
+                        className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-green-500/50 transition-all"
+                      >
                         <Save className="w-4 h-4 mr-2" />
-                        Kaydet
+                        💾 Kaydet
                       </Button>
-                      <Button onClick={handleCancel} variant="outline" className="flex-1">
+                      <Button 
+                        onClick={handleCancel} 
+                        className="flex-1 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white shadow-lg hover:shadow-red-500/50 transition-all"
+                      >
                         <X className="w-4 h-4 mr-2" />
-                        İptal
+                        ❌ İptal
                       </Button>
                     </div>
                   )}
