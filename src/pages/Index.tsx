@@ -50,8 +50,7 @@ const Index = () => {
       emoji: '⭐',
       gradient: 'from-yellow-500 to-amber-600',
       glowColor: 'shadow-yellow-500/50',
-      isActive: false,
-      badge: 'Yakında'
+      isActive: true
     },
     {
       type: 'ruya',

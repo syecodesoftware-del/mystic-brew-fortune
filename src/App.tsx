@@ -18,6 +18,8 @@ import CiftFali from "./pages/fortune/CiftFali";
 import CiftFaliForm from "./pages/fortune/CiftFaliForm";
 import RuyaYorumu from "./pages/fortune/RuyaYorumu";
 import RuyaYorumuForm from "./pages/fortune/RuyaYorumuForm";
+import YildizFali from "./pages/fortune/YildizFali";
+import YildizFaliForm from "./pages/fortune/YildizFaliForm";
 import ComingSoon from "./components/ComingSoon";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -172,6 +174,26 @@ const App = () => {
               <ProtectedRoute>
                 <Layout>
                   <RuyaYorumuForm />
+                </Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/yildiz" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <YildizFali />
+                </Layout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fortune/yildiz/form/:tellerId" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <YildizFaliForm />
                 </Layout>
               </ProtectedRoute>
             } 
