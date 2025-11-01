@@ -658,24 +658,24 @@ const CiftFaliForm = () => {
                 key="result"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_32px_rgba(167,139,250,0.12)]"
+                className="bg-gradient-card rounded-2xl p-6 sm:p-8 shadow-mystic"
               >
                 <div className="flex items-center justify-center gap-2 mb-6">
-                  <Star className="w-6 h-6 text-[hsl(43,96%,56%)]" />
-                  <h2 className="text-3xl font-bold text-[hsl(220,13%,18%)] font-display">Çift Falınız Hazır! 💕</h2>
-                  <Heart className="w-6 h-6 text-[hsl(330,81%,70%)]" />
+                  <Star className="w-6 h-6 text-accent" />
+                  <h2 className="text-2xl sm:text-3xl font-bold text-foreground font-display">Çift Falınız Hazır! 💕</h2>
+                  <Heart className="w-6 h-6 text-accent" />
                 </div>
                 
                 <div className="text-center mb-6">
                   <span className="text-4xl">{selectedTeller?.emoji}</span>
-                  <p className="text-[hsl(220,9%,46%)] mt-2">{selectedTeller?.name}</p>
-                  <p className="text-[hsl(220,9%,46%)] text-sm mt-1">
+                  <p className="text-muted-foreground mt-2">{selectedTeller?.name}</p>
+                  <p className="text-muted-foreground text-sm mt-1">
                     {person1.name} & {person2.name}
                   </p>
                 </div>
 
                 {(person1.fincan.preview || person1.tabak.preview || person2.fincan.preview || person2.tabak.preview) && (
-                  <div className="mb-6 rounded-2xl overflow-hidden bg-white/50 backdrop-blur-sm border border-[hsl(330,81%,70%)]/20 shadow-lg p-4">
+                  <div className="mb-6 rounded-2xl overflow-hidden bg-card/30 backdrop-blur-sm border border-accent/20 shadow-lg p-4">
                     <div className="grid grid-cols-4 gap-2">
                       {person1.fincan.preview && (
                         <img src={person1.fincan.preview} alt="P1 Fincan" className="rounded-lg aspect-square object-cover" />
@@ -693,28 +693,28 @@ const CiftFaliForm = () => {
                   </div>
                 )}
 
-                <div className="bg-white/50 rounded-xl p-6 mb-6">
-                  <p className="text-[hsl(220,13%,18%)] leading-relaxed whitespace-pre-wrap">{fortune}</p>
+                <div className="bg-card/30 backdrop-blur-sm rounded-xl p-6 mb-6">
+                  <p className="text-foreground leading-relaxed whitespace-pre-wrap">{fortune}</p>
                 </div>
 
-                <div className="flex items-center justify-center gap-2 text-[hsl(220,9%,46%)] text-sm mb-6">
-                  <Heart className="w-4 h-4 text-[hsl(330,81%,70%)]" />
+                <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm mb-6">
+                  <Heart className="w-4 h-4 text-accent" />
                   <span>Çiftinizin falı okundu</span>
-                  <Sparkles className="w-4 h-4 text-[hsl(330,81%,70%)]" />
+                  <Sparkles className="w-4 h-4 text-accent" />
                 </div>
 
                 <div className="flex gap-3">
                   <Button
                     onClick={() => window.location.reload()}
                     variant="outline"
-                    className="flex-1 text-sm sm:text-base py-3 rounded-lg font-semibold"
+                    className="flex-1 text-sm sm:text-base py-3 rounded-lg font-semibold border-accent/50"
                   >
                     <RefreshCw className="w-4 h-4 mr-1.5" />
                     Yeni Fal
                   </Button>
                   <Button
                     onClick={() => navigate('/profile')}
-                    className="flex-1 text-sm sm:text-base py-3 rounded-lg font-semibold"
+                    className="flex-1 text-sm sm:text-base py-3 rounded-lg font-semibold bg-accent hover:bg-accent/90"
                   >
                     Profile Git
                   </Button>
