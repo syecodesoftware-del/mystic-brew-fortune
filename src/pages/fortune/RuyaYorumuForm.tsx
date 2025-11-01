@@ -528,18 +528,18 @@ const RuyaYorumuForm = () => {
                 <Sparkles className="w-4 h-4 text-[hsl(258,90%,76%)]" />
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 <Button
                   onClick={resetFortune}
                   variant="outline"
-                  className="flex-1 text-lg py-6 rounded-xl font-bold"
+                  className="flex-1 text-sm sm:text-base py-3 rounded-lg font-semibold"
                 >
-                  <RefreshCw className="w-5 h-5 mr-2" />
+                  <RefreshCw className="w-4 h-4 mr-1.5" />
                   Yeni Yorum
                 </Button>
                 <Button
                   onClick={() => navigate('/profile')}
-                  className="flex-1 text-lg py-6 rounded-xl font-bold"
+                  className="flex-1 text-sm sm:text-base py-3 rounded-lg font-semibold"
                 >
                   Profile Git
                 </Button>
