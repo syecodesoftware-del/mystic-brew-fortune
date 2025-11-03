@@ -17,95 +17,95 @@ import { CalendarIcon } from 'lucide-react';
 import Header from '@/components/Header';
 import logo from '@/assets/logo.png';
 
-// 78 Tarot Cards
+// 78 Tarot Cards with Images
 const TAROT_CARDS = [
   // Major Arcana (0-21)
-  { id: 0, name: 'The Fool', tr: 'Deli', suit: 'major' },
-  { id: 1, name: 'The Magician', tr: 'Sihirbaz', suit: 'major' },
-  { id: 2, name: 'The High Priestess', tr: 'Yüksek Rahibe', suit: 'major' },
-  { id: 3, name: 'The Empress', tr: 'İmparatoriçe', suit: 'major' },
-  { id: 4, name: 'The Emperor', tr: 'İmparator', suit: 'major' },
-  { id: 5, name: 'The Hierophant', tr: 'Aziz', suit: 'major' },
-  { id: 6, name: 'The Lovers', tr: 'Aşıklar', suit: 'major' },
-  { id: 7, name: 'The Chariot', tr: 'Savaş Arabası', suit: 'major' },
-  { id: 8, name: 'Strength', tr: 'Güç', suit: 'major' },
-  { id: 9, name: 'The Hermit', tr: 'Ermiş', suit: 'major' },
-  { id: 10, name: 'Wheel of Fortune', tr: 'Kader Çarkı', suit: 'major' },
-  { id: 11, name: 'Justice', tr: 'Adalet', suit: 'major' },
-  { id: 12, name: 'The Hanged Man', tr: 'Asılan Adam', suit: 'major' },
-  { id: 13, name: 'Death', tr: 'Ölüm', suit: 'major' },
-  { id: 14, name: 'Temperance', tr: 'Denge', suit: 'major' },
-  { id: 15, name: 'The Devil', tr: 'Şeytan', suit: 'major' },
-  { id: 16, name: 'The Tower', tr: 'Kule', suit: 'major' },
-  { id: 17, name: 'The Star', tr: 'Yıldız', suit: 'major' },
-  { id: 18, name: 'The Moon', tr: 'Ay', suit: 'major' },
-  { id: 19, name: 'The Sun', tr: 'Güneş', suit: 'major' },
-  { id: 20, name: 'Judgement', tr: 'Yargı', suit: 'major' },
-  { id: 21, name: 'The World', tr: 'Dünya', suit: 'major' },
+  { id: 0, name: 'The Fool', tr: 'Deli', suit: 'major', image: '/images/tarot/00-the-fool.jpg' },
+  { id: 1, name: 'The Magician', tr: 'Sihirbaz', suit: 'major', image: '/images/tarot/01-the-magician.jpg' },
+  { id: 2, name: 'The High Priestess', tr: 'Yüksek Rahibe', suit: 'major', image: '/images/tarot/02-the-high-priestess.jpg' },
+  { id: 3, name: 'The Empress', tr: 'İmparatoriçe', suit: 'major', image: '/images/tarot/03-the-empress.jpg' },
+  { id: 4, name: 'The Emperor', tr: 'İmparator', suit: 'major', image: '/images/tarot/04-the-emperor.jpg' },
+  { id: 5, name: 'The Hierophant', tr: 'Aziz', suit: 'major', image: '/images/tarot/05-the-hierophant.jpg' },
+  { id: 6, name: 'The Lovers', tr: 'Aşıklar', suit: 'major', image: '/images/tarot/06-the-lovers.jpg' },
+  { id: 7, name: 'The Chariot', tr: 'Savaş Arabası', suit: 'major', image: '/images/tarot/07-the-chariot.jpg' },
+  { id: 8, name: 'Strength', tr: 'Güç', suit: 'major', image: '/images/tarot/08-strength.jpg' },
+  { id: 9, name: 'The Hermit', tr: 'Ermiş', suit: 'major', image: '/images/tarot/09-the-hermit.jpg' },
+  { id: 10, name: 'Wheel of Fortune', tr: 'Kader Çarkı', suit: 'major', image: '/images/tarot/10-wheel-of-fortune.jpg' },
+  { id: 11, name: 'Justice', tr: 'Adalet', suit: 'major', image: '/images/tarot/11-justice.jpg' },
+  { id: 12, name: 'The Hanged Man', tr: 'Asılan Adam', suit: 'major', image: '/images/tarot/12-the-hanged-man.jpg' },
+  { id: 13, name: 'Death', tr: 'Ölüm', suit: 'major', image: '/images/tarot/13-death.jpg' },
+  { id: 14, name: 'Temperance', tr: 'Denge', suit: 'major', image: '/images/tarot/14-temperance.jpg' },
+  { id: 15, name: 'The Devil', tr: 'Şeytan', suit: 'major', image: '/images/tarot/15-the-devil.jpg' },
+  { id: 16, name: 'The Tower', tr: 'Kule', suit: 'major', image: '/images/tarot/16-the-tower.jpg' },
+  { id: 17, name: 'The Star', tr: 'Yıldız', suit: 'major', image: '/images/tarot/17-the-star.jpg' },
+  { id: 18, name: 'The Moon', tr: 'Ay', suit: 'major', image: '/images/tarot/18-the-moon.jpg' },
+  { id: 19, name: 'The Sun', tr: 'Güneş', suit: 'major', image: '/images/tarot/19-the-sun.jpg' },
+  { id: 20, name: 'Judgement', tr: 'Yargı', suit: 'major', image: '/images/tarot/20-judgement.jpg' },
+  { id: 21, name: 'The World', tr: 'Dünya', suit: 'major', image: '/images/tarot/21-the-world.jpg' },
   
   // Minor Arcana - Wands (22-35)
-  { id: 22, name: 'Ace of Wands', tr: 'Asalar As', suit: 'wands', emoji: '🔥' },
-  { id: 23, name: 'Two of Wands', tr: 'Asalar İkili', suit: 'wands', emoji: '🔥' },
-  { id: 24, name: 'Three of Wands', tr: 'Asalar Üçlü', suit: 'wands', emoji: '🔥' },
-  { id: 25, name: 'Four of Wands', tr: 'Asalar Dörtlü', suit: 'wands', emoji: '🔥' },
-  { id: 26, name: 'Five of Wands', tr: 'Asalar Beşli', suit: 'wands', emoji: '🔥' },
-  { id: 27, name: 'Six of Wands', tr: 'Asalar Altılı', suit: 'wands', emoji: '🔥' },
-  { id: 28, name: 'Seven of Wands', tr: 'Asalar Yedili', suit: 'wands', emoji: '🔥' },
-  { id: 29, name: 'Eight of Wands', tr: 'Asalar Sekizli', suit: 'wands', emoji: '🔥' },
-  { id: 30, name: 'Nine of Wands', tr: 'Asalar Dokuzlu', suit: 'wands', emoji: '🔥' },
-  { id: 31, name: 'Ten of Wands', tr: 'Asalar Onlu', suit: 'wands', emoji: '🔥' },
-  { id: 32, name: 'Page of Wands', tr: 'Asalar Prensi', suit: 'wands', emoji: '🔥' },
-  { id: 33, name: 'Knight of Wands', tr: 'Asalar Şövalyesi', suit: 'wands', emoji: '🔥' },
-  { id: 34, name: 'Queen of Wands', tr: 'Asalar Kraliçesi', suit: 'wands', emoji: '🔥' },
-  { id: 35, name: 'King of Wands', tr: 'Asalar Kralı', suit: 'wands', emoji: '🔥' },
+  { id: 22, name: 'Ace of Wands', tr: 'Asalar As', suit: 'wands', image: '/images/tarot/22-ace-of-wands.jpg' },
+  { id: 23, name: 'Two of Wands', tr: 'Asalar İkili', suit: 'wands', image: '/images/tarot/23-two-of-wands.jpg' },
+  { id: 24, name: 'Three of Wands', tr: 'Asalar Üçlü', suit: 'wands', image: '/images/tarot/24-three-of-wands.jpg' },
+  { id: 25, name: 'Four of Wands', tr: 'Asalar Dörtlü', suit: 'wands', image: '/images/tarot/25-four-of-wands.jpg' },
+  { id: 26, name: 'Five of Wands', tr: 'Asalar Beşli', suit: 'wands', image: '/images/tarot/26-five-of-wands.jpg' },
+  { id: 27, name: 'Six of Wands', tr: 'Asalar Altılı', suit: 'wands', image: '/images/tarot/27-six-of-wands.jpg' },
+  { id: 28, name: 'Seven of Wands', tr: 'Asalar Yedili', suit: 'wands', image: '/images/tarot/28-seven-of-wands.jpg' },
+  { id: 29, name: 'Eight of Wands', tr: 'Asalar Sekizli', suit: 'wands', image: '/images/tarot/29-eight-of-wands.jpg' },
+  { id: 30, name: 'Nine of Wands', tr: 'Asalar Dokuzlu', suit: 'wands', image: '/images/tarot/30-nine-of-wands.jpg' },
+  { id: 31, name: 'Ten of Wands', tr: 'Asalar Onlu', suit: 'wands', image: '/images/tarot/31-ten-of-wands.jpg' },
+  { id: 32, name: 'Page of Wands', tr: 'Asalar Prensi', suit: 'wands', image: '/images/tarot/32-page-of-wands.jpg' },
+  { id: 33, name: 'Knight of Wands', tr: 'Asalar Şövalyesi', suit: 'wands', image: '/images/tarot/33-knight-of-wands.jpg' },
+  { id: 34, name: 'Queen of Wands', tr: 'Asalar Kraliçesi', suit: 'wands', image: '/images/tarot/34-queen-of-wands.jpg' },
+  { id: 35, name: 'King of Wrot', tr: 'Asalar Kralı', suit: 'wands', image: '/images/tarot/35-king-of-wands.jpg' },
   
   // Minor Arcana - Cups (36-49)
-  { id: 36, name: 'Ace of Cups', tr: 'Kupalar As', suit: 'cups', emoji: '💧' },
-  { id: 37, name: 'Two of Cups', tr: 'Kupalar İkili', suit: 'cups', emoji: '💧' },
-  { id: 38, name: 'Three of Cups', tr: 'Kupalar Üçlü', suit: 'cups', emoji: '💧' },
-  { id: 39, name: 'Four of Cups', tr: 'Kupalar Dörtlü', suit: 'cups', emoji: '💧' },
-  { id: 40, name: 'Five of Cups', tr: 'Kupalar Beşli', suit: 'cups', emoji: '💧' },
-  { id: 41, name: 'Six of Cups', tr: 'Kupalar Altılı', suit: 'cups', emoji: '💧' },
-  { id: 42, name: 'Seven of Cups', tr: 'Kupalar Yedili', suit: 'cups', emoji: '💧' },
-  { id: 43, name: 'Eight of Cups', tr: 'Kupalar Sekizli', suit: 'cups', emoji: '💧' },
-  { id: 44, name: 'Nine of Cups', tr: 'Kupalar Dokuzlu', suit: 'cups', emoji: '💧' },
-  { id: 45, name: 'Ten of Cups', tr: 'Kupalar Onlu', suit: 'cups', emoji: '💧' },
-  { id: 46, name: 'Page of Cups', tr: 'Kupalar Prensi', suit: 'cups', emoji: '💧' },
-  { id: 47, name: 'Knight of Cups', tr: 'Kupalar Şövalyesi', suit: 'cups', emoji: '💧' },
-  { id: 48, name: 'Queen of Cups', tr: 'Kupalar Kraliçesi', suit: 'cups', emoji: '💧' },
-  { id: 49, name: 'King of Cups', tr: 'Kupalar Kralı', suit: 'cups', emoji: '💧' },
+  { id: 36, name: 'Ace of Cups', tr: 'Kupalar As', suit: 'cups', image: '/images/tarot/36-ace-of-cups.jpg' },
+  { id: 37, name: 'Two of Cups', tr: 'Kupalar İkili', suit: 'cups', image: '/images/tarot/37-two-of-cups.jpg' },
+  { id: 38, name: 'Three of Cups', tr: 'Kupalar Üçlü', suit: 'cups', image: '/images/tarot/38-three-of-cups.jpg' },
+  { id: 39, name: 'Four of Cups', tr: 'Kupalar Dörtlü', suit: 'cups', image: '/images/tarot/39-four-of-cups.jpg' },
+  { id: 40, name: 'Five of Cups', tr: 'Kupalar Beşli', suit: 'cups', image: '/images/tarot/40-five-of-cups.jpg' },
+  { id: 41, name: 'Six of Cups', tr: 'Kupalar Altılı', suit: 'cups', image: '/images/tarot/41-six-of-cups.jpg' },
+  { id: 42, name: 'Seven of Cups', tr: 'Kupalar Yedili', suit: 'cups', image: '/images/tarot/42-seven-of-cups.jpg' },
+  { id: 43, name: 'Eight of Cups', tr: 'Kupalar Sekizli', suit: 'cups', image: '/images/tarot/43-eight-of-cups.jpg' },
+  { id: 44, name: 'Nine of Cups', tr: 'Kupalar Dokuzlu', suit: 'cups', image: '/images/tarot/44-nine-of-cups.jpg' },
+  { id: 45, name: 'Ten of Cups', tr: 'Kupalar Onlu', suit: 'cups', image: '/images/tarot/45-ten-of-cups.jpg' },
+  { id: 46, name: 'Page of Cups', tr: 'Kupalar Prensi', suit: 'cups', image: '/images/tarot/46-page-of-cups.jpg' },
+  { id: 47, name: 'Knight of Cups', tr: 'Kupalar Şövalyesi', suit: 'cups', image: '/images/tarot/47-knight-of-cups.jpg' },
+  { id: 48, name: 'Queen of Cups', tr: 'Kupalar Kraliçesi', suit: 'cups', image: '/images/tarot/48-queen-of-cups.jpg' },
+  { id: 49, name: 'King of Cups', tr: 'Kupalar Kralı', suit: 'cups', image: '/images/tarot/49-king-of-cups.jpg' },
   
   // Minor Arcana - Swords (50-63)
-  { id: 50, name: 'Ace of Swords', tr: 'Kılıçlar As', suit: 'swords', emoji: '⚔️' },
-  { id: 51, name: 'Two of Swords', tr: 'Kılıçlar İkili', suit: 'swords', emoji: '⚔️' },
-  { id: 52, name: 'Three of Swords', tr: 'Kılıçlar Üçlü', suit: 'swords', emoji: '⚔️' },
-  { id: 53, name: 'Four of Swords', tr: 'Kılıçlar Dörtlü', suit: 'swords', emoji: '⚔️' },
-  { id: 54, name: 'Five of Swords', tr: 'Kılıçlar Beşli', suit: 'swords', emoji: '⚔️' },
-  { id: 55, name: 'Six of Swords', tr: 'Kılıçlar Altılı', suit: 'swords', emoji: '⚔️' },
-  { id: 56, name: 'Seven of Swords', tr: 'Kılıçlar Yedili', suit: 'swords', emoji: '⚔️' },
-  { id: 57, name: 'Eight of Swords', tr: 'Kılıçlar Sekizli', suit: 'swords', emoji: '⚔️' },
-  { id: 58, name: 'Nine of Swords', tr: 'Kılıçlar Dokuzlu', suit: 'swords', emoji: '⚔️' },
-  { id: 59, name: 'Ten of Swords', tr: 'Kılıçlar Onlu', suit: 'swords', emoji: '⚔️' },
-  { id: 60, name: 'Page of Swords', tr: 'Kılıçlar Prensi', suit: 'swords', emoji: '⚔️' },
-  { id: 61, name: 'Knight of Swords', tr: 'Kılıçlar Şövalyesi', suit: 'swords', emoji: '⚔️' },
-  { id: 62, name: 'Queen of Swords', tr: 'Kılıçlar Kraliçesi', suit: 'swords', emoji: '⚔️' },
-  { id: 63, name: 'King of Swords', tr: 'Kılıçlar Kralı', suit: 'swords', emoji: '⚔️' },
+  { id: 50, name: 'Ace of Swords', tr: 'Kılıçlar As', suit: 'swords', image: '/images/tarot/50-ace-of-swords.jpg' },
+  { id: 51, name: 'Two of Swords', tr: 'Kılıçlar İkili', suit: 'swords', image: '/images/tarot/51-two-of-swords.jpg' },
+  { id: 52, name: 'Three of Swords', tr: 'Kılıçlar Üçlü', suit: 'swords', image: '/images/tarot/52-three-of-swords.jpg' },
+  { id: 53, name: 'Four of Swords', tr: 'Kılıçlar Dörtlü', suit: 'swords', image: '/images/tarot/53-four-of-swords.jpg' },
+  { id: 54, name: 'Five of Swords', tr: 'Kılıçlar Beşli', suit: 'swords', image: '/images/tarot/54-five-of-swords.jpg' },
+  { id: 55, name: 'Six of Swords', tr: 'Kılıçlar Altılı', suit: 'swords', image: '/images/tarot/55-six-of-swords.jpg' },
+  { id: 56, name: 'Seven of Swords', tr: 'Kılıçlar Yedili', suit: 'swords', image: '/images/tarot/56-seven-of-swords.jpg' },
+  { id: 57, name: 'Eight of Swords', tr: 'Kılıçlar Sekizli', suit: 'swords', image: '/images/tarot/57-eight-of-swords.jpg' },
+  { id: 58, name: 'Nine of Swords', tr: 'Kılıçlar Dokuzlu', suit: 'swords', image: '/images/tarot/58-nine-of-swords.jpg' },
+  { id: 59, name: 'Ten of Swords', tr: 'Kılıçlar Onlu', suit: 'swords', image: '/images/tarot/59-ten-of-swords.jpg' },
+  { id: 60, name: 'Page of Swords', tr: 'Kılıçlar Prensi', suit: 'swords', image: '/images/tarot/60-page-of-swords.jpg' },
+  { id: 61, name: 'Knight of Swords', tr: 'Kılıçlar Şövalyesi', suit: 'swords', image: '/images/tarot/61-knight-of-swords.jpg' },
+  { id: 62, name: 'Queen of Swords', tr: 'Kılıçlar Kraliçesi', suit: 'swords', image: '/images/tarot/62-queen-of-swords.jpg' },
+  { id: 63, name: 'King of Swords', tr: 'Kılıçlar Kralı', suit: 'swords', image: '/images/tarot/63-king-of-swords.jpg' },
   
   // Minor Arcana - Pentacles (64-77)
-  { id: 64, name: 'Ace of Pentacles', tr: 'Tılsımlar As', suit: 'pentacles', emoji: '💎' },
-  { id: 65, name: 'Two of Pentacles', tr: 'Tılsımlar İkili', suit: 'pentacles', emoji: '💎' },
-  { id: 66, name: 'Three of Pentacles', tr: 'Tılsımlar Üçlü', suit: 'pentacles', emoji: '💎' },
-  { id: 67, name: 'Four of Pentacles', tr: 'Tılsımlar Dörtlü', suit: 'pentacles', emoji: '💎' },
-  { id: 68, name: 'Five of Pentacles', tr: 'Tılsımlar Beşli', suit: 'pentacles', emoji: '💎' },
-  { id: 69, name: 'Six of Pentacles', tr: 'Tılsımlar Altılı', suit: 'pentacles', emoji: '💎' },
-  { id: 70, name: 'Seven of Pentacles', tr: 'Tılsımlar Yedili', suit: 'pentacles', emoji: '💎' },
-  { id: 71, name: 'Eight of Pentacles', tr: 'Tılsımlar Sekizli', suit: 'pentacles', emoji: '💎' },
-  { id: 72, name: 'Nine of Pentacles', tr: 'Tılsımlar Dokuzlu', suit: 'pentacles', emoji: '💎' },
-  { id: 73, name: 'Ten of Pentacles', tr: 'Tılsımlar Onlu', suit: 'pentacles', emoji: '💎' },
-  { id: 74, name: 'Page of Pentacles', tr: 'Tılsımlar Prensi', suit: 'pentacles', emoji: '💎' },
-  { id: 75, name: 'Knight of Pentacles', tr: 'Tılsımlar Şövalyesi', suit: 'pentacles', emoji: '💎' },
-  { id: 76, name: 'Queen of Pentacles', tr: 'Tılsımlar Kraliçesi', suit: 'pentacles', emoji: '💎' },
-  { id: 77, name: 'King of Pentacles', tr: 'Tılsımlar Kralı', suit: 'pentacles', emoji: '💎' }
+  { id: 64, name: 'Ace of Pentacles', tr: 'Tılsımlar As', suit: 'pentacles', image: '/images/tarot/64-ace-of-pentacles.jpg' },
+  { id: 65, name: 'Two of Pentacles', tr: 'Tılsımlar İkili', suit: 'pentacles', image: '/images/tarot/65-two-of-pentacles.jpg' },
+  { id: 66, name: 'Three of Pentacles', tr: 'Tılsımlar Üçlü', suit: 'pentacles', image: '/images/tarot/66-three-of-pentacles.jpg' },
+  { id: 67, name: 'Four of Pentacles', tr: 'Tılsımlar Dörtlü', suit: 'pentacles', image: '/images/tarot/67-four-of-pentacles.jpg' },
+  { id: 68, name: 'Five of Pentacles', tr: 'Tılsımlar Beşli', suit: 'pentacles', image: '/images/tarot/68-five-of-pentacles.jpg' },
+  { id: 69, name: 'Six of Pentacles', tr: 'Tılsımlar Altılı', suit: 'pentacles', image: '/images/tarot/69-six-of-pentacles.jpg' },
+  { id: 70, name: 'Seven of Pentacles', tr: 'Tılsımlar Yedili', suit: 'pentacles', image: '/images/tarot/70-seven-of-pentacles.jpg' },
+  { id: 71, name: 'Eight of Pentacles', tr: 'Tılsımlar Sekizli', suit: 'pentacles', image: '/images/tarot/71-eight-of-pentacles.jpg' },
+  { id: 72, name: 'Nine of Pentacles', tr: 'Tılsımlar Dokuzlu', suit: 'pentacles', image: '/images/tarot/72-nine-of-pentacles.jpg' },
+  { id: 73, name: 'Ten of Pentacles', tr: 'Tılsımlar Onlu', suit: 'pentacles', image: '/images/tarot/73-ten-of-pentacles.jpg' },
+  { id: 74, name: 'Page of Pentacles', tr: 'Tılsımlar Prensi', suit: 'pentacles', image: '/images/tarot/74-page-of-pentacles.jpg' },
+  { id: 75, name: 'Knight of Pentacles', tr: 'Tılsımlar Şövalyesi', suit: 'pentacles', image: '/images/tarot/75-knight-of-pentacles.jpg' },
+  { id: 76, name: 'Queen of Pentacles', tr: 'Tılsımlar Kraliçesi', suit: 'pentacles', image: '/images/tarot/76-queen-of-pentacles.jpg' },
+  { id: 77, name: 'King of Pentacles', tr: 'Tılsımlar Kralı', suit: 'pentacles', image: '/images/tarot/77-king-of-pentacles.jpg' }
 ];
 
 const FOCUS_AREAS = [
@@ -491,7 +491,7 @@ const TarotSecim = () => {
               </div>
 
               {/* Cards Grid */}
-              <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 max-h-[500px] overflow-y-auto p-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 max-h-[600px] overflow-y-auto p-2">
                 {TAROT_CARDS.map(card => {
                   const isFlipped = flippedCards.has(card.id);
                   const isSelected = selectedCards.includes(card.id);
@@ -504,7 +504,7 @@ const TarotSecim = () => {
                       onClick={() => handleCardClick(card.id)}
                       className="cursor-pointer"
                     >
-                      <div className={`relative aspect-[2/3] rounded-lg border-2 transition-all ${
+                      <div className={`relative aspect-[2/3] rounded-lg border-2 transition-all overflow-hidden ${
                         isSelected ? 'border-yellow-400 shadow-lg shadow-yellow-400/50' : 'border-purple-400/30'
                       }`}>
                         <motion.div
@@ -516,31 +516,53 @@ const TarotSecim = () => {
                         >
                           {/* Card Back */}
                           <div
-                            className="absolute inset-0 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-800 flex items-center justify-center"
+                            className="absolute inset-0 rounded-lg bg-gradient-to-br from-purple-600 via-indigo-700 to-indigo-900 flex items-center justify-center"
                             style={{ backfaceVisibility: 'hidden' }}
                           >
-                            <span className="text-2xl">🌙</span>
+                            <div className="flex flex-col items-center">
+                              <span className="text-3xl mb-1">🌙</span>
+                              <span className="text-xs text-purple-200">Tarot</span>
+                            </div>
                           </div>
 
-                          {/* Card Front */}
+                          {/* Card Front with Image */}
                           <div
-                            className="absolute inset-0 rounded-lg bg-white/95 flex flex-col items-center justify-center p-2 text-center"
+                            className="absolute inset-0 rounded-lg bg-white"
                             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                           >
-                            <div className="text-lg mb-1">{card.emoji || '🎴'}</div>
-                            <div className="text-[8px] font-semibold text-gray-800 leading-tight">
-                              {card.tr}
-                            </div>
+                            <img 
+                              src={card.image} 
+                              alt={card.tr}
+                              className="w-full h-full object-cover rounded-lg"
+                              onError={(e) => {
+                                // Fallback to emoji if image doesn't load
+                                e.currentTarget.style.display = 'none';
+                                const parent = e.currentTarget.parentElement;
+                                if (parent) {
+                                  parent.innerHTML = `
+                                    <div class="w-full h-full flex flex-col items-center justify-center p-2 bg-gradient-to-br from-purple-100 to-indigo-100">
+                                      <div class="text-3xl mb-2">🎴</div>
+                                      <div class="text-[10px] font-semibold text-gray-800 text-center leading-tight">
+                                        ${card.tr}
+                                      </div>
+                                    </div>
+                                  `;
+                                }
+                              }}
+                            />
                           </div>
                         </motion.div>
 
                         {/* Selected Badge */}
                         {isSelected && (
-                          <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-yellow-400 flex items-center justify-center text-xs font-bold">
+                          <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-sm font-bold shadow-lg z-10">
                             {selectedCards.indexOf(card.id) + 1}
                           </div>
                         )}
                       </div>
+                      
+                      {/* Card Name Below */}
+                      <p className="text-center text-[10px] text-purple-200 mt-1 truncate">{card.tr}</p>
                     </motion.div>
                   );
                 })}
@@ -569,16 +591,31 @@ const TarotSecim = () => {
               </div>
 
               {/* Seçilen kartları göster */}
-              <div className="mb-6 flex justify-center gap-4">
+              <div className="mb-6 flex justify-center gap-4 flex-wrap">
                 {selectedCards.map((cardId, index) => {
                   const card = TAROT_CARDS.find(c => c.id === cardId);
                   const positions = ['Geçmiş', 'Şimdi', 'Gelecek'];
                   return (
                     <div key={cardId} className="text-center">
-                      <div className="w-20 h-28 rounded-lg bg-gradient-to-br from-purple-400 to-indigo-600 flex items-center justify-center mb-2 shadow-lg">
-                        <span className="text-2xl">{card?.emoji || '🎴'}</span>
+                      <div className="w-24 h-36 rounded-lg overflow-hidden mb-2 shadow-xl border-2 border-purple-400/50">
+                        <img 
+                          src={card?.image} 
+                          alt={card?.tr}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const parent = e.currentTarget.parentElement;
+                            if (parent) {
+                              parent.innerHTML = `
+                                <div class="w-full h-full bg-gradient-to-br from-purple-400 to-indigo-600 flex items-center justify-center">
+                                  <span class="text-3xl">🎴</span>
+                                </div>
+                              `;
+                            }
+                          }}
+                        />
                       </div>
-                      <p className="text-xs text-muted-foreground font-medium">{positions[index]}</p>
+                      <p className="text-xs text-accent font-semibold">{positions[index]}</p>
                       <p className="text-xs text-foreground">{card?.tr}</p>
                     </div>
                   );
