@@ -141,6 +141,11 @@ const TarotSecim = () => {
   const tellerPrice = TELLER_PRICES[Number(tellerId)] || 35;
 
   const handleCardClick = (cardId: number) => {
+    // Eğer 3 kart seçilmişse ve tıklanan kart seçili değilse, işlemi durdur
+    if (selectedCards.length >= 3 && !selectedCards.includes(cardId)) {
+      return; // Hiçbir işlem yapma
+    }
+
     // Flip animation
     setFlippedCards(prev => {
       const newSet = new Set(prev);
@@ -152,14 +157,8 @@ const TarotSecim = () => {
     setTimeout(() => {
       if (selectedCards.includes(cardId)) {
         setSelectedCards(prev => prev.filter(id => id !== cardId));
-      } else if (selectedCards.length < 3) {
-        setSelectedCards(prev => [...prev, cardId]);
       } else {
-        toast({
-          title: 'En fazla 3 kart seçebilirsin',
-          description: 'Lütfen önce bir kartın seçimini kaldır',
-          variant: 'destructive'
-        });
+        setSelectedCards(prev => [...prev, cardId]);
       }
     }, 300);
   };
